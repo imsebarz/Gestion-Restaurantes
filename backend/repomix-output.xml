@@ -52,6 +52,7 @@ prisma/
   .env
   .env.example
   schema.prisma
+  seed.ts
 src/
   auth.ts
   context.ts
@@ -232,6 +233,74 @@ model Payment {
 }
 </file>
 
+<file path="prisma/seed.ts">
+// prisma/seed.ts
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+async function main() {
+  await prisma.item.createMany({
+    data: [
+      {
+        title: 'Arepa de Queso',
+        description: 'Nuestra arepa rellena con queso costeño',
+        price: 9000,
+        imageUrl: 'https://ejemplo.com/arepa-queso.jpg'
+      },
+      {
+        title: 'Burrito Gigante',
+        description: 'Burrito de carne, frijoles y salsa casera',
+        price: 17000,
+        imageUrl: 'https://ejemplo.com/burrito.jpg'
+      },
+      {
+        title: 'Tacos al Pastor',
+        description: 'Tacos de cerdo marinados con piña y cebolla',
+        price: 14500,
+        imageUrl: 'https://ejemplo.com/tacos-pastor.jpg'
+      },
+      {
+        title: 'Quesadilla Mixta',
+        description: 'Quesadilla de pollo y queso mozarella',
+        price: 15800,
+        imageUrl: 'https://ejemplo.com/quesadilla.jpg'
+      },
+      {
+        title: 'Empanada Colombiana',
+        description: 'Empanada de maíz rellena de carne y papa',
+        price: 3500,
+        imageUrl: 'https://ejemplo.com/empanada.jpg'
+      },
+      {
+        title: 'Ceviche de Camarón',
+        description: 'Ceviche fresco con limón, cebolla y cilantro',
+        price: 19500,
+        imageUrl: 'https://ejemplo.com/ceviche.jpg'
+      },
+      {
+        title: 'Churros con Chocolate',
+        description: 'Churros calientes acompañados de chocolate espeso',
+        price: 8000,
+        imageUrl: 'https://ejemplo.com/churros.jpg'
+      },
+      {
+        title: 'Ensalada César',
+        description: 'Lechuga, crutones, pollo a la plancha y aderezo César',
+        price: 12000,
+        imageUrl: 'https://ejemplo.com/ensalada-cesar.jpg'
+      }
+    ]
+  });
+}
+
+main()
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
+</file>
+
 <file path="src/auth.ts">
 import { verify, sign, JwtPayload } from 'jsonwebtoken';
 import prisma from './prisma';
@@ -262,6 +331,8 @@ import { authenticate, Context } from './auth';
 export async function createContext({ req }: { req: Request }): Promise<Context> {
   return authenticate(req);
 }
+
+export type { Context };
 </file>
 
 <file path="src/prisma.ts">
@@ -416,7 +487,7 @@ export const typeDefs = /* GraphQL */ `
 </file>
 
 <file path="src/server.ts">
-// backend/src/server.ts
+// src/server.ts
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
@@ -424,20 +495,24 @@ import { createYoga, createSchema } from 'graphql-yoga';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 import { createContext } from './context';
+import type { Context } from './auth';
 
 async function main() {
   const app = express();
   app.use(cors());
   app.use(express.json());
 
+  // Construye el esquema GraphQL
   const schema = createSchema({ typeDefs, resolvers });
-  const yoga = createYoga<{ req: Request; res: Response; } & ReturnType<typeof createContext>>({
+
+  // Inicializa Yoga con nuestro contexto tipado
+  const yoga = createYoga<Context>({
     schema,
     context: createContext,
     graphiql: true,
   });
 
-  // Middleware puente para que Express reconozca Yoga
+  // Middleware puente para que Express reconozca Yoga en /graphql
   app.use(
     '/graphql',
     (req: Request, res: Response, next: NextFunction) => {
@@ -464,6 +539,9 @@ main().catch(console.error);
     "generate": "prisma generate",
     "migrate": "prisma migrate dev --name init"
   },
+  "prisma": {
+  "seed": "ts-node --transpile-only prisma/seed.ts"
+},
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "bcryptjs": "^2.4.3",
@@ -483,6 +561,7 @@ main().catch(console.error);
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.3"
   }
+  
 }
 </file>
 

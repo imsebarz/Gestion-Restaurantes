@@ -8,7 +8,7 @@ export const resolvers = {
   Query: {
     items: () => prisma.item.findMany(),
     getOrdersByTableId: (_: any, { tableId }: any) =>
-      prisma.order.findMany({ where: { tableId }, include: { item: true } })
+      prisma.order.findMany({ where: { tableId }, include: { item: true } }),
   },
   Mutation: {
     signup: async (_: any, { email, password, name }: any) => {
@@ -34,9 +34,9 @@ export const resolvers = {
       const payment = await prisma.payment.create({ data: { type } });
       await prisma.order.update({
         where: { id: Number(orderId) },
-        data: { paymentId: payment.id, status: 'PAID' }
+        data: { paymentId: payment.id, status: 'PAID' },
       });
       return payment;
-    }
-  }
+    },
+  },
 };

@@ -24,12 +24,9 @@ async function main() {
   });
 
   // Middleware puente para que Express reconozca Yoga en /graphql
-  app.use(
-    '/graphql',
-    (req: Request, res: Response, next: NextFunction) => {
-      yoga(req, res).catch(next);
-    }
-  );
+  app.use('/graphql', (req: Request, res: Response, next: NextFunction) => {
+    yoga(req, res).catch(next);
+  });
 
   const port = process.env.PORT ?? 4000;
   createServer(app).listen(port, () => {
