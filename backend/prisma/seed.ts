@@ -1,9 +1,10 @@
 // prisma/seed.ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import { hashSync } from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.item.createMany({
+await prisma.item.createMany({
     data: [
       {
         title: 'Arepa de Queso',
@@ -55,6 +56,14 @@ async function main() {
       }
     ]
   });
+await prisma.user.createMany({
+  data: [
+    { email: 'root@food360.io', name: 'Root', password: hashSync('root', 10), role: Role.SUPERADMIN },
+    { email: 'admin@food360.io', name: 'Admin', password: hashSync('admin', 10), role: Role.ADMIN },
+    { email: 'cashier@food360.io', name: 'Caja', password: hashSync('cash', 10), role: Role.CAJERO },
+    { email: 'waiter@food360.io', name: 'Mesero', password: hashSync('wait', 10), role: Role.MESERO }
+  ]
+});
 }
 
 main()

@@ -8,9 +8,13 @@ generator client {
 }
 
 enum Role {
-  USER
+  SUPERADMIN
   ADMIN
+  CAJERO
+  MESERO
+  CLIENTE  
 }
+
 
 enum OrderStatus {
   PENDING
@@ -32,7 +36,7 @@ model User {
   email    String @unique
   name     String
   password String
-  role     Role   @default(USER)
+  role     Role   @default(CLIENTE)
 }
 
 model Item {
