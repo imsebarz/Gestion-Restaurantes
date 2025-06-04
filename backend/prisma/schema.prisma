@@ -7,68 +7,81 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
+enum RoleEnum {
   SUPERADMIN
-  ADMIN
-  CAJERO
-  MESERO
-  CLIENTE  
-}
-
-
-enum OrderStatus {
-  PENDING
-  PREPARING
-  READY
-  DELIVERED
-  PAID
-  CANCELLED
-}
-
-enum PaymentType {
-  CASH
-  CARD
-  OTHER
+  MANAGER
+  STAFF
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  name     String
-  password String
-  role     Role   @default(CLIENTE)
-}
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      RoleEnum  @default(STAFF)
+  createdAt DateTime  @default(now())
+  orders    Order[]
 
-model Item {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  imageUrl    String
-  price       Float
-  orders      Order[]
+  @@map("users")
 }
 
 model Table {
-  id     String  @id @default(uuid())
-  number Int     @unique @default(autoincrement())
-  orders Order[]
+  id        Int     @id @default(autoincrement())
+  number    Int     @unique
+  capacity  Int     @default(4)
+  orders    Order[]
+
+  @@map("tables")
+}
+
+model MenuItem {
+  id          Int       @id @default(autoincrement())
+  sku         String    @unique
+  name        String
+  price       Decimal   @db.Money
+  isAvailable Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  tableId   String
-  itemId    Int
-  paymentId Int?
-  status    OrderStatus @default(PENDING)
-  table     Table       @relation(fields: [tableId], references: [id])
-  item      Item        @relation(fields: [itemId], references: [id])
-  payment   Payment?    @relation(fields: [paymentId], references: [id])
+  id         Int         @id @default(autoincrement())
+  status     String      @default("OPEN")
+  tableId    Int
+  userId     Int
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+  payment    Payment?
+
+  table Table @relation(fields: [tableId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  quantity   Int     @default(1)
+  price      Decimal  @db.Money
+
+  order    Order    @relation(fields: [orderId], references: [id])
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
 }
 
 model Payment {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  type      PaymentType
-  orders    Order[]
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @unique
+  amount    Decimal  @db.Money
+  method    String
+  paidAt    DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
 }

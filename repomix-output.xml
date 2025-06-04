@@ -1,0 +1,1617 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+backend/
+  prisma/
+    migrations/
+      20250424205455_init/
+        migration.sql
+      20250424232338_init/
+        migration.sql
+      migration_lock.toml
+    .env
+    .env.example
+    schema.prisma
+    seed.ts
+  src/
+    graphql/
+      types.ts
+    auth.ts
+    context.ts
+    prisma.ts
+    resolvers.ts
+    schema.ts
+    server.ts
+  .gitignore
+  eslint.config.cjs
+  package.json
+  README.md
+  repomix-output.xml
+  tsconfig.json
+.prettierrc
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="backend/prisma/.env">
+DATABASE_URL="postgresql://postgres@localhost:5432/proyecto_restaurantes"
+APP_SECRET="a61de430f8b2897e813422e218bd708387781ddc740f66424d3228effd9e0b81"
+</file>
+
+<file path="backend/prisma/migrations/20250424205455_init/migration.sql">
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PREPARING', 'READY', 'DELIVERED', 'PAID', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "PaymentType" AS ENUM ('CASH', 'CARD', 'OTHER');
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Item" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Table" (
+    "id" TEXT NOT NULL,
+    "number" SERIAL NOT NULL,
+
+    CONSTRAINT "Table_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "tableId" TEXT NOT NULL,
+    "itemId" INTEGER NOT NULL,
+    "paymentId" INTEGER,
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type" "PaymentType" NOT NULL,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Table_number_key" ON "Table"("number");
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "Table"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+</file>
+
+<file path="backend/prisma/migrations/20250424232338_init/migration.sql">
+/*
+  Warnings:
+
+  - The values [USER] on the enum `Role` will be removed. If these variants are still used in the database, this will fail.
+
+*/
+-- AlterEnum
+BEGIN;
+CREATE TYPE "Role_new" AS ENUM ('SUPERADMIN', 'ADMIN', 'CAJERO', 'MESERO', 'CLIENTE');
+ALTER TABLE "User" ALTER COLUMN "role" DROP DEFAULT;
+ALTER TABLE "User" ALTER COLUMN "role" TYPE "Role_new" USING ("role"::text::"Role_new");
+ALTER TYPE "Role" RENAME TO "Role_old";
+ALTER TYPE "Role_new" RENAME TO "Role";
+DROP TYPE "Role_old";
+ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'CLIENTE';
+COMMIT;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'CLIENTE';
+</file>
+
+<file path="backend/prisma/migrations/migration_lock.toml">
+# Please do not edit this file manually
+# It should be added in your version-control system (i.e. Git)
+provider = "postgresql"
+</file>
+
+<file path="backend/prisma/.env.example">
+DATABASE_URL="postgresql://usuario:clave@localhost:5432/proyecto_restaurantes"
+APP_SECRET="tu_secreto_para_jwt_aquí"
+</file>
+
+<file path="backend/src/context.ts">
+import { Request } from 'express';
+import { authenticate, Context } from './auth';
+export async function createContext({ req }: { req: Request }): Promise<Context> {
+  return authenticate(req);
+}
+
+export type { Context };
+</file>
+
+<file path="backend/src/prisma.ts">
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+export default prisma;
+</file>
+
+<file path="backend/src/schema.ts">
+// backend/src/schema.ts
+
+export const typeDefs = /* GraphQL */ `
+  type Item {
+    id: ID!
+    title: String!
+    description: String!
+    price: Float!
+    imageUrl: String!
+    orders: [Order!]
+  }
+
+  type Table {
+    id: ID!
+    number: Int!
+    orders: [Order!]
+  }
+
+  enum OrderStatus {
+    PENDING
+    PREPARING
+    READY
+    DELIVERED
+    PAID
+    CANCELLED
+  }
+
+  enum NewOrderStatus {
+    PENDING
+    PREPARING
+    READY
+    DELIVERED
+  }
+
+  enum PaymentType {
+    CASH
+    CARD
+    OTHER
+  }
+
+  type Order {
+    id: ID!
+    createdAt: String!
+    table: Table!
+    item: Item!
+    payment: Payment
+    status: OrderStatus!
+  }
+
+  type Payment {
+    id: ID!
+    createdAt: String!
+    type: PaymentType!
+    orders: [Order!]!
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    role: String!
+  }
+
+  type Query {
+    me: User!
+    items: [Item!]!
+    getItemById(id: ID!): Item
+    tables: [Table!]!
+    getTableById(id: ID!): Table
+    orders: [Order!]!
+    getOrdersByTableId(tableId: ID!): [Order!]!
+    payments: [Payment!]!
+    getPaymentById(id: ID!): Payment
+  }
+
+  type Mutation {
+    signup(email: String!, password: String!, name: String!): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
+    createItem(title: String!, description: String!, price: Float!, imageUrl: String!): Item!
+    deleteItem(id: ID!): Item!
+    editItem(id: ID!, title: String, description: String, price: Float, imageUrl: String): Item!
+    createOrder(tableId: ID!, itemId: ID!, paymentId: ID): Order!
+    deleteOrder(id: ID!): Order!
+    setOrderStatus(id: ID!, status: NewOrderStatus!): Order!
+    cancelOrder(id: ID!): Order!
+    createPaymentForOrder(type: PaymentType!, orderId: ID!): Payment!
+    createPaymentForTable(type: PaymentType!, tableId: ID!): [Order!]!
+    deletePayment(id: ID!): Payment!
+    addTable: Table!
+    removeTable: Table!
+  }
+`;
+</file>
+
+<file path="backend/.gitignore">
+/node_modules
+/dist
+.env
+.DS_Store
+.bin
+backend/node_modules
+/.env
+/.DS_Store
+/.bin
+/.vscode
+/.idea
+</file>
+
+<file path="backend/eslint.config.cjs">
+const { FlatCompat }   = require('@eslint/eslintrc');
+const { configs }      = require('@eslint/js');
+const tsParser         = require('@typescript-eslint/parser');
+const tsPlugin         = require('@typescript-eslint/eslint-plugin');
+const prettierPlugin   = require('eslint-plugin-prettier');
+
+const compat = new FlatCompat({
+  recommendedConfig: configs.recommended,
+  baseDirectory: __dirname
+});
+
+module.exports = [
+  // 1) Ignorar lo generado y folders externos
+  { ignores: ['node_modules/**', 'dist/**', 'prisma/**'] },
+
+  // 2) “Extender” las configs clásicas
+  ...compat.extends(
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended'
+  ),
+
+  // 3) Plugins, parser y reglas extra
+  {
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        ecmaVersion: 2020,
+        sourceType: 'module'
+      }
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      prettier: prettierPlugin
+    },
+    rules: {
+      'prettier/prettier': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        { allowExpressions: true }
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' }
+      ]
+    }
+  }
+];
+</file>
+
+<file path="backend/README.md">
+# Proyecto Restaurantes – Backend
+
+Este repositorio contiene el backend mínimo para:
+- Autenticación/Autorización (signup, login, JWT)  
+- Listar menú, crear pedidos, procesar pagos  
+- API GraphQL con Node.js + Express + Prisma + PostgreSQL  
+
+## Cómo arrancar
+
+1. Copiar `backend/prisma/.env.example` a `backend/prisma/.env` y ajustar variables.  
+2. `cd backend`  
+3. `npm install`  
+4. `npx prisma generate`  
+5. `npx prisma migrate dev --name init`  
+6. `npm run dev`
+</file>
+
+<file path=".prettierrc">
+{
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": true
+  }
+</file>
+
+<file path="backend/prisma/schema.prisma">
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  CAJERO
+  MESERO
+  CLIENTE  
+}
+
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  DELIVERED
+  PAID
+  CANCELLED
+}
+
+enum PaymentType {
+  CASH
+  CARD
+  OTHER
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  role     Role   @default(CLIENTE)
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String
+  price       Float
+  orders      Order[]
+}
+
+model Table {
+  id     String  @id @default(uuid())
+  number Int     @unique @default(autoincrement())
+  orders Order[]
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  tableId   String
+  itemId    Int
+  paymentId Int?
+  status    OrderStatus @default(PENDING)
+  table     Table       @relation(fields: [tableId], references: [id])
+  item      Item        @relation(fields: [itemId], references: [id])
+  payment   Payment?    @relation(fields: [paymentId], references: [id])
+}
+
+model Payment {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  type      PaymentType
+  orders    Order[]
+}
+</file>
+
+<file path="backend/prisma/seed.ts">
+// prisma/seed.ts
+import { PrismaClient, Role } from '@prisma/client';
+import { hashSync } from 'bcryptjs';
+const prisma = new PrismaClient();
+
+async function main() {
+await prisma.item.createMany({
+    data: [
+      {
+        title: 'Arepa de Queso',
+        description: 'Nuestra arepa rellena con queso costeño',
+        price: 9000,
+        imageUrl: 'https://ejemplo.com/arepa-queso.jpg'
+      },
+      {
+        title: 'Burrito Gigante',
+        description: 'Burrito de carne, frijoles y salsa casera',
+        price: 17000,
+        imageUrl: 'https://ejemplo.com/burrito.jpg'
+      },
+      {
+        title: 'Tacos al Pastor',
+        description: 'Tacos de cerdo marinados con piña y cebolla',
+        price: 14500,
+        imageUrl: 'https://ejemplo.com/tacos-pastor.jpg'
+      },
+      {
+        title: 'Quesadilla Mixta',
+        description: 'Quesadilla de pollo y queso mozarella',
+        price: 15800,
+        imageUrl: 'https://ejemplo.com/quesadilla.jpg'
+      },
+      {
+        title: 'Empanada Colombiana',
+        description: 'Empanada de maíz rellena de carne y papa',
+        price: 3500,
+        imageUrl: 'https://ejemplo.com/empanada.jpg'
+      },
+      {
+        title: 'Ceviche de Camarón',
+        description: 'Ceviche fresco con limón, cebolla y cilantro',
+        price: 19500,
+        imageUrl: 'https://ejemplo.com/ceviche.jpg'
+      },
+      {
+        title: 'Churros con Chocolate',
+        description: 'Churros calientes acompañados de chocolate espeso',
+        price: 8000,
+        imageUrl: 'https://ejemplo.com/churros.jpg'
+      },
+      {
+        title: 'Ensalada César',
+        description: 'Lechuga, crutones, pollo a la plancha y aderezo César',
+        price: 12000,
+        imageUrl: 'https://ejemplo.com/ensalada-cesar.jpg'
+      }
+    ]
+  });
+await prisma.user.createMany({
+  data: [
+    { email: 'root@food360.io', name: 'Root', password: hashSync('root', 10), role: Role.SUPERADMIN },
+    { email: 'admin@food360.io', name: 'Admin', password: hashSync('admin', 10), role: Role.ADMIN },
+    { email: 'cashier@food360.io', name: 'Caja', password: hashSync('cash', 10), role: Role.CAJERO },
+    { email: 'waiter@food360.io', name: 'Mesero', password: hashSync('wait', 10), role: Role.MESERO }
+  ]
+});
+}
+
+main()
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
+</file>
+
+<file path="backend/src/graphql/types.ts">
+import { Role } from '@prisma/client';
+
+// src/graphql/types.ts
+export interface GetOrdersByTableArgs {
+  tableId: string;
+}
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
+
+export interface AuthPayload {
+  token: string;
+  user: User;
+}
+
+export interface Mutation {
+  signup(
+    email: string,
+    password: string,
+    name: string,
+    role?: Role, // Assuming role is optional based on GraphQL syntax without '!'
+  ): AuthPayload;
+}
+</file>
+
+<file path="backend/src/server.ts">
+// src/server.ts
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import { createServer } from 'http';
+import { createYoga, createSchema } from 'graphql-yoga';
+import { typeDefs } from './schema';
+import { resolvers } from './resolvers';
+import { createContext } from './context';
+import type { Context } from './auth';
+
+async function main() {
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
+
+  // Construye el esquema GraphQL
+  const schema = createSchema({ typeDefs, resolvers });
+
+  // Inicializa Yoga con nuestro contexto tipado
+  const yoga = createYoga<Context>({
+    schema,
+    context: createContext,
+    graphiql: true,
+  });
+
+  // Middleware puente para que Express reconozca Yoga en /graphql
+  app.use('/graphql', (req: Request, res: Response, next: NextFunction) => {
+    yoga(req, res).catch(next);
+  });
+
+  const port = process.env.PORT ?? 4000;
+  createServer(app).listen(port, () => {
+    console.log(`🚀 Server listo en http://localhost:${port}/graphql`);
+  });
+}
+
+main().catch(console.error);
+</file>
+
+<file path="backend/package.json">
+{
+  "name": "proyecto-restaurantes-backend",
+  "version": "1.0.0",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev --name init",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-yoga": "^3.9.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3",
+    "prisma": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.3"
+  }
+}
+</file>
+
+<file path="backend/tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}
+</file>
+
+<file path="backend/src/auth.ts">
+// src/auth.ts
+import { verify, sign, JwtPayload } from 'jsonwebtoken';
+import { Role } from '@prisma/client';
+
+export const APP_SECRET = process.env.APP_SECRET!;
+
+export interface JwtData extends JwtPayload {
+  userId: number;
+  role: Role;
+}
+
+export interface Context {
+  userId: number | null;
+  role: Role | null;
+}
+
+/** Firma el JWT con id y rol */
+export function signToken(user: { id: number; role: Role }): string {
+  return sign({ userId: user.id, role: user.role }, APP_SECRET, { expiresIn: '7d' });
+}
+
+export function getTokenPayload(token: string): JwtData {
+  return verify(token, APP_SECRET) as JwtData;
+}
+
+export async function authenticate(req: any): Promise<Context> {
+  const auth = req.headers.authorization || '';
+  if (!auth.startsWith('Bearer ')) return { userId: null, role: null };
+
+  try {
+    const { userId, role } = getTokenPayload(auth.replace('Bearer ', ''));
+    return { userId, role };
+  } catch {
+    return { userId: null, role: null };
+  }
+}
+
+/** Protege un resolver cualquiera — login ya no lo usa */
+export function requireAuth(ctx: Context): void {
+  if (!ctx.userId) throw new Error('No autorizado');
+}
+
+/** Autoriza sólo si el rol actual está incluido en la lista */
+export function requireRole(ctx: Context, allowed: Role[]): void {
+  requireAuth(ctx);
+  if (!ctx.role || !allowed.includes(ctx.role)) {
+    throw new Error('Permiso insuficiente');
+  }
+}
+</file>
+
+<file path="backend/src/resolvers.ts">
+// src/resolvers.ts
+import { Role } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import { signToken, requireRole, Context } from './auth';
+import prisma from './prisma';
+
+export const resolvers = {
+  /* ----------  Queries ---------- */
+  Query: {
+    // F-02: consultar menú dinámico
+    items: (_: unknown, __: unknown) => {
+      // público; sin restricciones
+      return prisma.item.findMany();
+    },
+  },
+
+  /* ----------  Mutations ---------- */
+  Mutation: {
+    // F-01: registro / login
+    signup: async (_: any, { email, password, name, role = 'CLIENTE' }: any) => {
+      const hashed = await bcrypt.hash(password, 10);
+      const user = await prisma.user.create({
+        data: { email, name, password: hashed, role },
+      });
+      return { token: signToken(user), user };
+    },
+
+    login: async (_: any, { email, password }: any) => {
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) throw new Error('Usuario no existe');
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) throw new Error('Contraseña inválida');
+      return { token: signToken(user), user };
+    },
+
+    // F-03: crear pedido y asignar mesa (dummy)
+    createOrder: async (_: any, { tableId, itemId }: any, ctx: Context) => {
+      requireRole(ctx, [Role.MESERO, Role.CLIENTE, Role.ADMIN]);
+
+      return prisma.order.create({
+        data: { tableId, itemId: Number(itemId) },
+        include: {
+          table: true,
+          item: true,
+          payment: true,
+        },
+      });
+    },
+
+    // F-04: procesar pago (dummy)
+    createPaymentForOrder: async (_: any, { type, orderId }: any, ctx: Context) => {
+      requireRole(ctx, [Role.CAJERO, Role.CLIENTE, Role.ADMIN]);
+
+      // 1. Crea el pago
+      const payment = await prisma.payment.create({
+        data: { type },
+      });
+
+      // 2. Actualiza la orden para asociarla
+      await prisma.order.update({
+        where: { id: Number(orderId) },
+        data: { paymentId: payment.id, status: 'PAID' },
+      });
+
+      // 3. Devuelve el pago con la relación 'orders'
+      return prisma.payment.findUnique({
+        where: { id: payment.id },
+        include: {
+          orders: {
+            include: { table: true, item: true }, // opcional
+          },
+        },
+      });
+    },
+
+    // F-05: CRUD menú en panel admin (dummy)
+    createItem: (_: any, args: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.create({ data: args });
+    },
+    editItem: (_: any, { id, ...patch }: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.update({
+        where: { id: Number(id) },
+        data: patch,
+      });
+    },
+    deleteItem: (_: any, { id }: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.delete({ where: { id: Number(id) } });
+    },
+    addTable: async (_: any, __: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.MESERO, Role.SUPERADMIN]);
+      return prisma.table.create({ data: {} });
+    },
+  },
+};
+</file>
+
+<file path="backend/repomix-output.xml">
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+prisma/
+  migrations/
+    20250424205455_init/
+      migration.sql
+    migration_lock.toml
+  .env.example
+  schema.prisma
+  seed.ts
+src/
+  graphql/
+    types.ts
+  auth.ts
+  context.ts
+  prisma.ts
+  resolvers.ts
+  schema.ts
+  server.ts
+.gitignore
+eslint.config.cjs
+package.json
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="prisma/migrations/20250424205455_init/migration.sql">
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PREPARING', 'READY', 'DELIVERED', 'PAID', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "PaymentType" AS ENUM ('CASH', 'CARD', 'OTHER');
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'USER',
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Item" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "price" DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Table" (
+    "id" TEXT NOT NULL,
+    "number" SERIAL NOT NULL,
+
+    CONSTRAINT "Table_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Order" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "tableId" TEXT NOT NULL,
+    "itemId" INTEGER NOT NULL,
+    "paymentId" INTEGER,
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
+
+    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Payment" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "type" "PaymentType" NOT NULL,
+
+    CONSTRAINT "Payment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Table_number_key" ON "Table"("number");
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "Table"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_itemId_fkey" FOREIGN KEY ("itemId") REFERENCES "Item"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Order" ADD CONSTRAINT "Order_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+</file>
+
+<file path="prisma/migrations/migration_lock.toml">
+# Please do not edit this file manually
+# It should be added in your version-control system (i.e. Git)
+provider = "postgresql"
+</file>
+
+<file path="prisma/.env.example">
+DATABASE_URL="postgresql://usuario:clave@localhost:5432/proyecto_restaurantes"
+APP_SECRET="tu_secreto_para_jwt_aquí"
+</file>
+
+<file path="prisma/schema.prisma">
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  CAJERO
+  MESERO
+  CLIENTE  
+}
+
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  DELIVERED
+  PAID
+  CANCELLED
+}
+
+enum PaymentType {
+  CASH
+  CARD
+  OTHER
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  role     Role   @default(USER)
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  imageUrl    String
+  price       Float
+  orders      Order[]
+}
+
+model Table {
+  id     String  @id @default(uuid())
+  number Int     @unique @default(autoincrement())
+  orders Order[]
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  tableId   String
+  itemId    Int
+  paymentId Int?
+  status    OrderStatus @default(PENDING)
+  table     Table       @relation(fields: [tableId], references: [id])
+  item      Item        @relation(fields: [itemId], references: [id])
+  payment   Payment?    @relation(fields: [paymentId], references: [id])
+}
+
+model Payment {
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  type      PaymentType
+  orders    Order[]
+}
+</file>
+
+<file path="prisma/seed.ts">
+// prisma/seed.ts
+import { PrismaClient, Role } from '@prisma/client';
+import { hashSync } from 'bcryptjs';
+const prisma = new PrismaClient();
+
+async function main() {
+  await prisma.item.createMany({
+    data: [
+      {
+        title: 'Arepa de Queso',
+        description: 'Nuestra arepa rellena con queso costeño',
+        price: 9000,
+        imageUrl: 'https://ejemplo.com/arepa-queso.jpg'
+      },
+      {
+        title: 'Burrito Gigante',
+        description: 'Burrito de carne, frijoles y salsa casera',
+        price: 17000,
+        imageUrl: 'https://ejemplo.com/burrito.jpg'
+      },
+      {
+        title: 'Tacos al Pastor',
+        description: 'Tacos de cerdo marinados con piña y cebolla',
+        price: 14500,
+        imageUrl: 'https://ejemplo.com/tacos-pastor.jpg'
+      },
+      {
+        title: 'Quesadilla Mixta',
+        description: 'Quesadilla de pollo y queso mozarella',
+        price: 15800,
+        imageUrl: 'https://ejemplo.com/quesadilla.jpg'
+      },
+      {
+        title: 'Empanada Colombiana',
+        description: 'Empanada de maíz rellena de carne y papa',
+        price: 3500,
+        imageUrl: 'https://ejemplo.com/empanada.jpg'
+      },
+      {
+        title: 'Ceviche de Camarón',
+        description: 'Ceviche fresco con limón, cebolla y cilantro',
+        price: 19500,
+        imageUrl: 'https://ejemplo.com/ceviche.jpg'
+      },
+      {
+        title: 'Churros con Chocolate',
+        description: 'Churros calientes acompañados de chocolate espeso',
+        price: 8000,
+        imageUrl: 'https://ejemplo.com/churros.jpg'
+      },
+      {
+        title: 'Ensalada César',
+        description: 'Lechuga, crutones, pollo a la plancha y aderezo César',
+        price: 12000,
+        imageUrl: 'https://ejemplo.com/ensalada-cesar.jpg'
+      }
+    ]
+  });
+await prisma.user.createMany({
+  data: [
+    { email: 'root@food360.io', name: 'Root', password: hashSync('root', 10), role: Role.SUPERADMIN },
+    { email: 'admin@food360.io', name: 'Admin', password: hashSync('admin', 10), role: Role.ADMIN },
+    { email: 'cashier@food360.io', name: 'Caja', password: hashSync('cash', 10), role: Role.CAJERO },
+    { email: 'waiter@food360.io', name: 'Mesero', password: hashSync('wait', 10), role: Role.MESERO }
+  ]
+});
+}
+
+main()
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
+</file>
+
+<file path="src/graphql/types.ts">
+// src/graphql/types.ts
+export interface GetOrdersByTableArgs {
+  tableId: string;
+}
+
+export enum Role {
+    SUPERADMIN,
+    ADMIN,
+    CAJERO,
+    MESERO,
+    CLIENTE
+  }
+  
+  export interface User {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+  }
+  
+  export interface AuthPayload {
+    token: string;
+    user: User;
+  }
+  
+  export interface Mutation {
+    signup(
+      email: string,
+      password: string,
+      name: string,
+      role?: Role, // Assuming role is optional based on GraphQL syntax without '!'
+    ): AuthPayload;
+  }
+</file>
+
+<file path="src/auth.ts">
+// src/auth.ts
+import { verify, sign, JwtPayload } from 'jsonwebtoken';
+import { Role } from '@prisma/client';
+
+export const APP_SECRET = process.env.APP_SECRET!;
+
+export interface JwtData extends JwtPayload {
+  userId: number;
+  role: Role;
+}
+
+export interface Context {
+  userId: number | null;
+  role: Role | null;
+}
+
+/** Firma el JWT con id y rol */
+export function signToken(user: { id: number; role: Role }): string {
+  return sign({ userId: user.id, role: user.role }, APP_SECRET, { expiresIn: '7d' });
+}
+
+export function getTokenPayload(token: string): JwtData {
+  return verify(token, APP_SECRET) as JwtData;
+}
+
+export async function authenticate(req: any): Promise<Context> {
+  const auth = req.headers.authorization || '';
+  if (!auth.startsWith('Bearer ')) return { userId: null, role: null };
+
+  try {
+    const { userId, role } = getTokenPayload(auth.replace('Bearer ', ''));
+    return { userId, role };
+  } catch {
+    return { userId: null, role: null };
+  }
+}
+
+/** Protege un resolver cualquiera — login ya no lo usa */
+export function requireAuth(ctx: Context): void {
+  if (!ctx.userId) throw new Error('No autorizado');
+}
+
+/** Autoriza sólo si el rol actual está incluido en la lista */
+export function requireRole(ctx: Context, allowed: Role[]): void {
+  requireAuth(ctx);
+  if (!ctx.role || !allowed.includes(ctx.role)) {
+    throw new Error('Permiso insuficiente');
+  }
+}
+</file>
+
+<file path="src/context.ts">
+import { Request } from 'express';
+import { authenticate, Context } from './auth';
+export async function createContext({ req }: { req: Request }): Promise<Context> {
+  return authenticate(req);
+}
+
+export type { Context };
+</file>
+
+<file path="src/prisma.ts">
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+export default prisma;
+</file>
+
+<file path="src/resolvers.ts">
+// src/resolvers.ts
+import { Role } from '@prisma/client';
+import { signToken, requireAuth, requireRole, Context } from './auth';
+import prisma from './prisma';
+import bcrypt from 'bcryptjs/umd/types';
+
+export const resolvers = {
+  /* ----------  Queries ---------- */
+  Query: {
+    // F-02: consultar menú dinámico
+    items: (_: any, __: any, ctx: Context) => {
+      // público; sin restricciones
+      return prisma.item.findMany();
+    },
+  },
+
+  /* ----------  Mutations ---------- */
+  Mutation: {
+    // F-01: registro / login
+    signup: async (_: any, { email, password, name, role = 'CLIENTE' }: any) => {
+      const hashed = await bcrypt.hash(password, 10);
+      const user = await prisma.user.create({
+        data: { email, name, password: hashed, role },
+      });
+      return { token: signToken(user), user };
+    },
+
+    login: async (_: any, { email, password }: any) => {
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) throw new Error('Usuario no existe');
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) throw new Error('Contraseña inválida');
+      return { token: signToken(user), user };
+    },
+
+    // F-03: crear pedido y asignar mesa (dummy)
+    createOrder: async (_: any, { tableId, itemId }: any, ctx: Context) => {
+      requireRole(ctx, [Role.MESERO, Role.CLIENTE]);
+      return prisma.order.create({
+        data: { tableId, itemId: Number(itemId) },
+      });
+    },
+
+    // F-04: procesar pago (dummy)
+    createPaymentForOrder: async (_: any, { type, orderId }: any, ctx: Context) => {
+      requireRole(ctx, [Role.CAJERO, Role.CLIENTE]);
+      const payment = await prisma.payment.create({ data: { type } });
+      await prisma.order.update({
+        where: { id: Number(orderId) },
+        data: { paymentId: payment.id, status: 'PAID' },
+      });
+      return payment;
+    },
+
+    // F-05: CRUD menú en panel admin (dummy)
+    createItem: (_: any, args: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.create({ data: args });
+    },
+    editItem: (_: any, { id, ...patch }: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.update({
+        where: { id: Number(id) },
+        data: patch,
+      });
+    },
+    deleteItem: (_: any, { id }: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
+      return prisma.item.delete({ where: { id: Number(id) } });
+    },
+  },
+};
+</file>
+
+<file path="src/schema.ts">
+// backend/src/schema.ts
+
+export const typeDefs = /* GraphQL */ `
+  type Item {
+    id: ID!
+    title: String!
+    description: String!
+    price: Float!
+    imageUrl: String!
+    orders: [Order!]
+  }
+
+  type Table {
+    id: ID!
+    number: Int!
+    orders: [Order!]
+  }
+
+  enum OrderStatus {
+    PENDING
+    PREPARING
+    READY
+    DELIVERED
+    PAID
+    CANCELLED
+  }
+
+  enum NewOrderStatus {
+    PENDING
+    PREPARING
+    READY
+    DELIVERED
+  }
+
+  enum PaymentType {
+    CASH
+    CARD
+    OTHER
+  }
+
+  type Order {
+    id: ID!
+    createdAt: String!
+    table: Table!
+    item: Item!
+    payment: Payment
+    status: OrderStatus!
+  }
+
+  type Payment {
+    id: ID!
+    createdAt: String!
+    type: PaymentType!
+    orders: [Order!]!
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    role: String!
+  }
+
+  type Query {
+    me: User!
+    items: [Item!]!
+    getItemById(id: ID!): Item
+    tables: [Table!]!
+    getTableById(id: ID!): Table
+    orders: [Order!]!
+    getOrdersByTableId(tableId: ID!): [Order!]!
+    payments: [Payment!]!
+    getPaymentById(id: ID!): Payment
+  }
+
+  type Mutation {
+    signup(email: String!, password: String!, name: String!): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
+    createItem(title: String!, description: String!, price: Float!, imageUrl: String!): Item!
+    deleteItem(id: ID!): Item!
+    editItem(id: ID!, title: String, description: String, price: Float, imageUrl: String): Item!
+    createOrder(tableId: ID!, itemId: ID!, paymentId: ID): Order!
+    deleteOrder(id: ID!): Order!
+    setOrderStatus(id: ID!, status: NewOrderStatus!): Order!
+    cancelOrder(id: ID!): Order!
+    createPaymentForOrder(type: PaymentType!, orderId: ID!): Payment!
+    createPaymentForTable(type: PaymentType!, tableId: ID!): [Order!]!
+    deletePayment(id: ID!): Payment!
+    addTable: Table!
+    removeTable: Table!
+  }
+`;
+</file>
+
+<file path="src/server.ts">
+// src/server.ts
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import { createServer } from 'http';
+import { createYoga, createSchema } from 'graphql-yoga';
+import { typeDefs } from './schema';
+import { resolvers } from './resolvers';
+import { createContext } from './context';
+import type { Context } from './auth';
+
+async function main() {
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
+
+  // Construye el esquema GraphQL
+  const schema = createSchema({ typeDefs, resolvers });
+
+  // Inicializa Yoga con nuestro contexto tipado
+  const yoga = createYoga<Context>({
+    schema,
+    context: createContext,
+    graphiql: true,
+  });
+
+  // Middleware puente para que Express reconozca Yoga en /graphql
+  app.use('/graphql', (req: Request, res: Response, next: NextFunction) => {
+    yoga(req, res).catch(next);
+  });
+
+  const port = process.env.PORT ?? 4000;
+  createServer(app).listen(port, () => {
+    console.log(`🚀 Server listo en http://localhost:${port}/graphql`);
+  });
+}
+
+main().catch(console.error);
+</file>
+
+<file path=".gitignore">
+/node_modules
+/dist
+.env
+.DS_Store
+.bin
+backend/node_modules
+/.env
+/.DS_Store
+/.bin
+/.vscode
+/.idea
+</file>
+
+<file path="eslint.config.cjs">
+const { FlatCompat }   = require('@eslint/eslintrc');
+const { configs }      = require('@eslint/js');
+const tsParser         = require('@typescript-eslint/parser');
+const tsPlugin         = require('@typescript-eslint/eslint-plugin');
+const prettierPlugin   = require('eslint-plugin-prettier');
+
+const compat = new FlatCompat({
+  recommendedConfig: configs.recommended,
+  baseDirectory: __dirname
+});
+
+module.exports = [
+  // 1) Ignorar lo generado y folders externos
+  { ignores: ['node_modules/**', 'dist/**', 'prisma/**'] },
+
+  // 2) “Extender” las configs clásicas
+  ...compat.extends(
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended'
+  ),
+
+  // 3) Plugins, parser y reglas extra
+  {
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+        ecmaVersion: 2020,
+        sourceType: 'module'
+      }
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      prettier: prettierPlugin
+    },
+    rules: {
+      'prettier/prettier': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        { allowExpressions: true }
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' }
+      ]
+    }
+  }
+];
+</file>
+
+<file path="package.json">
+{
+  "name": "proyecto-restaurantes-backend",
+  "version": "1.0.0",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev --name init",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.0.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-yoga": "^3.9.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^22.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3",
+    "prisma": "^5.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.3"
+  }
+}
+</file>
+
+<file path="README.md">
+# Proyecto Restaurantes – Backend
+
+Este repositorio contiene el backend mínimo para:
+- Autenticación/Autorización (signup, login, JWT)  
+- Listar menú, crear pedidos, procesar pagos  
+- API GraphQL con Node.js + Express + Prisma + PostgreSQL  
+
+## Cómo arrancar
+
+1. Copiar `backend/prisma/.env.example` a `backend/prisma/.env` y ajustar variables.  
+2. `cd backend`  
+3. `npm install`  
+4. `npx prisma generate`  
+5. `npx prisma migrate dev --name init`  
+6. `npm run dev`
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}
+</file>
+
+</files>
+</file>
+
+</files>

@@ -1,21 +1,26 @@
 // src/auth.ts
 import { verify, sign, JwtPayload } from 'jsonwebtoken';
-import { Role } from '@prisma/client';
+import { RoleEnum } from '@prisma/client';
 
 export const APP_SECRET = process.env.APP_SECRET!;
 
 export interface JwtData extends JwtPayload {
   userId: number;
-  role: Role;
+  role: RoleEnum;
 }
 
 export interface Context {
   userId: number | null;
-  role: Role | null;
+  role: RoleEnum | null;
+  user?: {
+    id: number;
+    email: string;
+    role: RoleEnum;
+  };
 }
 
 /** Firma el JWT con id y rol */
-export function signToken(user: { id: number; role: Role }): string {
+export function signToken(user: { id: number; role: RoleEnum }): string {
   return sign({ userId: user.id, role: user.role }, APP_SECRET, { expiresIn: '7d' });
 }
 
@@ -29,7 +34,11 @@ export async function authenticate(req: any): Promise<Context> {
 
   try {
     const { userId, role } = getTokenPayload(auth.replace('Bearer ', ''));
-    return { userId, role };
+    return {
+      userId,
+      role,
+      user: { id: userId, email: '', role },
+    };
   } catch {
     return { userId: null, role: null };
   }
@@ -41,7 +50,7 @@ export function requireAuth(ctx: Context): void {
 }
 
 /** Autoriza sólo si el rol actual está incluido en la lista */
-export function requireRole(ctx: Context, allowed: Role[]): void {
+export function requireRole(ctx: Context, allowed: RoleEnum[]): void {
   requireAuth(ctx);
   if (!ctx.role || !allowed.includes(ctx.role)) {
     throw new Error('Permiso insuficiente');
