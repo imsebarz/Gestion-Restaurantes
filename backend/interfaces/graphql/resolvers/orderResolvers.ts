@@ -5,15 +5,7 @@ import { OrderStatus } from "../../../domain/entities/Order";
 import { Cursor } from "../../../domain/valueObjects/Pagination";
 import { RoleEnum } from "@prisma/client";
 import { pubsub, SUBSCRIPTION_EVENTS } from "../pubsub";
-
-function requireRole(context: GraphQLContext, allowedRoles: RoleEnum[]): void {
-  if (!context.user) {
-    throw new Error("No autorizado");
-  }
-  if (!allowedRoles.includes(context.user.role)) {
-    throw new Error("Permiso insuficiente");
-  }
-}
+import { requireRole } from "../utils/auth";
 
 export const orderResolvers = {
   Query: {

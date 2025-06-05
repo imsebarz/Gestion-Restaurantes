@@ -22,6 +22,8 @@ import {
 import type { MenuItem, Table, Order, User } from '../types';
 import { RoleEnum } from '../types';
 import type { ApolloError } from '@apollo/client';
+import { Button, Input, Card, CardHeader, CardContent, Badge, getStatusBadgeVariant } from './ui';
+import { GRID_LAYOUTS, SPACING, CONTAINER, FLEX, TEXT, cn } from '../lib/styles';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -276,18 +278,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }).format(price);
   };
 
-  const getStatusBadgeColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'preparing': return 'bg-orange-100 text-orange-800';
-      case 'ready': return 'bg-blue-100 text-blue-800';
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'paid': return 'bg-gray-100 text-gray-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   const canManageMenu = userData?.me.role === RoleEnum.MANAGER || userData?.me.role === RoleEnum.SUPERADMIN;
   const canManageTables = userData?.me.role !== undefined;
 
@@ -313,386 +303,336 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
   // Filter components
   const MenuFilters = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
-        
-        {/* Filters */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Buscar por nombre</label>
-            <input
-              type="text"
-              value={menuFilter.name || ''}
-              onChange={(e) => setMenuFilter({ ...menuFilter, name: e.target.value || undefined })}
-              placeholder="Nombre del plato..."
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Filtros</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsiveFilters}>
+          <Input
+            type="text"
+            label="Buscar por nombre"
+            value={menuFilter.name || ''}
+            onChange={(e) => setMenuFilter({ ...menuFilter, name: e.target.value || undefined })}
+            placeholder="Nombre del plato..."
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Precio mínimo</label>
-            <input
-              type="number"
-              value={menuFilter.priceMin || ''}
-              onChange={(e) => setMenuFilter({ ...menuFilter, priceMin: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="0"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Precio mínimo"
+            value={menuFilter.priceMin || ''}
+            onChange={(e) => setMenuFilter({ ...menuFilter, priceMin: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="0"
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Precio máximo</label>
-            <input
-              type="number"
-              value={menuFilter.priceMax || ''}
-              onChange={(e) => setMenuFilter({ ...menuFilter, priceMax: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="999999"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Precio máximo"
+            value={menuFilter.priceMax || ''}
+            onChange={(e) => setMenuFilter({ ...menuFilter, priceMax: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="999999"
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Disponibilidad</label>
-            <select
-              value={menuFilter.isAvailable === undefined ? '' : menuFilter.isAvailable.toString()}
-              onChange={(e) => setMenuFilter({ ...menuFilter, isAvailable: e.target.value === '' ? undefined : e.target.value === 'true' })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">Todos</option>
-              <option value="true">Disponible</option>
-              <option value="false">No disponible</option>
-            </select>
-          </div>
+          <Input
+            type="select"
+            label="Disponibilidad"
+            value={menuFilter.isAvailable === undefined ? '' : menuFilter.isAvailable.toString()}
+            onChange={(e) => setMenuFilter({ ...menuFilter, isAvailable: e.target.value === '' ? undefined : e.target.value === 'true' })}
+            options={[
+              { value: '', label: 'Todos' },
+              { value: 'true', label: 'Disponible' },
+              { value: 'false', label: 'No disponible' }
+            ]}
+          />
         </div>
 
-        {/* Clear filters button */}
-        <div className="mt-4">
-          <button
+        <div className={SPACING.button}>
+          <Button
+            variant="secondary"
             onClick={() => {
               setMenuFilter({});
               setMenuPage(0);
             }}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
           >
             Limpiar filtros
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const MenuSorting = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
-        
-        {/* Sorting */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
-            <select
-              value={menuSort.field}
-              onChange={(e) => setMenuSort({ ...menuSort, field: e.target.value as MenuItemSort['field'] })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="name">Nombre (A-Z)</option>
-              <option value="price">Precio</option>
-              <option value="createdAt">Fecha de creación</option>
-              <option value="isAvailable">Disponibilidad</option>
-              <option value="id">ID</option>
-            </select>
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Ordenamiento</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsive}>
+          <Input
+            type="select"
+            label="Ordenar por"
+            value={menuSort.field}
+            onChange={(e) => setMenuSort({ ...menuSort, field: e.target.value as MenuItemSort['field'] })}
+            options={[
+              { value: 'name', label: 'Nombre (A-Z)' },
+              { value: 'price', label: 'Precio' },
+              { value: 'createdAt', label: 'Fecha de creación' },
+              { value: 'isAvailable', label: 'Disponibilidad' },
+              { value: 'id', label: 'ID' }
+            ]}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Orden</label>
-            <select
-              value={menuSort.order}
-              onChange={(e) => setMenuSort({ ...menuSort, order: e.target.value as 'asc' | 'desc' })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="asc">Ascendente</option>
-              <option value="desc">Descendente</option>
-            </select>
-          </div>
+          <Input
+            type="select"
+            label="Orden"
+            value={menuSort.order}
+            onChange={(e) => setMenuSort({ ...menuSort, order: e.target.value as 'asc' | 'desc' })}
+            options={[
+              { value: 'asc', label: 'Ascendente' },
+              { value: 'desc', label: 'Descendente' }
+            ]}
+          />
         </div>
 
-        {/* Reset sorting button */}
-        <div className="mt-4">
-          <button
-            onClick={() => {
-              setMenuSort({ field: 'name', order: 'asc' });
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+        <div className={SPACING.button}>
+          <Button
+            variant="primary"
+            onClick={() => setMenuSort({ field: 'name', order: 'asc' })}
           >
             Restablecer orden
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const TableFilters = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
-        
-        {/* Filters */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Número de mesa</label>
-            <input
-              type="number"
-              value={tableFilter.number || ''}
-              onChange={(e) => setTableFilter({ ...tableFilter, number: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="Número..."
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Filtros</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsiveFilters}>
+          <Input
+            type="number"
+            label="Número de mesa"
+            value={tableFilter.number || ''}
+            onChange={(e) => setTableFilter({ ...tableFilter, number: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="Número..."
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Capacidad mínima</label>
-            <input
-              type="number"
-              value={tableFilter.capacityMin || ''}
-              onChange={(e) => setTableFilter({ ...tableFilter, capacityMin: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="0"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Capacidad mínima"
+            value={tableFilter.capacityMin || ''}
+            onChange={(e) => setTableFilter({ ...tableFilter, capacityMin: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="0"
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Capacidad máxima</label>
-            <input
-              type="number"
-              value={tableFilter.capacityMax || ''}
-              onChange={(e) => setTableFilter({ ...tableFilter, capacityMax: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="999"
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Capacidad máxima"
+            value={tableFilter.capacityMax || ''}
+            onChange={(e) => setTableFilter({ ...tableFilter, capacityMax: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="999"
+          />
         </div>
 
-        {/* Clear filters button */}
-        <div className="mt-4">
-          <button
+        <div className={SPACING.button}>
+          <Button
+            variant="secondary"
             onClick={() => {
               setTableFilter({});
               setTablePage(0);
             }}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
           >
             Limpiar filtros
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const TableSorting = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
-        
-        {/* Sorting */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
-            <select
-              value={tableSort.field}
-              onChange={(e) => setTableSort({ ...tableSort, field: e.target.value as TableSort['field'] })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="number">Número de mesa</option>
-              <option value="capacity">Capacidad</option>
-              <option value="orderCount">Cantidad de pedidos activos</option>
-              <option value="id">ID de mesa</option>
-            </select>
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Ordenamiento</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsive}>
+          <Input
+            type="select"
+            label="Ordenar por"
+            value={tableSort.field}
+            onChange={(e) => setTableSort({ ...tableSort, field: e.target.value as TableSort['field'] })}
+            options={[
+              { value: 'number', label: 'Número de mesa' },
+              { value: 'capacity', label: 'Capacidad' },
+              { value: 'orderCount', label: 'Cantidad de pedidos activos' },
+              { value: 'id', label: 'ID de mesa' }
+            ]}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Orden</label>
-            <select
-              value={tableSort.order}
-              onChange={(e) => setTableSort({ ...tableSort, order: e.target.value as 'asc' | 'desc' })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="asc">Ascendente</option>
-              <option value="desc">Descendente</option>
-            </select>
-          </div>
+          <Input
+            type="select"
+            label="Orden"
+            value={tableSort.order}
+            onChange={(e) => setTableSort({ ...tableSort, order: e.target.value as 'asc' | 'desc' })}
+            options={[
+              { value: 'asc', label: 'Ascendente' },
+              { value: 'desc', label: 'Descendente' }
+            ]}
+          />
         </div>
 
-        {/* Reset sorting button */}
-        <div className="mt-4">
-          <button
-            onClick={() => {
-              setTableSort({ field: 'number', order: 'asc' });
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+        <div className={SPACING.button}>
+          <Button
+            variant="primary"
+            onClick={() => setTableSort({ field: 'number', order: 'asc' })}
           >
             Restablecer orden
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const OrderFilters = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
-        
-        {/* Filters */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Estado</label>
-            <select
-              value={orderFilter.status || ''}
-              onChange={(e) => setOrderFilter({ ...orderFilter, status: e.target.value || undefined })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">Todos los estados</option>
-              <option value="PENDING">Pendiente</option>
-              <option value="PREPARING">Preparando</option>
-              <option value="READY">Listo</option>
-              <option value="DELIVERED">Entregado</option>
-              <option value="PAID">Pagado</option>
-              <option value="CANCELLED">Cancelado</option>
-            </select>
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Filtros</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsiveOrderFilters}>
+          <Input
+            type="select"
+            label="Estado"
+            value={orderFilter.status || ''}
+            onChange={(e) => setOrderFilter({ ...orderFilter, status: e.target.value || undefined })}
+            options={[
+              { value: '', label: 'Todos los estados' },
+              { value: 'PENDING', label: 'Pendiente' },
+              { value: 'PREPARING', label: 'Preparando' },
+              { value: 'READY', label: 'Listo' },
+              { value: 'DELIVERED', label: 'Entregado' },
+              { value: 'PAID', label: 'Pagado' },
+              { value: 'CANCELLED', label: 'Cancelado' }
+            ]}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Mesa</label>
-            <input
-              type="number"
-              value={orderFilter.tableId || ''}
-              onChange={(e) => setOrderFilter({ ...orderFilter, tableId: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="Número de mesa..."
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Mesa"
+            value={orderFilter.tableId || ''}
+            onChange={(e) => setOrderFilter({ ...orderFilter, tableId: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="Número de mesa..."
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Usuario ID</label>
-            <input
-              type="number"
-              value={orderFilter.userId || ''}
-              onChange={(e) => setOrderFilter({ ...orderFilter, userId: e.target.value ? Number(e.target.value) : undefined })}
-              placeholder="ID del usuario..."
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="number"
+            label="Usuario ID"
+            value={orderFilter.userId || ''}
+            onChange={(e) => setOrderFilter({ ...orderFilter, userId: e.target.value ? Number(e.target.value) : undefined })}
+            placeholder="ID del usuario..."
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Desde</label>
-            <input
-              type="datetime-local"
-              value={orderFilter.createdAfter ? new Date(orderFilter.createdAfter).toISOString().slice(0, 16) : ''}
-              onChange={(e) => setOrderFilter({ ...orderFilter, createdAfter: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="datetime-local"
+            label="Desde"
+            value={orderFilter.createdAfter ? new Date(orderFilter.createdAfter).toISOString().slice(0, 16) : ''}
+            onChange={(e) => setOrderFilter({ ...orderFilter, createdAfter: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Hasta</label>
-            <input
-              type="datetime-local"
-              value={orderFilter.createdBefore ? new Date(orderFilter.createdBefore).toISOString().slice(0, 16) : ''}
-              onChange={(e) => setOrderFilter({ ...orderFilter, createdBefore: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>
+          <Input
+            type="datetime-local"
+            label="Hasta"
+            value={orderFilter.createdBefore ? new Date(orderFilter.createdBefore).toISOString().slice(0, 16) : ''}
+            onChange={(e) => setOrderFilter({ ...orderFilter, createdBefore: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+          />
         </div>
 
-        {/* Clear filters button */}
-        <div className="mt-4">
-          <button
+        <div className={SPACING.button}>
+          <Button
+            variant="secondary"
             onClick={() => {
               setOrderFilter({});
               setOrderCursor(undefined);
             }}
-            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
           >
             Limpiar filtros
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   const OrderSorting = () => (
-    <div className="bg-white shadow rounded-lg mb-6">
-      <div className="px-4 py-5 sm:p-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
-        
-        {/* Sorting */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
-            <select
-              value={orderSort.field}
-              onChange={(e) => setOrderSort({ ...orderSort, field: e.target.value as OrderSort['field'] })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="createdAt">Fecha de creación</option>
-              <option value="status">Estado</option>
-              <option value="tableId">Número de mesa</option>
-              <option value="orderNumber">Número de pedido</option>
-              <option value="id">ID del pedido</option>
-            </select>
-          </div>
+    <Card className={SPACING.section}>
+      <CardHeader>
+        <h3 className={TEXT.heading3}>Ordenamiento</h3>
+      </CardHeader>
+      <CardContent>
+        <div className={GRID_LAYOUTS.responsive}>
+          <Input
+            type="select"
+            label="Ordenar por"
+            value={orderSort.field}
+            onChange={(e) => setOrderSort({ ...orderSort, field: e.target.value as OrderSort['field'] })}
+            options={[
+              { value: 'createdAt', label: 'Fecha de creación' },
+              { value: 'status', label: 'Estado' },
+              { value: 'tableId', label: 'Número de mesa' },
+              { value: 'orderNumber', label: 'Número de pedido' },
+              { value: 'id', label: 'ID del pedido' }
+            ]}
+          />
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Orden</label>
-            <select
-              value={orderSort.order}
-              onChange={(e) => setOrderSort({ ...orderSort, order: e.target.value as 'asc' | 'desc' })}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="asc">Ascendente</option>
-              <option value="desc">Descendente</option>
-            </select>
-          </div>
+          <Input
+            type="select"
+            label="Orden"
+            value={orderSort.order}
+            onChange={(e) => setOrderSort({ ...orderSort, order: e.target.value as 'asc' | 'desc' })}
+            options={[
+              { value: 'asc', label: 'Ascendente' },
+              { value: 'desc', label: 'Descendente' }
+            ]}
+          />
         </div>
 
-        {/* Reset sorting button */}
-        <div className="mt-4">
-          <button
-            onClick={() => {
-              setOrderSort({ field: 'createdAt', order: 'desc' });
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+        <div className={SPACING.button}>
+          <Button
+            variant="primary"
+            onClick={() => setOrderSort({ field: 'createdAt', order: 'desc' })}
           >
             Restablecer orden
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 
   // Pagination component
   const Pagination = ({ currentPage, setPage, hasMore }: { currentPage: number; setPage: (page: number) => void; hasMore: boolean }) => (
-    <div className="flex justify-between items-center mt-6">
-      <button
+    <div className={cn(FLEX.between, SPACING.form)}>
+      <Button
+        variant="secondary"
         onClick={() => setPage(Math.max(0, currentPage - 1))}
         disabled={currentPage === 0}
-        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
       >
         Anterior
-      </button>
+      </Button>
       
-      <span className="text-gray-700">
+      <span className={TEXT.body}>
         Página {currentPage + 1}
       </span>
       
-      <button
+      <Button
+        variant="secondary"
         onClick={() => setPage(currentPage + 1)}
         disabled={!hasMore}
-        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
       >
         Siguiente
-      </button>
+      </Button>
     </div>
   );
 
@@ -711,26 +651,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     onNext: () => void;
     onPrevious: () => void;
   }) => (
-    <div className="flex justify-between items-center mt-6">
-      <button
+    <div className={cn(FLEX.between, SPACING.form)}>
+      <Button
+        variant="secondary"
         onClick={onPrevious}
         disabled={!pageInfo.hasPreviousPage}
-        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
       >
         Anterior
-      </button>
+      </Button>
       
-      <span className="text-gray-700">
+      <span className={TEXT.body}>
         Navegación basada en cursor
       </span>
       
-      <button
+      <Button
+        variant="secondary"
         onClick={onNext}
         disabled={!pageInfo.hasNextPage}
-        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
       >
         Siguiente
-      </button>
+      </Button>
     </div>
   );
 
@@ -738,11 +678,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <h1 className="text-3xl font-bold text-gray-900">Sistema de Restaurante</h1>
+        <div className={cn(CONTAINER.maxWidth, CONTAINER.padding)}>
+          <div className={cn(FLEX.between, 'py-6')}>
+            <h1 className={TEXT.heading1}>Sistema de Restaurante</h1>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">
+              <span className={TEXT.body}>
                 {userLoading ? (
                   'Cargando usuario...'
                 ) : userError ? (
@@ -753,13 +693,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   'Usuario no encontrado'
                 )}
               </span>
-              <button 
-                onClick={onLogout} 
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              <Button 
+                variant="danger" 
+                onClick={onLogout}
                 aria-label="Cerrar sesión"
               >
                 Cerrar Sesión
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -767,7 +707,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
       {/* Navigation */}
       <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={cn(CONTAINER.maxWidth, CONTAINER.padding)}>
           <div className="flex justify-center space-x-8">
             {['menu', 'tables', 'orders'].map((tab) => (
               <button 
@@ -787,10 +727,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       </nav>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className={cn(CONTAINER.maxWidth, 'py-6 sm:px-6 lg:px-8')}>
         {/* Connection Status Banner */}
         {hasConnectionIssues && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+          <div className={cn(SPACING.section, 'bg-red-50 border border-red-200 rounded-md p-4')}>
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -802,9 +742,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   Problema de conexión con el backend
                 </h3>
                 <div className="mt-2 text-sm text-red-700">
-                  <p>
-                    No se puede conectar al servidor backend. Para solucionar este problema:
-                  </p>
+                  <p>No se puede conectar al servidor backend. Para solucionar este problema:</p>
                   <ul className="list-disc list-inside mt-1 space-y-1">
                     <li>Asegúrate de que el backend esté ejecutándose</li>
                     <li>Verifica que esté corriendo en <code className="font-mono bg-red-100 px-1 rounded">http://localhost:4000/graphql</code></li>
@@ -818,57 +756,46 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Menu Tab */}
         {activeTab === 'menu' && (
-          <div className="px-4 py-6 sm:px-0">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Gestión de Menú</h2>
+          <div className={CONTAINER.section}>
+            <div className={SPACING.section}>
+              <h2 className={TEXT.heading2}>Gestión de Menú</h2>
             </div>
             
             {canManageMenu && (
-              <div className="bg-white shadow rounded-lg mb-6">
-                <div className="px-4 py-5 sm:p-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                    Agregar Nuevo Plato
-                  </h3>
-                  <form onSubmit={handleCreateMenuItem} className="flex flex-wrap gap-4">
+              <Card className={SPACING.section}>
+                <CardHeader>
+                  <h3 className={TEXT.heading3}>Agregar Nuevo Plato</h3>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleCreateMenuItem} className={FLEX.wrap}>
                     <div className="flex-1 min-w-0">
-                      <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">
-                        Nombre del plato
-                      </label>
-                      <input
-                        id="itemName"
+                      <Input
                         type="text"
+                        label="Nombre del plato"
                         value={newItemName}
                         onChange={(e) => setNewItemName(e.target.value)}
                         required
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
                     <div className="w-32">
-                      <label htmlFor="itemPrice" className="block text-sm font-medium text-gray-700">
-                        Precio (COP)
-                      </label>
-                      <input
-                        id="itemPrice"
+                      <Input
                         type="number"
+                        label="Precio (COP)"
                         value={newItemPrice}
                         onChange={(e) => setNewItemPrice(e.target.value)}
                         required
                         min="0"
                         step="100"
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
                     <div className="flex items-end">
-                      <button
-                        type="submit"
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                      >
+                      <Button type="submit" variant="success">
                         Agregar
-                      </button>
+                      </Button>
                     </div>
                   </form>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* Filters and Sorting */}
@@ -876,52 +803,55 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <MenuSorting />
 
             {menuLoading ? (
-              <div className="flex justify-center items-center h-64">
+              <div className={cn(FLEX.center, 'h-64')}>
                 <div className="text-lg text-gray-600">Cargando menú...</div>
               </div>
             ) : menuError ? (
               <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                <div className="text-red-700">
+                <div className={TEXT.error}>
                   <strong>Error cargando menú:</strong> {getErrorMessage(menuError)}
                 </div>
-                <button 
-                  onClick={() => refetchMenu()} 
-                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                <Button 
+                  variant="info"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => refetchMenu()}
                 >
                   Reintentar
-                </button>
+                </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={GRID_LAYOUTS.threeCol}>
                 {menuData?.items.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <p className="text-gray-500">No hay items en el menú</p>
                   </div>
                 ) : (
                   menuData?.items.map((item) => (
-                    <div key={item.id} className="bg-white overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-3">{item.name}</h3>
-                        <p className="text-gray-600 mb-2"><strong>Precio:</strong> {formatPrice(item.price)}</p>
-                        <p className="text-gray-600 mb-2"><strong>SKU:</strong> {item.sku}</p>
-                        <div className="flex items-center justify-between">
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            item.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                    <Card key={item.id}>
+                      <CardHeader>
+                        <h3 className={TEXT.heading3}>{item.name}</h3>
+                      </CardHeader>
+                      <CardContent>
+                        <p className={cn(TEXT.body, SPACING.content)}><strong>Precio:</strong> {formatPrice(item.price)}</p>
+                        <p className={cn(TEXT.body, SPACING.content)}><strong>SKU:</strong> {item.sku}</p>
+                        <div className={FLEX.between}>
+                          <Badge variant={getStatusBadgeVariant(item.isAvailable ? 'available' : 'unavailable')}>
                             {item.isAvailable ? 'Disponible' : 'No disponible'}
-                          </span>
+                          </Badge>
                           {canManageMenu && (
-                            <button 
+                            <Button 
+                              variant="danger"
+                              size="sm"
                               onClick={() => handleDeleteMenuItem(item.id)}
-                              className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm"
                               aria-label={`Eliminar ${item.name}`}
                             >
                               Eliminar
-                            </button>
+                            </Button>
                           )}
                         </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   ))
                 )}
               </div>
@@ -938,26 +868,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Tables Tab */}
         {activeTab === 'tables' && (
-          <div className="px-4 py-6 sm:px-0">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Gestión de Mesas</h2>
+          <div className={CONTAINER.section}>
+            <div className={cn(FLEX.between, SPACING.section)}>
+              <h2 className={TEXT.heading2}>Gestión de Mesas</h2>
               
               {canManageTables && (
                 <div className="flex space-x-3">
-                  <button 
+                  <Button 
+                    variant="success"
                     onClick={handleAddTable}
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    disabled={addTableLoading}
+                    loading={addTableLoading}
                   >
-                    {addTableLoading ? 'Agregando...' : 'Agregar Mesa'}
-                  </button>
-                  <button 
+                    Agregar Mesa
+                  </Button>
+                  <Button 
+                    variant="danger"
                     onClick={handleRemoveTable}
-                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    disabled={removeTableLoading}
+                    loading={removeTableLoading}
                   >
-                    {removeTableLoading ? 'Eliminando...' : 'Eliminar Última Mesa'}
-                  </button>
+                    Eliminar Última Mesa
+                  </Button>
                 </div>
               )}
             </div>
@@ -967,56 +897,59 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <TableSorting />
 
             {tablesLoading ? (
-              <div className="flex justify-center items-center h-64">
+              <div className={cn(FLEX.center, 'h-64')}>
                 <div className="text-lg text-gray-600">Cargando mesas...</div>
               </div>
             ) : tablesError ? (
               <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                <div className="text-red-700">
+                <div className={TEXT.error}>
                   <strong>Error cargando mesas:</strong> {getErrorMessage(tablesError)}
                 </div>
-                <button 
-                  onClick={() => refetchTables()} 
-                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                <Button 
+                  variant="info"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => refetchTables()}
                 >
                   Reintentar
-                </button>
+                </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={GRID_LAYOUTS.threeCol}>
                 {tablesData?.tables.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <p className="text-gray-500">No hay mesas disponibles</p>
                   </div>
                 ) : (
                   tablesData?.tables.map((table) => (
-                    <div key={table.id} className="bg-white overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-medium text-gray-900">Mesa {table.number}</h3>
-                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <Card key={table.id}>
+                      <CardContent>
+                        <div className={cn(FLEX.between, SPACING.header)}>
+                          <h3 className={TEXT.heading3}>Mesa {table.number}</h3>
+                          <Badge variant="info">
                             {table.orders?.filter(order => order.status !== 'PAID').length || 0} pedidos activos
-                          </span>
+                          </Badge>
                         </div>
                         
-                        <p className="text-gray-600 mb-4"><strong>Capacidad:</strong> {table.capacity} personas</p>
+                        <p className={cn(TEXT.body, SPACING.header)}><strong>Capacidad:</strong> {table.capacity} personas</p>
                         
                         {/* QR Code Section */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">Código QR de la Mesa</h4>
+                        <div className={cn(SPACING.header, 'p-3 bg-gray-50 rounded-lg')}>
+                          <h4 className={cn(TEXT.heading4, SPACING.content)}>Código QR de la Mesa</h4>
                           {table.qrCode ? (
                             <div className="space-y-2">
-                              <div className="flex items-center justify-between">
+                              <div className={FLEX.between}>
                                 <span className="text-xs text-gray-600 font-mono bg-white px-2 py-1 rounded border">
                                   {table.qrCode}
                                 </span>
-                                <button
+                                <Button
+                                  variant="warning"
+                                  size="xs"
                                   onClick={() => handleGenerateQrCode(table.id)}
-                                  className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-1 px-2 rounded text-xs"
                                   title="Regenerar código QR"
                                 >
                                   🔄
-                                </button>
+                                </Button>
                               </div>
                               <div className="flex gap-2">
                                 <a
@@ -1027,41 +960,45 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                                 >
                                   Ver Menú Público
                                 </a>
-                                <button
+                                <Button
+                                  variant="info"
+                                  size="xs"
                                   onClick={() => {
                                     navigator.clipboard.writeText(getQrCodeUrl(table.qrCode!));
                                     alert('URL copiada al portapapeles');
                                   }}
-                                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
                                   title="Copiar URL"
                                 >
                                   📋
-                                </button>
+                                </Button>
                               </div>
                             </div>
                           ) : (
-                            <button
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="w-full"
                               onClick={() => handleGenerateQrCode(table.id)}
-                              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-3 rounded text-sm"
                             >
                               Generar Código QR
-                            </button>
+                            </Button>
                           )}
                         </div>
 
                         {/* Quick order form */}
-                        <div className="mb-4">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">Crear Pedido Rápido:</h4>
-                          <div className="flex flex-wrap gap-2">
+                        <div className={SPACING.header}>
+                          <h4 className={cn(TEXT.heading4, SPACING.content)}>Crear Pedido Rápido:</h4>
+                          <div className={FLEX.wrap}>
                             {menuData?.items.slice(0, 3).map((item) => (
-                              <button
+                              <Button
                                 key={item.id}
+                                variant="info"
+                                size="xs"
                                 onClick={() => handleCreateOrder(table.id, item.id)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
                                 aria-label={`Agregar ${item.name} a mesa ${table.number}`}
                               >
                                 {item.name}
-                              </button>
+                              </Button>
                             ))}
                           </div>
                         </div>
@@ -1069,41 +1006,44 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                         {/* Orders in this table */}
                         {table.orders && table.orders.length > 0 && (
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Pedidos:</h4>
+                            <h4 className={cn(TEXT.heading4, SPACING.content)}>Pedidos:</h4>
                             <div className="space-y-2">
                               {table.orders.map((order) => (
                                 <div key={order.id} className="bg-gray-50 rounded p-3">
-                                  <div className="flex justify-between items-center mb-2">
+                                  <div className={cn(FLEX.between, SPACING.content)}>
                                     <span className="font-medium text-sm">Pedido #{order.id}</span>
-                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(order.status)}`}>
+                                    <Badge variant={getStatusBadgeVariant(order.status)}>
                                       {order.status}
-                                    </span>
+                                    </Badge>
                                   </div>
                                   {order.orderItems?.map((item) => (
-                                    <p key={item.id} className="text-xs text-gray-600 mb-1">
+                                    <p key={item.id} className={cn(TEXT.small, 'mb-1')}>
                                       {item.quantity}x {item.menuItem?.name} - {formatPrice(item.price)}
                                     </p>
                                   ))}
                                   {order.status !== 'PAID' && (
-                                    <div className="flex flex-wrap gap-1 mt-2">
-                                      <button
+                                    <div className={cn(FLEX.wrap, 'mt-2')}>
+                                      <Button
+                                        variant="warning"
+                                        size="xs"
                                         onClick={() => handleUpdateOrderStatus(order.id, 'PREPARING')}
-                                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-1 px-2 rounded text-xs"
                                       >
                                         Preparando
-                                      </button>
-                                      <button
+                                      </Button>
+                                      <Button
+                                        variant="info"
+                                        size="xs"
                                         onClick={() => handleUpdateOrderStatus(order.id, 'READY')}
-                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
                                       >
                                         Listo
-                                      </button>
-                                      <button
+                                      </Button>
+                                      <Button
+                                        variant="success"
+                                        size="xs"
                                         onClick={() => handlePayOrder(order.id)}
-                                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded text-xs"
                                       >
                                         Pagar
-                                      </button>
+                                      </Button>
                                     </div>
                                   )}
                                 </div>
@@ -1111,8 +1051,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                             </div>
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   ))
                 )}
               </div>
@@ -1129,9 +1069,9 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
 
         {/* Orders Tab */}
         {activeTab === 'orders' && (
-          <div className="px-4 py-6 sm:px-0">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Todos los Pedidos</h2>
+          <div className={CONTAINER.section}>
+            <div className={SPACING.section}>
+              <h2 className={TEXT.heading2}>Todos los Pedidos</h2>
             </div>
             
             {/* Filters and Sorting */}
@@ -1139,74 +1079,79 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             <OrderSorting />
 
             {ordersLoading ? (
-              <div className="flex justify-center items-center h-64">
+              <div className={cn(FLEX.center, 'h-64')}>
                 <div className="text-lg text-gray-600">Cargando pedidos...</div>
               </div>
             ) : ordersError ? (
               <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                <div className="text-red-700">
+                <div className={TEXT.error}>
                   <strong>Error cargando pedidos:</strong> {getErrorMessage(ordersError)}
                 </div>
-                <button 
-                  onClick={() => refetchOrders()} 
-                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                <Button 
+                  variant="info"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => refetchOrders()}
                 >
                   Reintentar
-                </button>
+                </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={GRID_LAYOUTS.threeCol}>
                 {ordersData?.orders.edges.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <p className="text-gray-500">No hay pedidos registrados</p>
                   </div>
                 ) : (
                   ordersData?.orders.edges.map(({ node: order }) => (
-                    <div key={order.id} className="bg-white overflow-hidden shadow rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="text-lg font-medium text-gray-900">Pedido #{order.id}</h3>
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(order.status)}`}>
+                    <Card key={order.id}>
+                      <CardContent>
+                        <div className={cn(FLEX.between, SPACING.header)}>
+                          <h3 className={TEXT.heading3}>Pedido #{order.id}</h3>
+                          <Badge variant={getStatusBadgeVariant(order.status)}>
                             {order.status}
-                          </span>
+                          </Badge>
                         </div>
                         
-                        <p className="text-gray-600 mb-2"><strong>Mesa:</strong> {order.tableId}</p>
-                        <p className="text-gray-600 mb-4"><strong>Fecha:</strong> {new Date(parseInt(order.createdAt)).toLocaleString()}</p>
+                        <p className={cn(TEXT.body, SPACING.content)}><strong>Mesa:</strong> {order.tableId}</p>
+                        <p className={cn(TEXT.body, SPACING.header)}><strong>Fecha:</strong> {new Date(parseInt(order.createdAt)).toLocaleString()}</p>
                         
-                        <div className="mb-4">
-                          <h4 className="text-sm font-medium text-gray-900 mb-2">Items:</h4>
+                        <div className={SPACING.header}>
+                          <h4 className={cn(TEXT.heading4, SPACING.content)}>Items:</h4>
                           {order.orderItems?.map((item) => (
-                            <p key={item.id} className="text-sm text-gray-600 mb-1">
+                            <p key={item.id} className={cn(TEXT.small, 'mb-1')}>
                               {item.quantity}x {item.menuItem?.name} - {formatPrice(item.price)}
                             </p>
                           ))}
                         </div>
 
                         {order.status !== 'PAID' && (
-                          <div className="flex flex-wrap gap-2">
-                            <button
+                          <div className={FLEX.wrap}>
+                            <Button
+                              variant="warning"
+                              size="sm"
                               onClick={() => handleUpdateOrderStatus(order.id, 'PREPARING')}
-                              className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-1 px-3 rounded text-sm"
                             >
                               Preparando
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              variant="info"
+                              size="sm"
                               onClick={() => handleUpdateOrderStatus(order.id, 'READY')}
-                              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded text-sm"
                             >
                               Listo
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              variant="success"
+                              size="sm"
                               onClick={() => handlePayOrder(order.id)}
-                              className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded text-sm"
                             >
                               Pagar
-                            </button>
+                            </Button>
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   ))
                 )}
               </div>

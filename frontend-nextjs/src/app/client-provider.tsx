@@ -63,7 +63,8 @@ const splitLink = typeof window !== 'undefined' && wsLink ? split(
   from([errorLink, authLink, httpLink])
 ) : from([errorLink, authLink, httpLink]);
 
-const client = new ApolloClient({
+// Export the client instance for direct access when needed
+export const apolloClient = new ApolloClient({
   link: splitLink,
   cache: new InMemoryCache({
     typePolicies: {
@@ -103,5 +104,5 @@ export default function ClientProvider({
 }: {
   children: React.ReactNode;
 }) {
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
 }

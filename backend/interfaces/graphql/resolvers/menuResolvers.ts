@@ -2,15 +2,7 @@ import { GraphQLContext } from "../context";
 import { ListMenuItems } from "../../../application/useCases/ListMenuItems";
 import { Cursor } from "../../../domain/valueObjects/Pagination";
 import { RoleEnum } from "@prisma/client";
-
-function requireRole(context: GraphQLContext, allowedRoles: RoleEnum[]): void {
-  if (!context.user) {
-    throw new Error("No autorizado");
-  }
-  if (!allowedRoles.includes(context.user.role)) {
-    throw new Error("Permiso insuficiente");
-  }
-}
+import { requireRole } from "../utils/auth";
 
 export const menuResolvers = {
   Query: {

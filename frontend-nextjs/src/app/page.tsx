@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import ApolloProviderWrapper from "../lib/apollo-provider";
-import client from "../lib/apollo-client";
+import ClientProvider, { apolloClient } from "./client-provider";
 import Auth from "../components/Auth";
 import Dashboard from "../components/Dashboard";
 
@@ -24,8 +23,8 @@ function AppContent() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
-    // Clear Apollo cache
-    client.clearStore();
+    // Clear Apollo cache using the exported client
+    apolloClient.clearStore();
   };
 
   return (
@@ -41,8 +40,8 @@ function AppContent() {
 
 export default function Home() {
   return (
-    <ApolloProviderWrapper>
+    <ClientProvider>
       <AppContent />
-    </ApolloProviderWrapper>
+    </ClientProvider>
   );
 }

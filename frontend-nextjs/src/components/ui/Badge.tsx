@@ -1,0 +1,71 @@
+import React from 'react';
+
+export type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'secondary';
+export type BadgeSize = 'sm' | 'md' | 'lg';
+
+interface BadgeProps {
+  children: React.ReactNode;
+  variant?: BadgeVariant;
+  size?: BadgeSize;
+  className?: string;
+}
+
+const getVariantClasses = (variant: BadgeVariant): string => {
+  const variants = {
+    default: 'bg-gray-100 text-gray-800',
+    success: 'bg-green-100 text-green-800',
+    warning: 'bg-yellow-100 text-yellow-800',
+    danger: 'bg-red-100 text-red-800',
+    info: 'bg-blue-100 text-blue-800',
+    secondary: 'bg-purple-100 text-purple-800',
+  };
+  return variants[variant];
+};
+
+const getSizeClasses = (size: BadgeSize): string => {
+  const sizes = {
+    sm: 'px-1.5 py-0.5 text-xs',
+    md: 'px-2 py-1 text-xs',
+    lg: 'px-3 py-1 text-sm',
+  };
+  return sizes[size];
+};
+
+export const Badge: React.FC<BadgeProps> = ({
+  children,
+  variant = 'default',
+  size = 'md',
+  className = '',
+}) => {
+  const baseClasses = 'inline-flex font-semibold rounded-full';
+  const variantClasses = getVariantClasses(variant);
+  const sizeClasses = getSizeClasses(size);
+
+  const combinedClassName = `${baseClasses} ${variantClasses} ${sizeClasses} ${className}`.trim();
+
+  return (
+    <span className={combinedClassName}>
+      {children}
+    </span>
+  );
+};
+
+// Helper function to map common status strings to badge variants
+export const getStatusBadgeVariant = (status: string): BadgeVariant => {
+  const statusLower = status.toLowerCase();
+  
+  if (statusLower.includes('success') || statusLower.includes('delivered') || statusLower.includes('paid') || statusLower.includes('available')) {
+    return 'success';
+  }
+  if (statusLower.includes('warning') || statusLower.includes('pending') || statusLower.includes('preparing')) {
+    return 'warning';
+  }
+  if (statusLower.includes('error') || statusLower.includes('failed') || statusLower.includes('cancelled') || statusLower.includes('unavailable')) {
+    return 'danger';
+  }
+  if (statusLower.includes('info') || statusLower.includes('ready')) {
+    return 'info';
+  }
+  
+  return 'default';
+};
