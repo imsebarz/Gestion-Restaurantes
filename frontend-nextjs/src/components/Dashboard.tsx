@@ -97,7 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   // Pagination states
   const [menuPage, setMenuPage] = useState(0);
   const [tablePage, setTablePage] = useState(0);
-  const [orderPage, setOrderPage] = useState(0);
+  const [orderCursor, setOrderCursor] = useState<string | undefined>(undefined);
   const itemsPerPage = 12;
 
   // Queries with filters and sorting
@@ -121,12 +121,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
     }
   });
 
-  const { data: ordersData, loading: ordersLoading, error: ordersError, refetch: refetchOrders } = useQuery<{ orders: Order[] }>(GET_ORDERS, {
+  const { data: ordersData, loading: ordersLoading, error: ordersError, refetch: refetchOrders } = useQuery<{ 
+    orders: {
+      edges: Array<{
+        node: Order;
+        cursor: string;
+      }>;
+      pageInfo: {
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
+        startCursor?: string;
+        endCursor?: string;
+      };
+    };
+  }>(GET_ORDERS, {
     variables: {
       filter: Object.keys(orderFilter).length > 0 ? orderFilter : undefined,
       sort: orderSort,
-      limit: itemsPerPage,
-      offset: orderPage * itemsPerPage
+      first: itemsPerPage,
+      after: orderCursor
     }
   });
 
@@ -597,7 +610,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <button
             onClick={() => {
               setOrderFilter({});
-              setOrderPage(0);
+              setOrderCursor(undefined);
             }}
             className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
           >
@@ -676,6 +689,44 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       <button
         onClick={() => setPage(currentPage + 1)}
         disabled={!hasMore}
+        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
+      >
+        Siguiente
+      </button>
+    </div>
+  );
+
+  // Cursor-based pagination component for orders
+  const CursorPagination = ({ 
+    pageInfo, 
+    onNext, 
+    onPrevious 
+  }: { 
+    pageInfo: {
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string;
+      endCursor?: string;
+    };
+    onNext: () => void;
+    onPrevious: () => void;
+  }) => (
+    <div className="flex justify-between items-center mt-6">
+      <button
+        onClick={onPrevious}
+        disabled={!pageInfo.hasPreviousPage}
+        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
+      >
+        Anterior
+      </button>
+      
+      <span className="text-gray-700">
+        Navegación basada en cursor
+      </span>
+      
+      <button
+        onClick={onNext}
+        disabled={!pageInfo.hasNextPage}
         className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
       >
         Siguiente
@@ -1105,12 +1156,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {ordersData?.orders.length === 0 ? (
+                {ordersData?.orders.edges.length === 0 ? (
                   <div className="col-span-full text-center py-12">
                     <p className="text-gray-500">No hay pedidos registrados</p>
                   </div>
                 ) : (
-                  ordersData?.orders.map((order) => (
+                  ordersData?.orders.edges.map(({ node: order }) => (
                     <div key={order.id} className="bg-white overflow-hidden shadow rounded-lg">
                       <div className="px-4 py-5 sm:p-6">
                         <div className="flex justify-between items-center mb-4">
@@ -1162,11 +1213,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
             )}
 
             {/* Pagination */}
-            <Pagination 
-              currentPage={orderPage} 
-              setPage={setOrderPage} 
-              hasMore={ordersData?.orders.length === itemsPerPage}
-            />
+            {ordersData?.orders.pageInfo && (
+              <CursorPagination 
+                pageInfo={ordersData.orders.pageInfo} 
+                onNext={() => ordersData?.orders.pageInfo.endCursor && setOrderCursor(ordersData.orders.pageInfo.endCursor)} 
+                onPrevious={() => ordersData?.orders.pageInfo.startCursor && setOrderCursor(ordersData.orders.pageInfo.startCursor)}
+              />
+            )}
           </div>
         )}
       </main>
