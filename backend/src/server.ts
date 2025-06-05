@@ -14,6 +14,7 @@ import { orderResolvers } from "../interfaces/graphql/resolvers/orderResolvers";
 import { userResolvers } from "../interfaces/graphql/resolvers/userResolvers";
 import { tableResolvers } from "../interfaces/graphql/resolvers/tableResolvers";
 import { paymentResolvers } from "../interfaces/graphql/resolvers/paymentResolvers";
+import { subscriptionResolvers } from "../interfaces/graphql/resolvers/subscriptionResolvers";
 
 // GraphQL Type Definitions
 const typeDefs = `
@@ -270,6 +271,9 @@ const resolvers = {
     ...userResolvers.Mutation,
     ...tableResolvers.Mutation,
     ...paymentResolvers.Mutation,
+  },
+  Subscription: {
+    ...subscriptionResolvers.Subscription,
   },
   MenuItem: {
     ...menuResolvers.MenuItem,

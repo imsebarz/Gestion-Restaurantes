@@ -4,6 +4,7 @@ import { UpdateOrderStatus } from "../../../application/useCases/UpdateOrderStat
 import { OrderStatus } from "../../../domain/entities/Order";
 import { Cursor } from "../../../domain/valueObjects/Pagination";
 import { RoleEnum } from "@prisma/client";
+import { pubsub, SUBSCRIPTION_EVENTS } from "../pubsub";
 
 function requireRole(context: GraphQLContext, allowedRoles: RoleEnum[]): void {
   if (!context.user) {
@@ -111,6 +112,10 @@ export const orderResolvers = {
         items: [{ menuItemId: Number(args.itemId), quantity: 1 }]
       });
 
+      // Publish real-time events
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_CREATED, { orderCreated: order });
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: order });
+
       return order;
     },
 
@@ -132,13 +137,19 @@ export const orderResolvers = {
         context.repositories.userRepository,
       );
 
-      return createOrderByQrCode.execute({
+      const order = await createOrderByQrCode.execute({
         qrCode: args.qrCode,
         items: args.items.map(item => ({
           menuItemId: Number(item.menuItemId),
           quantity: item.quantity
         })),
       });
+
+      // Publish real-time events for QR code orders
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_CREATED, { orderCreated: order });
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: order });
+
+      return order;
     },
 
     updateOrderStatus: async (
@@ -159,11 +170,17 @@ export const orderResolvers = {
         context.repositories.orderRepository,
       );
 
-      return updateOrderStatus.execute({
+      const order = await updateOrderStatus.execute({
         orderId: args.input.orderId,
         newStatus: args.input.status,
         user: context.user,
       });
+
+      // Publish real-time events
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_STATUS_CHANGED, { orderStatusChanged: order });
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: order });
+
+      return order;
     },
 
     setOrderStatus: async (
@@ -173,10 +190,16 @@ export const orderResolvers = {
     ) => {
       requireRole(context, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
       
-      return context.repositories.orderRepository.updateStatus(
+      const order = await context.repositories.orderRepository.updateStatus(
         Number(args.id), 
         args.status as OrderStatus
       );
+
+      // Publish real-time events
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_STATUS_CHANGED, { orderStatusChanged: order });
+      pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: order });
+
+      return order;
     },
 
     deleteOrder: async (
