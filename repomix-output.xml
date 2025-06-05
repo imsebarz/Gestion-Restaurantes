@@ -47,16 +47,21 @@ backend/
         migration.sql
       20250424232338_init/
         migration.sql
+      20250603202909_init/
+        migration.sql
+      20250604012647_init/
+        migration.sql
+      20250605134542_add_qr_code_to_tables/
+        migration.sql
       migration_lock.toml
     .env
     .env.example
     schema.prisma
     seed.ts
   src/
-    graphql/
-      types.ts
     auth.ts
     context.ts
+    defaultquery.ts
     prisma.ts
     resolvers.ts
     schema.ts
@@ -67,15 +72,3138 @@ backend/
   README.md
   repomix-output.xml
   tsconfig.json
-.prettierrc
+frontend-nextjs/
+  public/
+    file.svg
+    globe.svg
+    next.svg
+    vercel.svg
+    window.svg
+  src/
+    app/
+      menu/
+        [qrCode]/
+          page.tsx
+      client-provider.tsx
+      globals.css
+      layout.tsx
+      page.tsx
+    components/
+      Auth.tsx
+      Dashboard.tsx
+    lib/
+      apollo-client.ts
+      apollo-provider.tsx
+      queries.ts
+    types.ts
+  .gitignore
+  eslint.config.mjs
+  next.config.ts
+  package.json
+  postcss.config.mjs
+  README.md
+  tsconfig.json
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
+<file path="backend/prisma/migrations/20250604012647_init/migration.sql">
+/*
+  Warnings:
+
+  - You are about to drop the `Item` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `Order` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `Payment` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `Table` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
+
+*/
+-- CreateEnum
+CREATE TYPE "RoleEnum" AS ENUM ('SUPERADMIN', 'MANAGER', 'STAFF');
+
+-- DropForeignKey
+ALTER TABLE "Order" DROP CONSTRAINT "Order_itemId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "Order" DROP CONSTRAINT "Order_paymentId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "Order" DROP CONSTRAINT "Order_tableId_fkey";
+
+-- DropTable
+DROP TABLE "Item";
+
+-- DropTable
+DROP TABLE "Order";
+
+-- DropTable
+DROP TABLE "Payment";
+
+-- DropTable
+DROP TABLE "Table";
+
+-- DropTable
+DROP TABLE "User";
+
+-- DropEnum
+DROP TYPE "OrderStatus";
+
+-- DropEnum
+DROP TYPE "PaymentType";
+
+-- DropEnum
+DROP TYPE "Role";
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "RoleEnum" NOT NULL DEFAULT 'STAFF',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tables" (
+    "id" SERIAL NOT NULL,
+    "number" INTEGER NOT NULL,
+    "capacity" INTEGER NOT NULL DEFAULT 4,
+
+    CONSTRAINT "tables_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "menu_items" (
+    "id" SERIAL NOT NULL,
+    "sku" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "price" MONEY NOT NULL,
+    "isAvailable" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "menu_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "orders" (
+    "id" SERIAL NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'OPEN',
+    "tableId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "order_items" (
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "menuItemId" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL DEFAULT 1,
+    "price" MONEY NOT NULL,
+
+    CONSTRAINT "order_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "payments" (
+    "id" SERIAL NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "amount" MONEY NOT NULL,
+    "method" TEXT NOT NULL,
+    "paidAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tables_number_key" ON "tables"("number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "menu_items_sku_key" ON "menu_items"("sku");
+
+-- CreateIndex
+CREATE INDEX "orders_status_idx" ON "orders"("status");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "payments_orderId_key" ON "payments"("orderId");
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_tableId_fkey" FOREIGN KEY ("tableId") REFERENCES "tables"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_menuItemId_fkey" FOREIGN KEY ("menuItemId") REFERENCES "menu_items"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+</file>
+
+<file path="backend/prisma/migrations/20250605134542_add_qr_code_to_tables/migration.sql">
+/*
+  Warnings:
+
+  - A unique constraint covering the columns `[qrCode]` on the table `tables` will be added. If there are existing duplicate values, this will fail.
+
+*/
+-- AlterTable
+ALTER TABLE "tables" ADD COLUMN     "qrCode" TEXT;
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tables_qrCode_key" ON "tables"("qrCode");
+</file>
+
 <file path="backend/prisma/.env">
 DATABASE_URL="postgresql://postgres@localhost:5432/proyecto_restaurantes"
 APP_SECRET="a61de430f8b2897e813422e218bd708387781ddc740f66424d3228effd9e0b81"
+</file>
+
+<file path="backend/src/defaultquery.ts">
+export const defaultQuery: string = `
+# --- AUTENTICACIÓN ---
+mutation SignupUsuario {
+  signup(email: "nuevo@correo.com", password: "clave123", name: "Nuevo Usuario", role: STAFF) {
+    token
+    user { id email role }
+  }
+}
+
+mutation LoginUsuario {
+  login(email: "admin@food360.local", password: "123456") {
+    token
+    user { id email role }
+  }
+}
+
+# --- USUARIO ACTUAL ---
+query UsuarioActual {
+  me {
+    id
+    email
+    role
+  }
+}
+
+# --- MENÚ (CRUD) ---
+query VerMenu {
+  items {
+    id
+    sku
+    name
+    price
+    isAvailable
+  }
+}
+
+query VerMenuItemPorId {
+  getItemById(id: "1") {
+    id
+    name
+    price
+  }
+}
+
+mutation CrearMenuItem {
+  createItem(title: "Pizza Pepperoni", price: 30000) {
+    id
+    name
+    price
+  }
+}
+
+mutation EditarMenuItem {
+  editItem(id: "1", title: "Pizza Pepperoni Grande", price: 35000) {
+    id
+    name
+    price
+  }
+}
+
+mutation EliminarMenuItem {
+  deleteItem(id: "1") {
+    id
+    name
+  }
+}
+
+# --- MESAS ---
+query VerMesas {
+  tables {
+    id
+    number
+    capacity
+    orders{
+      id
+      status
+      userId
+      createdAt
+      orderItems { id menuItemId quantity price }
+  }
+    }
+}
+
+mutation AgregarMesa {
+  addTable {
+    id
+    number
+    capacity
+  }
+}
+
+mutation EliminarUltimaMesa {
+  removeTable {
+    id
+    number
+  }
+}
+
+# --- PEDIDOS (ORDERS) ---
+query VerPedidos {
+  orders {
+    id
+    status
+    tableId
+    userId
+    createdAt
+    orderItems { id menuItemId quantity price }
+  }
+}
+
+query VerPedidosPorMesa {
+  getOrdersByTableId(tableId: "1") {
+    id
+    status
+    orderItems { id menuItemId quantity price }
+  }
+}
+
+mutation CrearPedido {
+  createOrder(tableId: "1", itemId: "1") {
+    id
+    status
+    tableId
+    userId
+    orderItems { id menuItemId quantity price }
+  }
+}
+
+mutation CambiarEstadoPedido {
+  setOrderStatus(id: "1", status: "PREPARING") {
+    id
+    status
+  }
+}
+
+mutation CancelarPedido {
+  cancelOrder(id: "1") {
+    id
+    status
+  }
+}
+
+mutation EliminarPedido {
+  deleteOrder(id: "1") {
+    id
+  }
+}
+
+# --- PAGOS ---
+query VerPagos {
+  payments {
+    id
+    orderId
+    amount
+    method
+    paidAt
+  }
+}
+
+query VerPagoPorId {
+  getPaymentById(id: "1") {
+    id
+    amount
+    method
+    paidAt
+  }
+}
+
+mutation ProcesarPagoPedido {
+  createPaymentForOrder(type: "CASH", orderId: "1") {
+    id
+    orderId
+    amount
+    method
+    paidAt
+  }
+}
+
+mutation ProcesarPagoMesa {
+  createPaymentForTable(type: "CARD", tableId: "1") {
+    id
+    status
+  }
+}
+
+mutation EliminarPago {
+  deletePayment(id: "1") {
+    id
+  }
+}
+`;
+</file>
+
+<file path="frontend-nextjs/public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="frontend-nextjs/public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="frontend-nextjs/public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="frontend-nextjs/public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="frontend-nextjs/public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="frontend-nextjs/src/app/menu/[qrCode]/page.tsx">
+'use client';
+
+import { useQuery, useMutation } from '@apollo/client';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import { GET_TABLE_BY_QR_CODE, GET_MENU_ITEMS, CREATE_ORDER_BY_QR_CODE, GET_ORDERS_BY_QR_CODE } from '@/lib/queries';
+import type { Order, OrderItem } from '@/types';
+
+interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  sku: string;
+  isAvailable: boolean;
+}
+
+interface CartItem {
+  menuItemId: string;
+  quantity: number;
+  name: string;
+  price: number;
+}
+
+export default function MenuQRPage() {
+  const params = useParams();
+  const qrCode = params.qrCode as string;
+  
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+
+  // Queries
+  const { data: tableData, loading: tableLoading, error: tableError } = useQuery(GET_TABLE_BY_QR_CODE, {
+    variables: { qrCode },
+    skip: !qrCode,
+  });
+
+  const { data: menuData, loading: menuLoading } = useQuery(GET_MENU_ITEMS);
+  
+  const { data: ordersData, refetch: refetchOrders } = useQuery(GET_ORDERS_BY_QR_CODE, {
+    variables: { qrCode },
+    skip: !qrCode,
+    pollInterval: 5000, // Poll every 5 seconds to get updates
+  });
+
+  // Mutation
+  const [createOrderByQrCode, { loading: orderLoading }] = useMutation(CREATE_ORDER_BY_QR_CODE, {
+    onCompleted: () => {
+      setCart([]);
+      setOrderPlaced(true);
+      refetchOrders();
+      setTimeout(() => setOrderPlaced(false), 3000);
+    },
+    onError: (error) => {
+      console.error('Error creating order:', error);
+    },
+  });
+
+  const addToCart = (item: MenuItem) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(cartItem => cartItem.menuItemId === item.id);
+      if (existingItem) {
+        return prevCart.map(cartItem =>
+          cartItem.menuItemId === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        );
+      }
+      return [...prevCart, {
+        menuItemId: item.id,
+        quantity: 1,
+        name: item.name,
+        price: item.price,
+      }];
+    });
+  };
+
+  const removeFromCart = (menuItemId: string) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(cartItem => cartItem.menuItemId === menuItemId);
+      if (existingItem && existingItem.quantity > 1) {
+        return prevCart.map(cartItem =>
+          cartItem.menuItemId === menuItemId
+            ? { ...cartItem, quantity: cartItem.quantity - 1 }
+            : cartItem
+        );
+      }
+      return prevCart.filter(cartItem => cartItem.menuItemId !== menuItemId);
+    });
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
+  const handlePlaceOrder = () => {
+    if (cart.length === 0) return;
+    
+    const items = cart.map(item => ({
+      menuItemId: item.menuItemId,
+      quantity: item.quantity,
+    }));
+
+    createOrderByQrCode({
+      variables: {
+        qrCode,
+        items,
+      },
+    });
+  };
+
+  if (tableLoading || menuLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Cargando menú...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (tableError || !tableData?.getTableByQrCode) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Mesa no encontrada</h1>
+          <p className="text-gray-600">El código QR escaneado no es válido.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const table = tableData.getTableByQrCode;
+  const menuItems = menuData?.items || [];
+  const orders = ordersData?.getOrdersByQrCode || [];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Menú Restaurante</h1>
+              <p className="text-gray-600">Mesa {table.number} - Capacidad: {table.capacity} personas</p>
+            </div>
+            <div className="bg-blue-100 px-3 py-1 rounded-full">
+              <span className="text-sm font-medium text-blue-800">Mesa #{table.number}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Menu Items */}
+          <div className="lg:col-span-2">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">Nuestro Menú</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {menuItems.map((item: MenuItem) => (
+                <div key={item.id} className="bg-white rounded-lg shadow p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
+                      <p className="text-sm text-gray-500">SKU: {item.sku}</p>
+                    </div>
+                    <span className="text-lg font-bold text-green-600">
+                      ${item.price.toLocaleString()}
+                    </span>
+                  </div>
+                  
+                  {item.isAvailable ? (
+                    <button
+                      onClick={() => addToCart(item)}
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                      Agregar al pedido
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="w-full bg-gray-300 text-gray-500 py-2 px-4 rounded-md cursor-not-allowed"
+                    >
+                      No disponible
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cart and Orders */}
+          <div className="space-y-6">
+            {/* Cart */}
+            <div className="bg-white rounded-lg shadow p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Tu Pedido</h3>
+              {cart.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">No hay items en tu pedido</p>
+              ) : (
+                <>
+                  {cart.map((item) => (
+                    <div key={item.menuItemId} className="flex justify-between items-center py-2 border-b">
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-sm text-gray-500">${item.price.toLocaleString()} c/u</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => removeFromCart(item.menuItemId)}
+                          className="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center hover:bg-red-200"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => addToCart({ id: item.menuItemId, name: item.name, price: item.price, sku: '', isAvailable: true })}
+                          className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center hover:bg-green-200"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="mt-4 pt-4 border-t">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-lg font-semibold">Total:</span>
+                      <span className="text-lg font-bold text-green-600">
+                        ${getTotalPrice().toLocaleString()}
+                      </span>
+                    </div>
+                    
+                    <button
+                      onClick={handlePlaceOrder}
+                      disabled={orderLoading}
+                      className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
+                    >
+                      {orderLoading ? 'Procesando...' : 'Realizar Pedido'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Order Success Message */}
+            {orderPlaced && (
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                <p className="font-medium">¡Pedido realizado con éxito!</p>
+                <p className="text-sm">Tu pedido ha sido enviado a la cocina.</p>
+              </div>
+            )}
+
+            {/* Current Orders */}
+            {orders.length > 0 && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Pedidos de la Mesa</h3>
+                {orders.map((order: Order) => (
+                  <div key={order.id} className="border-b pb-4 mb-4 last:border-b-0">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-medium text-gray-900">
+                        Pedido #{order.id}
+                      </span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                        order.status === 'PREPARING' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'READY' ? 'bg-green-100 text-green-800' :
+                        order.status === 'DELIVERED' ? 'bg-purple-100 text-purple-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+                    {order.orderItems?.map((item: OrderItem) => (
+                      <div key={item.id} className="text-sm text-gray-600">
+                        {item.quantity}x {item.menuItem?.name} - ${item.price.toLocaleString()}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend-nextjs/src/app/client-provider.tsx">
+'use client';
+
+import { ApolloClient, InMemoryCache, createHttpLink, from, ApolloProvider, split } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
+
+const httpLink = createHttpLink({
+  uri: 'http://localhost:4000/graphql',
+});
+
+const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
+  url: 'ws://localhost:4000/graphql',
+  connectionParams: () => {
+    const token = localStorage.getItem('token');
+    return {
+      authorization: token ? `Bearer ${token}` : "",
+    };
+  },
+})) : null;
+
+const authLink = setContext((_, { headers }) => {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+      'content-type': 'application/json',
+    }
+  }
+});
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  }
+
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
+    if (networkError.message.includes('Failed to fetch')) {
+      console.error('Backend server is not running on http://localhost:4000/graphql');
+    }
+  }
+});
+
+// Split link to route queries/mutations to HTTP and subscriptions to WebSocket
+const splitLink = typeof window !== 'undefined' && wsLink ? split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  from([errorLink, authLink, httpLink])
+) : from([errorLink, authLink, httpLink]);
+
+const client = new ApolloClient({
+  link: splitLink,
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          orders: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          items: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          tables: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
+  defaultOptions: {
+    watchQuery: {
+      errorPolicy: 'all',
+    },
+    query: {
+      errorPolicy: 'all',
+    },
+  },
+});
+
+export default function ClientProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+}
+</file>
+
+<file path="frontend-nextjs/src/app/globals.css">
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+</file>
+
+<file path="frontend-nextjs/src/app/layout.tsx">
+import type { Metadata } from "next";
+import "./globals.css";
+import ClientProvider from "./client-provider";
+
+export const metadata: Metadata = {
+  title: "Sistema de Restaurante",
+  description: "Sistema de gestión para restaurantes con Next.js y GraphQL",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="es">
+      <body className="antialiased">
+        <ClientProvider>{children}</ClientProvider>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="frontend-nextjs/src/app/page.tsx">
+'use client';
+
+import { useState, useEffect } from "react";
+import ApolloProviderWrapper from "../lib/apollo-provider";
+import client from "../lib/apollo-client";
+import Auth from "../components/Auth";
+import Dashboard from "../components/Dashboard";
+
+function AppContent() {
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const savedToken = localStorage.getItem("token");
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
+
+  const handleLogin = (newToken: string) => {
+    setToken(newToken);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    // Clear Apollo cache
+    client.clearStore();
+  };
+
+  return (
+    <>
+      {token ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : (
+        <Auth onLogin={handleLogin} />
+      )}
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <ApolloProviderWrapper>
+      <AppContent />
+    </ApolloProviderWrapper>
+  );
+}
+</file>
+
+<file path="frontend-nextjs/src/components/Auth.tsx">
+'use client';
+
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { LOGIN_MUTATION, SIGNUP_MUTATION } from '../lib/queries';
+import type { AuthPayload } from '../types';
+import { RoleEnum } from '../types';
+
+interface AuthProps {
+  onLogin: (token: string) => void;
+}
+
+const Auth: React.FC<AuthProps> = ({ onLogin }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [role, setRole] = useState<RoleEnum>(RoleEnum.STAFF);
+
+  const [login, { loading: loginLoading, error: loginError }] = useMutation<{ login: AuthPayload }>(LOGIN_MUTATION);
+  const [signup, { loading: signupLoading, error: signupError }] = useMutation<{ signup: AuthPayload }>(SIGNUP_MUTATION);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (isLogin) {
+        const result = await login({ variables: { email, password } });
+        if (result.data?.login.token) {
+          localStorage.setItem('token', result.data.login.token);
+          onLogin(result.data.login.token);
+        }
+      } else {
+        const result = await signup({ variables: { email, password, name, role } });
+        if (result.data?.signup.token) {
+          localStorage.setItem('token', result.data.signup.token);
+          onLogin(result.data.signup.token);
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const quickLogin = async (userEmail: string, userPassword: string) => {
+    try {
+      const result = await login({ variables: { email: userEmail, password: userPassword } });
+      if (result.data?.login.token) {
+        localStorage.setItem('token', result.data.login.token);
+        onLogin(result.data.login.token);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
+        </h2>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {/* Quick login buttons */}
+          <div className="mb-6">
+            <h4 className="text-lg font-medium text-gray-900 mb-3 text-center">Login rápido:</h4>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <button 
+                onClick={() => quickLogin('admin@food360.local', '123456')} 
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
+                aria-label="Login rápido como administrador"
+              >
+                Admin
+              </button>
+              <button 
+                onClick={() => quickLogin('manager@food360.local', 'manager')} 
+                className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded text-sm"
+                aria-label="Login rápido como manager"
+              >
+                Manager
+              </button>
+              <button 
+                onClick={() => quickLogin('staff@food360.local', 'staff')} 
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+                aria-label="Login rápido como staff"
+              >
+                Staff
+              </button>
+            </div>
+          </div>
+
+          <hr className="mb-6" />
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <div className="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            {!isLogin && (
+              <>
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Nombre
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+                    Rol
+                  </label>
+                  <div className="mt-1">
+                    <select
+                      id="role"
+                      name="role"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value as RoleEnum)}
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                      <option value={RoleEnum.STAFF}>Staff</option>
+                      <option value={RoleEnum.MANAGER}>Manager</option>
+                      <option value={RoleEnum.SUPERADMIN}>Super Admin</option>
+                    </select>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div>
+              <button
+                type="submit"
+                disabled={loginLoading || signupLoading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              >
+                {loginLoading || signupLoading ? 'Procesando...' : isLogin ? 'Iniciar Sesión' : 'Registrarse'}
+              </button>
+            </div>
+          </form>
+
+          {(loginError || signupError) && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <div className="text-sm text-red-700">
+                <strong>Error:</strong> {loginError?.message || signupError?.message}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-6 text-center">
+            <span className="text-sm text-gray-600">
+              {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}
+            </span>
+            <button 
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="ml-2 text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+            >
+              {isLogin ? 'Registrarse' : 'Iniciar Sesión'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Auth;
+</file>
+
+<file path="frontend-nextjs/src/components/Dashboard.tsx">
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation, useSubscription } from '@apollo/client';
+import { 
+  GET_MENU_ITEMS, 
+  GET_TABLES, 
+  GET_ORDERS,
+  CREATE_MENU_ITEM,
+  DELETE_MENU_ITEM,
+  ADD_TABLE,
+  REMOVE_TABLE,
+  CREATE_ORDER,
+  SET_ORDER_STATUS,
+  CREATE_PAYMENT_FOR_ORDER,
+  GET_ME,
+  GENERATE_QR_CODE_FOR_TABLE,
+  ORDER_CREATED_SUBSCRIPTION,
+  ORDER_UPDATED_SUBSCRIPTION,
+  ORDER_STATUS_CHANGED_SUBSCRIPTION
+} from '../lib/queries';
+import type { MenuItem, Table, Order, User } from '../types';
+import { RoleEnum } from '../types';
+import type { ApolloError } from '@apollo/client';
+
+interface DashboardProps {
+  onLogout: () => void;
+}
+
+// Define proper error types
+interface GraphQLError {
+  message: string;
+}
+
+interface NetworkError {
+  message: string;
+}
+
+interface ErrorWithDetails {
+  networkError?: NetworkError;
+  graphQLErrors?: GraphQLError[];
+  message?: string;
+}
+
+// Filter interfaces
+interface MenuItemFilter {
+  name?: string;
+  priceMin?: number;
+  priceMax?: number;
+  isAvailable?: boolean;
+}
+
+interface TableFilter {
+  number?: number;
+  capacityMin?: number;
+  capacityMax?: number;
+  hasQrCode?: boolean;
+}
+
+interface OrderFilter {
+  status?: string;
+  tableId?: number;
+  userId?: number;
+  createdAfter?: string;
+  createdBefore?: string;
+}
+
+// Sort interfaces
+interface MenuItemSort {
+  field: 'id' | 'name' | 'price' | 'createdAt' | 'isAvailable';
+  order: 'asc' | 'desc';
+}
+
+interface TableSort {
+  field: 'id' | 'number' | 'capacity' | 'orderCount';
+  order: 'asc' | 'desc';
+}
+
+interface OrderSort {
+  field: 'id' | 'status' | 'createdAt' | 'tableId' | 'orderNumber';
+  order: 'asc' | 'desc';
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
+  const [activeTab, setActiveTab] = useState('menu');
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemPrice, setNewItemPrice] = useState('');
+
+  // Filter and sort states
+  const [menuFilter, setMenuFilter] = useState<MenuItemFilter>({});
+  const [menuSort, setMenuSort] = useState<MenuItemSort>({ field: 'name', order: 'asc' });
+  const [tableFilter, setTableFilter] = useState<TableFilter>({});
+  const [tableSort, setTableSort] = useState<TableSort>({ field: 'number', order: 'asc' });
+  const [orderFilter, setOrderFilter] = useState<OrderFilter>({});
+  const [orderSort, setOrderSort] = useState<OrderSort>({ field: 'createdAt', order: 'desc' });
+
+  // Pagination states
+  const [menuPage, setMenuPage] = useState(0);
+  const [tablePage, setTablePage] = useState(0);
+  const [orderPage, setOrderPage] = useState(0);
+  const itemsPerPage = 12;
+
+  // Queries with filters and sorting
+  const { data: userData, loading: userLoading, error: userError } = useQuery<{ me: User }>(GET_ME);
+  
+  const { data: menuData, loading: menuLoading, error: menuError, refetch: refetchMenu } = useQuery<{ items: MenuItem[] }>(GET_MENU_ITEMS, {
+    variables: {
+      filter: Object.keys(menuFilter).length > 0 ? menuFilter : undefined,
+      sort: menuSort,
+      limit: itemsPerPage,
+      offset: menuPage * itemsPerPage
+    }
+  });
+
+  const { data: tablesData, loading: tablesLoading, error: tablesError, refetch: refetchTables } = useQuery<{ tables: Table[] }>(GET_TABLES, {
+    variables: {
+      filter: Object.keys(tableFilter).length > 0 ? tableFilter : undefined,
+      sort: tableSort,
+      limit: itemsPerPage,
+      offset: tablePage * itemsPerPage
+    }
+  });
+
+  const { data: ordersData, loading: ordersLoading, error: ordersError, refetch: refetchOrders } = useQuery<{ orders: Order[] }>(GET_ORDERS, {
+    variables: {
+      filter: Object.keys(orderFilter).length > 0 ? orderFilter : undefined,
+      sort: orderSort,
+      limit: itemsPerPage,
+      offset: orderPage * itemsPerPage
+    }
+  });
+
+  // Mutations
+  const [createMenuItem] = useMutation(CREATE_MENU_ITEM);
+  const [deleteMenuItem] = useMutation(DELETE_MENU_ITEM);
+  const [addTable, { loading: addTableLoading }] = useMutation(ADD_TABLE);
+  const [removeTable, { loading: removeTableLoading }] = useMutation(REMOVE_TABLE);
+  const [createOrder] = useMutation(CREATE_ORDER);
+  const [setOrderStatus] = useMutation(SET_ORDER_STATUS);
+  const [createPayment] = useMutation(CREATE_PAYMENT_FOR_ORDER);
+  const [generateQrCode] = useMutation(GENERATE_QR_CODE_FOR_TABLE);
+
+  // Subscriptions
+  const { data: orderCreatedData } = useSubscription(ORDER_CREATED_SUBSCRIPTION);
+  const { data: orderUpdatedData } = useSubscription(ORDER_UPDATED_SUBSCRIPTION);
+  const { data: orderStatusChangedData } = useSubscription(ORDER_STATUS_CHANGED_SUBSCRIPTION);
+
+  useEffect(() => {
+    if (orderCreatedData) {
+      refetchOrders();
+      refetchTables();
+    }
+  }, [orderCreatedData, refetchOrders, refetchTables]);
+
+  useEffect(() => {
+    if (orderUpdatedData) {
+      refetchOrders();
+      refetchTables();
+    }
+  }, [orderUpdatedData, refetchOrders, refetchTables]);
+
+  useEffect(() => {
+    if (orderStatusChangedData) {
+      refetchOrders();
+      refetchTables();
+    }
+  }, [orderStatusChangedData, refetchOrders, refetchTables]);
+
+  const handleCreateMenuItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createMenuItem({
+        variables: { title: newItemName, price: parseFloat(newItemPrice) }
+      });
+      setNewItemName('');
+      setNewItemPrice('');
+      refetchMenu();
+    } catch (error) {
+      console.error('Error creating menu item:', error);
+    }
+  };
+
+  const handleDeleteMenuItem = async (id: string) => {
+    try {
+      await deleteMenuItem({ variables: { id } });
+      refetchMenu();
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
+  };
+
+  const handleAddTable = async () => {
+    try {
+      await addTable();
+      refetchTables();
+    } catch (error: unknown) {
+      console.error('Error adding table:', error);
+      const errorMessage = getErrorMessage(error as ErrorWithDetails);
+      alert('Error al agregar mesa: ' + errorMessage);
+    }
+  };
+
+  const handleRemoveTable = async () => {
+    try {
+      await removeTable();
+      refetchTables();
+    } catch (error: unknown) {
+      console.error('Error removing table:', error);
+      const errorMessage = getErrorMessage(error as ErrorWithDetails);
+      alert('Error al eliminar mesa: ' + errorMessage);
+    }
+  };
+
+  const handleCreateOrder = async (tableId: string, itemId: string) => {
+    try {
+      await createOrder({ variables: { tableId, itemId } });
+      refetchOrders();
+      refetchTables();
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, status: string) => {
+    try {
+      await setOrderStatus({ variables: { id: orderId, status } });
+      refetchOrders();
+      refetchTables();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  const handlePayOrder = async (orderId: string) => {
+    try {
+      await createPayment({ variables: { type: 'CASH', orderId } });
+      refetchOrders();
+      refetchTables();
+    } catch (error) {
+      console.error('Error processing payment:', error);
+    }
+  };
+
+  const handleGenerateQrCode = async (tableId: string) => {
+    try {
+      await generateQrCode({ variables: { tableId } });
+      refetchTables();
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+  };
+
+  const getQrCodeUrl = (qrCode: string) => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/menu/${qrCode}`;
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0
+    }).format(price);
+  };
+
+  const getStatusBadgeColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'preparing': return 'bg-orange-100 text-orange-800';
+      case 'ready': return 'bg-blue-100 text-blue-800';
+      case 'delivered': return 'bg-green-100 text-green-800';
+      case 'paid': return 'bg-gray-100 text-gray-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const canManageMenu = userData?.me.role === RoleEnum.MANAGER || userData?.me.role === RoleEnum.SUPERADMIN;
+  const canManageTables = userData?.me.role !== undefined;
+
+  // Helper function to get detailed error message
+  const getErrorMessage = (error: ErrorWithDetails | ApolloError) => {
+    if (error?.networkError) {
+      if (error.networkError.message.includes('Failed to fetch')) {
+        return 'No se puede conectar al servidor backend. Asegúrate de que el backend esté ejecutándose en http://localhost:4000/graphql';
+      }
+      return `Error de conexión: ${error.networkError.message}`;
+    }
+    if (error?.graphQLErrors?.length && error.graphQLErrors.length > 0) {
+      return error.graphQLErrors.map((err: GraphQLError) => err.message).join(', ');
+    }
+    return error?.message || 'Error desconocido';
+  };
+
+  // Check if we have connection issues
+  const hasConnectionIssues = (menuError?.networkError || tablesError?.networkError || ordersError?.networkError) && 
+    [menuError, tablesError, ordersError].some(error => 
+      error?.networkError?.message?.includes('Failed to fetch')
+    );
+
+  // Filter components
+  const MenuFilters = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
+        
+        {/* Filters */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Buscar por nombre</label>
+            <input
+              type="text"
+              value={menuFilter.name || ''}
+              onChange={(e) => setMenuFilter({ ...menuFilter, name: e.target.value || undefined })}
+              placeholder="Nombre del plato..."
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Precio mínimo</label>
+            <input
+              type="number"
+              value={menuFilter.priceMin || ''}
+              onChange={(e) => setMenuFilter({ ...menuFilter, priceMin: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="0"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Precio máximo</label>
+            <input
+              type="number"
+              value={menuFilter.priceMax || ''}
+              onChange={(e) => setMenuFilter({ ...menuFilter, priceMax: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="999999"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Disponibilidad</label>
+            <select
+              value={menuFilter.isAvailable === undefined ? '' : menuFilter.isAvailable.toString()}
+              onChange={(e) => setMenuFilter({ ...menuFilter, isAvailable: e.target.value === '' ? undefined : e.target.value === 'true' })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="">Todos</option>
+              <option value="true">Disponible</option>
+              <option value="false">No disponible</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Clear filters button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setMenuFilter({});
+              setMenuPage(0);
+            }}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const MenuSorting = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
+        
+        {/* Sorting */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
+            <select
+              value={menuSort.field}
+              onChange={(e) => setMenuSort({ ...menuSort, field: e.target.value as MenuItemSort['field'] })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="name">Nombre (A-Z)</option>
+              <option value="price">Precio</option>
+              <option value="createdAt">Fecha de creación</option>
+              <option value="isAvailable">Disponibilidad</option>
+              <option value="id">ID</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Orden</label>
+            <select
+              value={menuSort.order}
+              onChange={(e) => setMenuSort({ ...menuSort, order: e.target.value as 'asc' | 'desc' })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Reset sorting button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setMenuSort({ field: 'name', order: 'asc' });
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Restablecer orden
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const TableFilters = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
+        
+        {/* Filters */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Número de mesa</label>
+            <input
+              type="number"
+              value={tableFilter.number || ''}
+              onChange={(e) => setTableFilter({ ...tableFilter, number: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="Número..."
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Capacidad mínima</label>
+            <input
+              type="number"
+              value={tableFilter.capacityMin || ''}
+              onChange={(e) => setTableFilter({ ...tableFilter, capacityMin: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="0"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Capacidad máxima</label>
+            <input
+              type="number"
+              value={tableFilter.capacityMax || ''}
+              onChange={(e) => setTableFilter({ ...tableFilter, capacityMax: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="999"
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+        </div>
+
+        {/* Clear filters button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setTableFilter({});
+              setTablePage(0);
+            }}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const TableSorting = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
+        
+        {/* Sorting */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
+            <select
+              value={tableSort.field}
+              onChange={(e) => setTableSort({ ...tableSort, field: e.target.value as TableSort['field'] })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="number">Número de mesa</option>
+              <option value="capacity">Capacidad</option>
+              <option value="orderCount">Cantidad de pedidos activos</option>
+              <option value="id">ID de mesa</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Orden</label>
+            <select
+              value={tableSort.order}
+              onChange={(e) => setTableSort({ ...tableSort, order: e.target.value as 'asc' | 'desc' })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Reset sorting button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setTableSort({ field: 'number', order: 'asc' });
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Restablecer orden
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const OrderFilters = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Filtros</h3>
+        
+        {/* Filters */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Estado</label>
+            <select
+              value={orderFilter.status || ''}
+              onChange={(e) => setOrderFilter({ ...orderFilter, status: e.target.value || undefined })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="">Todos los estados</option>
+              <option value="PENDING">Pendiente</option>
+              <option value="PREPARING">Preparando</option>
+              <option value="READY">Listo</option>
+              <option value="DELIVERED">Entregado</option>
+              <option value="PAID">Pagado</option>
+              <option value="CANCELLED">Cancelado</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Mesa</label>
+            <input
+              type="number"
+              value={orderFilter.tableId || ''}
+              onChange={(e) => setOrderFilter({ ...orderFilter, tableId: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="Número de mesa..."
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Usuario ID</label>
+            <input
+              type="number"
+              value={orderFilter.userId || ''}
+              onChange={(e) => setOrderFilter({ ...orderFilter, userId: e.target.value ? Number(e.target.value) : undefined })}
+              placeholder="ID del usuario..."
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Desde</label>
+            <input
+              type="datetime-local"
+              value={orderFilter.createdAfter ? new Date(orderFilter.createdAfter).toISOString().slice(0, 16) : ''}
+              onChange={(e) => setOrderFilter({ ...orderFilter, createdAfter: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Hasta</label>
+            <input
+              type="datetime-local"
+              value={orderFilter.createdBefore ? new Date(orderFilter.createdBefore).toISOString().slice(0, 16) : ''}
+              onChange={(e) => setOrderFilter({ ...orderFilter, createdBefore: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+        </div>
+
+        {/* Clear filters button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setOrderFilter({});
+              setOrderPage(0);
+            }}
+            className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const OrderSorting = () => (
+    <div className="bg-white shadow rounded-lg mb-6">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Ordenamiento</h3>
+        
+        {/* Sorting */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Ordenar por</label>
+            <select
+              value={orderSort.field}
+              onChange={(e) => setOrderSort({ ...orderSort, field: e.target.value as OrderSort['field'] })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="createdAt">Fecha de creación</option>
+              <option value="status">Estado</option>
+              <option value="tableId">Número de mesa</option>
+              <option value="orderNumber">Número de pedido</option>
+              <option value="id">ID del pedido</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Orden</label>
+            <select
+              value={orderSort.order}
+              onChange={(e) => setOrderSort({ ...orderSort, order: e.target.value as 'asc' | 'desc' })}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Reset sorting button */}
+        <div className="mt-4">
+          <button
+            onClick={() => {
+              setOrderSort({ field: 'createdAt', order: 'desc' });
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-sm"
+          >
+            Restablecer orden
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Pagination component
+  const Pagination = ({ currentPage, setPage, hasMore }: { currentPage: number; setPage: (page: number) => void; hasMore: boolean }) => (
+    <div className="flex justify-between items-center mt-6">
+      <button
+        onClick={() => setPage(Math.max(0, currentPage - 1))}
+        disabled={currentPage === 0}
+        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
+      >
+        Anterior
+      </button>
+      
+      <span className="text-gray-700">
+        Página {currentPage + 1}
+      </span>
+      
+      <button
+        onClick={() => setPage(currentPage + 1)}
+        disabled={!hasMore}
+        className="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded"
+      >
+        Siguiente
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <h1 className="text-3xl font-bold text-gray-900">Sistema de Restaurante</h1>
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-700">
+                {userLoading ? (
+                  'Cargando usuario...'
+                ) : userError ? (
+                  'Error cargando usuario'
+                ) : userData?.me ? (
+                  <>Bienvenido, <strong>{userData.me.email}</strong> ({userData.me.role})</>
+                ) : (
+                  'Usuario no encontrado'
+                )}
+              </span>
+              <button 
+                onClick={onLogout} 
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                aria-label="Cerrar sesión"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Navigation */}
+      <nav className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center space-x-8">
+            {['menu', 'tables', 'orders'].map((tab) => (
+              <button 
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
+                  activeTab === tab 
+                    ? 'border-indigo-500 text-indigo-600' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                {tab === 'menu' ? 'Menú' : tab === 'tables' ? 'Mesas' : 'Pedidos'}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Content */}
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        {/* Connection Status Banner */}
+        {hasConnectionIssues && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  Problema de conexión con el backend
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>
+                    No se puede conectar al servidor backend. Para solucionar este problema:
+                  </p>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>Asegúrate de que el backend esté ejecutándose</li>
+                    <li>Verifica que esté corriendo en <code className="font-mono bg-red-100 px-1 rounded">http://localhost:4000/graphql</code></li>
+                    <li>Ejecuta <code className="font-mono bg-red-100 px-1 rounded">npm start</code> en la carpeta del backend</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Menu Tab */}
+        {activeTab === 'menu' && (
+          <div className="px-4 py-6 sm:px-0">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Gestión de Menú</h2>
+            </div>
+            
+            {canManageMenu && (
+              <div className="bg-white shadow rounded-lg mb-6">
+                <div className="px-4 py-5 sm:p-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    Agregar Nuevo Plato
+                  </h3>
+                  <form onSubmit={handleCreateMenuItem} className="flex flex-wrap gap-4">
+                    <div className="flex-1 min-w-0">
+                      <label htmlFor="itemName" className="block text-sm font-medium text-gray-700">
+                        Nombre del plato
+                      </label>
+                      <input
+                        id="itemName"
+                        type="text"
+                        value={newItemName}
+                        onChange={(e) => setNewItemName(e.target.value)}
+                        required
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                    <div className="w-32">
+                      <label htmlFor="itemPrice" className="block text-sm font-medium text-gray-700">
+                        Precio (COP)
+                      </label>
+                      <input
+                        id="itemPrice"
+                        type="number"
+                        value={newItemPrice}
+                        onChange={(e) => setNewItemPrice(e.target.value)}
+                        required
+                        min="0"
+                        step="100"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        type="submit"
+                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                      >
+                        Agregar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* Filters and Sorting */}
+            <MenuFilters />
+            <MenuSorting />
+
+            {menuLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="text-lg text-gray-600">Cargando menú...</div>
+              </div>
+            ) : menuError ? (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="text-red-700">
+                  <strong>Error cargando menú:</strong> {getErrorMessage(menuError)}
+                </div>
+                <button 
+                  onClick={() => refetchMenu()} 
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  Reintentar
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {menuData?.items.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500">No hay items en el menú</p>
+                  </div>
+                ) : (
+                  menuData?.items.map((item) => (
+                    <div key={item.id} className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <h3 className="text-lg font-medium text-gray-900 mb-3">{item.name}</h3>
+                        <p className="text-gray-600 mb-2"><strong>Precio:</strong> {formatPrice(item.price)}</p>
+                        <p className="text-gray-600 mb-2"><strong>SKU:</strong> {item.sku}</p>
+                        <div className="flex items-center justify-between">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            item.isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+                            {item.isAvailable ? 'Disponible' : 'No disponible'}
+                          </span>
+                          {canManageMenu && (
+                            <button 
+                              onClick={() => handleDeleteMenuItem(item.id)}
+                              className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm"
+                              aria-label={`Eliminar ${item.name}`}
+                            >
+                              Eliminar
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Pagination */}
+            <Pagination 
+              currentPage={menuPage} 
+              setPage={setMenuPage} 
+              hasMore={menuData?.items.length === itemsPerPage}
+            />
+          </div>
+        )}
+
+        {/* Tables Tab */}
+        {activeTab === 'tables' && (
+          <div className="px-4 py-6 sm:px-0">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Gestión de Mesas</h2>
+              
+              {canManageTables && (
+                <div className="flex space-x-3">
+                  <button 
+                    onClick={handleAddTable}
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    disabled={addTableLoading}
+                  >
+                    {addTableLoading ? 'Agregando...' : 'Agregar Mesa'}
+                  </button>
+                  <button 
+                    onClick={handleRemoveTable}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    disabled={removeTableLoading}
+                  >
+                    {removeTableLoading ? 'Eliminando...' : 'Eliminar Última Mesa'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Filters and Sorting */}
+            <TableFilters />
+            <TableSorting />
+
+            {tablesLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="text-lg text-gray-600">Cargando mesas...</div>
+              </div>
+            ) : tablesError ? (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="text-red-700">
+                  <strong>Error cargando mesas:</strong> {getErrorMessage(tablesError)}
+                </div>
+                <button 
+                  onClick={() => refetchTables()} 
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  Reintentar
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {tablesData?.tables.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500">No hay mesas disponibles</p>
+                  </div>
+                ) : (
+                  tablesData?.tables.map((table) => (
+                    <div key={table.id} className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-medium text-gray-900">Mesa {table.number}</h3>
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {table.orders?.filter(order => order.status !== 'PAID').length || 0} pedidos activos
+                          </span>
+                        </div>
+                        
+                        <p className="text-gray-600 mb-4"><strong>Capacidad:</strong> {table.capacity} personas</p>
+                        
+                        {/* QR Code Section */}
+                        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                          <h4 className="text-sm font-medium text-gray-900 mb-2">Código QR de la Mesa</h4>
+                          {table.qrCode ? (
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-gray-600 font-mono bg-white px-2 py-1 rounded border">
+                                  {table.qrCode}
+                                </span>
+                                <button
+                                  onClick={() => handleGenerateQrCode(table.id)}
+                                  className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                  title="Regenerar código QR"
+                                >
+                                  🔄
+                                </button>
+                              </div>
+                              <div className="flex gap-2">
+                                <a
+                                  href={getQrCodeUrl(table.qrCode)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded text-xs flex-1 text-center"
+                                >
+                                  Ver Menú Público
+                                </a>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(getQrCodeUrl(table.qrCode!));
+                                    alert('URL copiada al portapapeles');
+                                  }}
+                                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                  title="Copiar URL"
+                                >
+                                  📋
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleGenerateQrCode(table.id)}
+                              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-3 rounded text-sm"
+                            >
+                              Generar Código QR
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Quick order form */}
+                        <div className="mb-4">
+                          <h4 className="text-sm font-medium text-gray-900 mb-2">Crear Pedido Rápido:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {menuData?.items.slice(0, 3).map((item) => (
+                              <button
+                                key={item.id}
+                                onClick={() => handleCreateOrder(table.id, item.id)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                aria-label={`Agregar ${item.name} a mesa ${table.number}`}
+                              >
+                                {item.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Orders in this table */}
+                        {table.orders && table.orders.length > 0 && (
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Pedidos:</h4>
+                            <div className="space-y-2">
+                              {table.orders.map((order) => (
+                                <div key={order.id} className="bg-gray-50 rounded p-3">
+                                  <div className="flex justify-between items-center mb-2">
+                                    <span className="font-medium text-sm">Pedido #{order.id}</span>
+                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(order.status)}`}>
+                                      {order.status}
+                                    </span>
+                                  </div>
+                                  {order.orderItems?.map((item) => (
+                                    <p key={item.id} className="text-xs text-gray-600 mb-1">
+                                      {item.quantity}x {item.menuItem?.name} - {formatPrice(item.price)}
+                                    </p>
+                                  ))}
+                                  {order.status !== 'PAID' && (
+                                    <div className="flex flex-wrap gap-1 mt-2">
+                                      <button
+                                        onClick={() => handleUpdateOrderStatus(order.id, 'PREPARING')}
+                                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                      >
+                                        Preparando
+                                      </button>
+                                      <button
+                                        onClick={() => handleUpdateOrderStatus(order.id, 'READY')}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                      >
+                                        Listo
+                                      </button>
+                                      <button
+                                        onClick={() => handlePayOrder(order.id)}
+                                        className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded text-xs"
+                                      >
+                                        Pagar
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Pagination */}
+            <Pagination 
+              currentPage={tablePage} 
+              setPage={setTablePage} 
+              hasMore={tablesData?.tables.length === itemsPerPage}
+            />
+          </div>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === 'orders' && (
+          <div className="px-4 py-6 sm:px-0">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Todos los Pedidos</h2>
+            </div>
+            
+            {/* Filters and Sorting */}
+            <OrderFilters />
+            <OrderSorting />
+
+            {ordersLoading ? (
+              <div className="flex justify-center items-center h-64">
+                <div className="text-lg text-gray-600">Cargando pedidos...</div>
+              </div>
+            ) : ordersError ? (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="text-red-700">
+                  <strong>Error cargando pedidos:</strong> {getErrorMessage(ordersError)}
+                </div>
+                <button 
+                  onClick={() => refetchOrders()} 
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  Reintentar
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {ordersData?.orders.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500">No hay pedidos registrados</p>
+                  </div>
+                ) : (
+                  ordersData?.orders.map((order) => (
+                    <div key={order.id} className="bg-white overflow-hidden shadow rounded-lg">
+                      <div className="px-4 py-5 sm:p-6">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="text-lg font-medium text-gray-900">Pedido #{order.id}</h3>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadgeColor(order.status)}`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        
+                        <p className="text-gray-600 mb-2"><strong>Mesa:</strong> {order.tableId}</p>
+                        <p className="text-gray-600 mb-4"><strong>Fecha:</strong> {new Date(parseInt(order.createdAt)).toLocaleString()}</p>
+                        
+                        <div className="mb-4">
+                          <h4 className="text-sm font-medium text-gray-900 mb-2">Items:</h4>
+                          {order.orderItems?.map((item) => (
+                            <p key={item.id} className="text-sm text-gray-600 mb-1">
+                              {item.quantity}x {item.menuItem?.name} - {formatPrice(item.price)}
+                            </p>
+                          ))}
+                        </div>
+
+                        {order.status !== 'PAID' && (
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              onClick={() => handleUpdateOrderStatus(order.id, 'PREPARING')}
+                              className="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-1 px-3 rounded text-sm"
+                            >
+                              Preparando
+                            </button>
+                            <button
+                              onClick={() => handleUpdateOrderStatus(order.id, 'READY')}
+                              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-3 rounded text-sm"
+                            >
+                              Listo
+                            </button>
+                            <button
+                              onClick={() => handlePayOrder(order.id)}
+                              className="bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-3 rounded text-sm"
+                            >
+                              Pagar
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Pagination */}
+            <Pagination 
+              currentPage={orderPage} 
+              setPage={setOrderPage} 
+              hasMore={ordersData?.orders.length === itemsPerPage}
+            />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default Dashboard;
+</file>
+
+<file path="frontend-nextjs/src/lib/apollo-client.ts">
+'use client';
+
+import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { onError } from '@apollo/client/link/error';
+
+const httpLink = createHttpLink({
+  uri: 'http://localhost:4000/graphql',
+});
+
+const authLink = setContext((_, { headers }) => {
+  // Get the authentication token from local storage if it exists
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  
+  // Return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+      // Add content type for better compatibility
+      'content-type': 'application/json',
+    }
+  }
+});
+
+// Error handling link
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  }
+
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
+    if (networkError.message.includes('Failed to fetch')) {
+      console.error('Backend server is not running on http://localhost:4000/graphql');
+    }
+  }
+});
+
+const client = new ApolloClient({
+  link: from([errorLink, authLink, httpLink]),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          orders: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          items: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+          tables: {
+            merge(_, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
+  defaultOptions: {
+    watchQuery: {
+      errorPolicy: 'all',
+    },
+    query: {
+      errorPolicy: 'all',
+    },
+  },
+});
+
+export default client;
+</file>
+
+<file path="frontend-nextjs/src/lib/apollo-provider.tsx">
+'use client';
+
+import { ApolloProvider } from '@apollo/client';
+import client from './apollo-client';
+
+export function ApolloProviderComponent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+}
+
+// También exportar como default para compatibilidad
+export default ApolloProviderComponent;
+</file>
+
+<file path="frontend-nextjs/src/lib/queries.ts">
+import { gql } from '@apollo/client';
+
+// Auth mutations
+export const LOGIN_MUTATION = gql`
+  mutation LoginUsuario($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        role
+      }
+    }
+  }
+`;
+
+export const SIGNUP_MUTATION = gql`
+  mutation SignupUsuario($email: String!, $password: String!, $name: String, $role: RoleEnum) {
+    signup(email: $email, password: $password, name: $name, role: $role) {
+      token
+      user {
+        id
+        email
+        role
+      }
+    }
+  }
+`;
+
+// Menu queries and mutations
+export const GET_MENU_ITEMS = gql`
+  query VerMenu($filter: MenuItemFilter, $sort: MenuItemSort, $limit: Int, $offset: Int) {
+    items(filter: $filter, sort: $sort, limit: $limit, offset: $offset) {
+      id
+      sku
+      name
+      price
+      isAvailable
+      createdAt
+    }
+  }
+`;
+
+export const CREATE_MENU_ITEM = gql`
+  mutation CrearMenuItem($title: String!, $price: Float!) {
+    createItem(title: $title, price: $price) {
+      id
+      sku
+      name
+      price
+      isAvailable
+      createdAt
+    }
+  }
+`;
+
+export const EDIT_MENU_ITEM = gql`
+  mutation EditarMenuItem($id: ID!, $title: String, $price: Float) {
+    editItem(id: $id, title: $title, price: $price) {
+      id
+      sku
+      name
+      price
+      isAvailable
+      createdAt
+    }
+  }
+`;
+
+export const DELETE_MENU_ITEM = gql`
+  mutation EliminarMenuItem($id: ID!) {
+    deleteItem(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+// Tables queries and mutations
+export const GET_TABLES = gql`
+  query VerMesas($filter: TableFilter, $sort: TableSort, $limit: Int, $offset: Int) {
+    tables(filter: $filter, sort: $sort, limit: $limit, offset: $offset) {
+      id
+      number
+      capacity
+      qrCode
+      orders {
+        id
+        status
+        tableId
+        userId
+        createdAt
+        orderItems {
+          id
+          quantity
+          price
+          menuItem {
+            id
+            name
+            price
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const ADD_TABLE = gql`
+  mutation AgregarMesa {
+    addTable {
+      id
+      number
+      capacity
+    }
+  }
+`;
+
+export const REMOVE_TABLE = gql`
+  mutation EliminarUltimaMesa {
+    removeTable {
+      id
+      number
+      capacity
+    }
+  }
+`;
+
+// Orders queries and mutations
+export const GET_ORDERS = gql`
+  query VerPedidos($filter: OrderFilter, $sort: OrderSort, $limit: Int, $offset: Int) {
+    orders(filter: $filter, sort: $sort, limit: $limit, offset: $offset) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+      table {
+        id
+        number
+      }
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const CREATE_ORDER = gql`
+  mutation CrearPedido($tableId: ID!, $itemId: ID!) {
+    createOrder(tableId: $tableId, itemId: $itemId) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+    }
+  }
+`;
+
+export const SET_ORDER_STATUS = gql`
+  mutation CambiarEstadoPedido($id: ID!, $status: String!) {
+    setOrderStatus(id: $id, status: $status) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+    }
+  }
+`;
+
+// Payments mutations
+export const CREATE_PAYMENT_FOR_ORDER = gql`
+  mutation ProcesarPagoPedido($type: String!, $orderId: ID!) {
+    createPaymentForOrder(type: $type, orderId: $orderId) {
+      id
+      orderId
+      amount
+      method
+      paidAt
+    }
+  }
+`;
+
+export const CREATE_PAYMENT_FOR_TABLE = gql`
+  mutation ProcesarPagoMesa($type: String!, $tableId: ID!) {
+    createPaymentForTable(type: $type, tableId: $tableId) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+    }
+  }
+`;
+
+// User query
+export const GET_ME = gql`
+  query UsuarioActual {
+    me {
+      id
+      email
+      role
+      createdAt
+    }
+  }
+`;
+
+// QR Code queries and mutations
+export const GET_TABLE_BY_QR_CODE = gql`
+  query GetTableByQrCode($qrCode: String!) {
+    getTableByQrCode(qrCode: $qrCode) {
+      id
+      number
+      capacity
+      qrCode
+    }
+  }
+`;
+
+export const GET_ORDERS_BY_QR_CODE = gql`
+  query GetOrdersByQrCode($qrCode: String!) {
+    getOrdersByQrCode(qrCode: $qrCode) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_ORDER_BY_QR_CODE = gql`
+  mutation CreateOrderByQrCode($qrCode: String!, $items: [OrderItemInput!]!) {
+    createOrderByQrCode(qrCode: $qrCode, items: $items) {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+    }
+  }
+`;
+
+export const GENERATE_QR_CODE_FOR_TABLE = gql`
+  mutation GenerateQrCodeForTable($tableId: ID!) {
+    generateQrCodeForTable(tableId: $tableId) {
+      id
+      number
+      capacity
+      qrCode
+    }
+  }
+`;
+
+// Real-time subscriptions for orders
+export const ORDER_CREATED_SUBSCRIPTION = gql`
+  subscription OnOrderCreated {
+    orderCreated {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+      table {
+        id
+        number
+      }
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const ORDER_UPDATED_SUBSCRIPTION = gql`
+  subscription OnOrderUpdated {
+    orderUpdated {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+      table {
+        id
+        number
+      }
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const ORDER_STATUS_CHANGED_SUBSCRIPTION = gql`
+  subscription OnOrderStatusChanged {
+    orderStatusChanged {
+      id
+      status
+      tableId
+      userId
+      createdAt
+      orderItems {
+        id
+        quantity
+        price
+        menuItem {
+          id
+          name
+          price
+        }
+      }
+      table {
+        id
+        number
+      }
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+</file>
+
+<file path="frontend-nextjs/src/types.ts">
+export enum RoleEnum {
+  SUPERADMIN = 'SUPERADMIN',
+  MANAGER = 'MANAGER',
+  STAFF = 'STAFF',
+}
+
+export interface MenuItem {
+  id: string;
+  sku: string;
+  name: string;
+  price: number;
+  isAvailable: boolean;
+  createdAt: string;
+}
+
+export interface Table {
+  id: string;
+  number: number;
+  capacity: number;
+  qrCode?: string;
+  orders?: Order[];
+}
+
+export interface OrderItem {
+  id: string;
+  orderId: number;
+  menuItemId: number;
+  quantity: number;
+  price: number;
+  menuItem?: MenuItem;
+}
+
+export interface Order {
+  id: string;
+  status: string;
+  tableId: number;
+  userId: number;
+  createdAt: string;
+  orderItems?: OrderItem[];
+  table?: Table;
+  user?: User;
+}
+
+export interface Payment {
+  id: string;
+  orderId: number;
+  amount: number;
+  method: string;
+  paidAt: string;
+  order?: Order;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  role: RoleEnum;
+  createdAt: string;
+  orders?: Order[];
+}
+
+export interface AuthPayload {
+  token: string;
+  user: User;
+}
+</file>
+
+<file path="frontend-nextjs/.gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="frontend-nextjs/eslint.config.mjs">
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+];
+
+export default eslintConfig;
+</file>
+
+<file path="frontend-nextjs/next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+</file>
+
+<file path="frontend-nextjs/package.json">
+{
+  "name": "frontend-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.13.8",
+    "graphql": "^16.11.0",
+    "graphql-ws": "^6.0.5",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="frontend-nextjs/postcss.config.mjs">
+const config = {
+  plugins: ["@tailwindcss/postcss"],
+};
+
+export default config;
+</file>
+
+<file path="frontend-nextjs/README.md">
+# Frontend Next.js - Sistema de Restaurante
+
+Esta es la versión migrada a Next.js del frontend del sistema de restaurante. Mantiene toda la funcionalidad original del frontend React pero aprovecha las ventajas de Next.js.
+
+## Características
+
+- **Framework**: Next.js 15 con App Router
+- **Estilo**: Tailwind CSS para diseño responsivo
+- **GraphQL**: Apollo Client para comunicación con el backend
+- **TypeScript**: Tipado estático completo
+- **Autenticación**: JWT con localStorage
+- **Roles**: Soporte para SUPERADMIN, MANAGER y STAFF
+
+## Funcionalidades
+
+### Autenticación
+- Login y registro de usuarios
+- Botones de acceso rápido para usuarios de prueba
+- Manejo de tokens JWT
+
+### Gestión de Menú
+- Ver todos los items del menú
+- Crear nuevos platos (solo Manager/Admin)
+- Eliminar items (solo Manager/Admin)
+- Visualización de precios en formato colombiano
+
+### Gestión de Mesas
+- Ver todas las mesas del restaurante
+- Agregar/eliminar mesas
+- Ver pedidos activos por mesa
+- Crear pedidos rápidos desde las mesas
+
+### Gestión de Pedidos
+- Ver todos los pedidos del sistema
+- Cambiar estados de pedidos (Pendiente → Preparando → Listo)
+- Procesar pagos
+- Vista detallada por mesa y general
+
+## Instalación
+
+1. Asegúrate de que el backend esté corriendo en `http://localhost:4000/graphql`
+
+2. Instala las dependencias:
+```bash
+npm install
+```
+
+3. Ejecuta en modo desarrollo:
+```bash
+npm run dev
+```
+
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador
+
+## Scripts Disponibles
+
+- `npm run dev` - Ejecuta en modo desarrollo con Turbopack
+- `npm run build` - Construye la aplicación para producción
+- `npm run start` - Ejecuta la aplicación en modo producción
+- `npm run lint` - Ejecuta el linter de código
+
+## Usuarios de Prueba
+
+Puedes usar estos usuarios pre-configurados para probar la aplicación:
+
+- **Admin**: admin@food360.local / 123456
+- **Manager**: manager@food360.local / manager  
+- **Staff**: staff@food360.local / staff
+
+## Diferencias con la Versión React
+
+### Ventajas de Next.js
+- **Server-Side Rendering (SSR)**: Mejor SEO y performance inicial
+- **App Router**: Estructura de rutas más moderna y flexible
+- **Optimizaciones automáticas**: Compresión de imágenes, code splitting, etc.
+- **Tailwind CSS**: Diseño más moderno y responsivo
+- **TypeScript mejorado**: Mejor integración con Next.js
+
+### Estructura de Archivos
+```
+src/
+├── app/
+│   ├── layout.tsx          # Layout principal
+│   ├── page.tsx           # Página principal
+│   └── globals.css        # Estilos globales
+├── components/
+│   ├── Auth.tsx           # Componente de autenticación
+│   └── Dashboard.tsx      # Dashboard principal
+├── lib/
+│   ├── apollo-client.ts   # Configuración Apollo Client
+│   ├── apollo-provider.tsx # Provider para Apollo
+│   └── queries.ts         # Queries y mutaciones GraphQL
+└── types.ts               # Tipos TypeScript
+```
+
+## Configuración del Backend
+
+Esta aplicación requiere que el backend GraphQL esté ejecutándose. Asegúrate de:
+
+1. Tener el backend corriendo en `http://localhost:4000/graphql`
+2. La base de datos PostgreSQL configurada
+3. Los datos de seed cargados para los usuarios de prueba
+
+## Tecnologías Utilizadas
+
+- **Next.js 15**: Framework React con SSR
+- **React 19**: Biblioteca de interfaz de usuario
+- **TypeScript**: Superset tipado de JavaScript
+- **Tailwind CSS**: Framework de CSS utilitario
+- **Apollo Client**: Cliente GraphQL
+- **GraphQL**: Lenguaje de consulta para APIs
+
+## Próximos Pasos
+
+Esta migración mantiene toda la funcionalidad del frontend React original. Posibles mejoras futuras:
+
+- Implementar rutas protegidas con middleware de Next.js
+- Agregar Server-Side Rendering para mejor SEO
+- Implementar cache de Apollo con persistencia
+- Agregar Progressive Web App (PWA) capabilities
+- Implementar notificaciones en tiempo real
+</file>
+
+<file path="frontend-nextjs/tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
 </file>
 
 <file path="backend/prisma/migrations/20250424205455_init/migration.sql">
@@ -177,6 +3305,34 @@ COMMIT;
 ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'CLIENTE';
 </file>
 
+<file path="backend/prisma/migrations/20250603202909_init/migration.sql">
+/*
+  Warnings:
+
+  - You are about to alter the column `price` on the `Item` table. The data in that column could be lost. The data in that column will be cast from `DoublePrecision` to `Decimal(65,30)`.
+
+*/
+-- AlterTable
+ALTER TABLE "Item" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "price" SET DATA TYPE DECIMAL(65,30);
+
+-- AlterTable
+ALTER TABLE "Table" ADD COLUMN     "capacity" INTEGER DEFAULT 4,
+ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- CreateIndex
+CREATE INDEX "Order_tableId_idx" ON "Order"("tableId");
+
+-- CreateIndex
+CREATE INDEX "Order_itemId_idx" ON "Order"("itemId");
+
+-- CreateIndex
+CREATE INDEX "Order_paymentId_idx" ON "Order"("paymentId");
+</file>
+
 <file path="backend/prisma/migrations/migration_lock.toml">
 # Please do not edit this file manually
 # It should be added in your version-control system (i.e. Git)
@@ -202,106 +3358,6 @@ export type { Context };
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 export default prisma;
-</file>
-
-<file path="backend/src/schema.ts">
-// backend/src/schema.ts
-
-export const typeDefs = /* GraphQL */ `
-  type Item {
-    id: ID!
-    title: String!
-    description: String!
-    price: Float!
-    imageUrl: String!
-    orders: [Order!]
-  }
-
-  type Table {
-    id: ID!
-    number: Int!
-    orders: [Order!]
-  }
-
-  enum OrderStatus {
-    PENDING
-    PREPARING
-    READY
-    DELIVERED
-    PAID
-    CANCELLED
-  }
-
-  enum NewOrderStatus {
-    PENDING
-    PREPARING
-    READY
-    DELIVERED
-  }
-
-  enum PaymentType {
-    CASH
-    CARD
-    OTHER
-  }
-
-  type Order {
-    id: ID!
-    createdAt: String!
-    table: Table!
-    item: Item!
-    payment: Payment
-    status: OrderStatus!
-  }
-
-  type Payment {
-    id: ID!
-    createdAt: String!
-    type: PaymentType!
-    orders: [Order!]!
-  }
-
-  type AuthPayload {
-    token: String!
-    user: User!
-  }
-
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    role: String!
-  }
-
-  type Query {
-    me: User!
-    items: [Item!]!
-    getItemById(id: ID!): Item
-    tables: [Table!]!
-    getTableById(id: ID!): Table
-    orders: [Order!]!
-    getOrdersByTableId(tableId: ID!): [Order!]!
-    payments: [Payment!]!
-    getPaymentById(id: ID!): Payment
-  }
-
-  type Mutation {
-    signup(email: String!, password: String!, name: String!): AuthPayload!
-    login(email: String!, password: String!): AuthPayload!
-    createItem(title: String!, description: String!, price: Float!, imageUrl: String!): Item!
-    deleteItem(id: ID!): Item!
-    editItem(id: ID!, title: String, description: String, price: Float, imageUrl: String): Item!
-    createOrder(tableId: ID!, itemId: ID!, paymentId: ID): Order!
-    deleteOrder(id: ID!): Order!
-    setOrderStatus(id: ID!, status: NewOrderStatus!): Order!
-    cancelOrder(id: ID!): Order!
-    createPaymentForOrder(type: PaymentType!, orderId: ID!): Payment!
-    createPaymentForTable(type: PaymentType!, tableId: ID!): [Order!]!
-    deletePayment(id: ID!): Payment!
-    addTable: Table!
-    removeTable: Table!
-  }
-`;
 </file>
 
 <file path="backend/.gitignore">
@@ -353,7 +3409,6 @@ module.exports = [
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
-      prettier: prettierPlugin
     },
     rules: {
       'prettier/prettier': 'error',
@@ -389,198 +3444,198 @@ Este repositorio contiene el backend mínimo para:
 6. `npm run dev`
 </file>
 
-<file path=".prettierrc">
-{
-    "printWidth": 100,
-    "tabWidth": 2,
-    "useTabs": false,
-    "singleQuote": true,
-    "trailingComma": "all",
-    "semi": true
+<file path="backend/src/schema.ts">
+// backend/src/schema.ts
+
+export const typeDefs = /* GraphQL */ `
+  enum RoleEnum {
+    SUPERADMIN
+    MANAGER
+    STAFF
   }
-</file>
 
-<file path="backend/prisma/schema.prisma">
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+  type MenuItem {
+    id: ID!
+    sku: String!
+    name: String!
+    price: Float!
+    isAvailable: Boolean!
+    createdAt: String!
+  }
 
-generator client {
-  provider = "prisma-client-js"
-}
+  type Table {
+    id: ID!
+    number: Int!
+    capacity: Int!
+    qrCode: String
+    orders: [Order!]
+  }
 
-enum Role {
-  SUPERADMIN
-  ADMIN
-  CAJERO
-  MESERO
-  CLIENTE  
-}
+  enum OrderStatus {
+    OPEN
+    PENDING
+    PREPARING
+    READY
+    DELIVERED
+    PAID
+    CANCELLED
+  }
 
+  type Order {
+    id: ID!
+    status: String!
+    tableId: Int!
+    userId: Int!
+    createdAt: String!
+    orderItems: [OrderItem!]
+    payment: Payment
+    table: Table!
+    user: User!
+  }
 
-enum OrderStatus {
-  PENDING
-  PREPARING
-  READY
-  DELIVERED
-  PAID
-  CANCELLED
-}
+  type OrderItem {
+    id: ID!
+    orderId: Int!
+    menuItemId: Int!
+    quantity: Int!
+    price: Float!
+    order: Order!
+    menuItem: MenuItem!
+  }
 
-enum PaymentType {
-  CASH
-  CARD
-  OTHER
-}
+  type Payment {
+    id: ID!
+    orderId: Int!
+    amount: Float!
+    method: String!
+    paidAt: String!
+    order: Order!
+  }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  name     String
-  password String
-  role     Role   @default(CLIENTE)
-}
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
 
-model Item {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  imageUrl    String
-  price       Float
-  orders      Order[]
-}
+  type User {
+    id: ID!
+    email: String!
+    role: RoleEnum!
+    createdAt: String!
+    orders: [Order!]
+  }
 
-model Table {
-  id     String  @id @default(uuid())
-  number Int     @unique @default(autoincrement())
-  orders Order[]
-}
+  # Enums para ordenamiento
+  enum SortOrder {
+    asc
+    desc
+  }
 
-model Order {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  tableId   String
-  itemId    Int
-  paymentId Int?
-  status    OrderStatus @default(PENDING)
-  table     Table       @relation(fields: [tableId], references: [id])
-  item      Item        @relation(fields: [itemId], references: [id])
-  payment   Payment?    @relation(fields: [paymentId], references: [id])
-}
+  enum MenuItemSortField {
+    id
+    name
+    price
+    createdAt
+    isAvailable
+  }
 
-model Payment {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  type      PaymentType
-  orders    Order[]
-}
-</file>
+  enum TableSortField {
+    id
+    number
+    capacity
+    orderCount
+  }
 
-<file path="backend/prisma/seed.ts">
-// prisma/seed.ts
-import { PrismaClient, Role } from '@prisma/client';
-import { hashSync } from 'bcryptjs';
-const prisma = new PrismaClient();
+  enum OrderSortField {
+    id
+    status
+    createdAt
+    tableId
+    orderNumber
+  }
 
-async function main() {
-await prisma.item.createMany({
-    data: [
-      {
-        title: 'Arepa de Queso',
-        description: 'Nuestra arepa rellena con queso costeño',
-        price: 9000,
-        imageUrl: 'https://ejemplo.com/arepa-queso.jpg'
-      },
-      {
-        title: 'Burrito Gigante',
-        description: 'Burrito de carne, frijoles y salsa casera',
-        price: 17000,
-        imageUrl: 'https://ejemplo.com/burrito.jpg'
-      },
-      {
-        title: 'Tacos al Pastor',
-        description: 'Tacos de cerdo marinados con piña y cebolla',
-        price: 14500,
-        imageUrl: 'https://ejemplo.com/tacos-pastor.jpg'
-      },
-      {
-        title: 'Quesadilla Mixta',
-        description: 'Quesadilla de pollo y queso mozarella',
-        price: 15800,
-        imageUrl: 'https://ejemplo.com/quesadilla.jpg'
-      },
-      {
-        title: 'Empanada Colombiana',
-        description: 'Empanada de maíz rellena de carne y papa',
-        price: 3500,
-        imageUrl: 'https://ejemplo.com/empanada.jpg'
-      },
-      {
-        title: 'Ceviche de Camarón',
-        description: 'Ceviche fresco con limón, cebolla y cilantro',
-        price: 19500,
-        imageUrl: 'https://ejemplo.com/ceviche.jpg'
-      },
-      {
-        title: 'Churros con Chocolate',
-        description: 'Churros calientes acompañados de chocolate espeso',
-        price: 8000,
-        imageUrl: 'https://ejemplo.com/churros.jpg'
-      },
-      {
-        title: 'Ensalada César',
-        description: 'Lechuga, crutones, pollo a la plancha y aderezo César',
-        price: 12000,
-        imageUrl: 'https://ejemplo.com/ensalada-cesar.jpg'
-      }
-    ]
-  });
-await prisma.user.createMany({
-  data: [
-    { email: 'root@food360.io', name: 'Root', password: hashSync('root', 10), role: Role.SUPERADMIN },
-    { email: 'admin@food360.io', name: 'Admin', password: hashSync('admin', 10), role: Role.ADMIN },
-    { email: 'cashier@food360.io', name: 'Caja', password: hashSync('cash', 10), role: Role.CAJERO },
-    { email: 'waiter@food360.io', name: 'Mesero', password: hashSync('wait', 10), role: Role.MESERO }
-  ]
-});
-}
+  # Inputs para filtros
+  input MenuItemFilter {
+    name: String
+    priceMin: Float
+    priceMax: Float
+    isAvailable: Boolean
+  }
 
-main()
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
-</file>
+  input TableFilter {
+    number: Int
+    capacityMin: Int
+    capacityMax: Int
+  }
 
-<file path="backend/src/graphql/types.ts">
-import { Role } from '@prisma/client';
+  input OrderFilter {
+    status: String
+    tableId: Int
+    userId: Int
+    createdAfter: String
+    createdBefore: String
+  }
 
-// src/graphql/types.ts
-export interface GetOrdersByTableArgs {
-  tableId: string;
-}
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-}
+  # Inputs para ordenamiento
+  input MenuItemSort {
+    field: MenuItemSortField!
+    order: SortOrder!
+  }
 
-export interface AuthPayload {
-  token: string;
-  user: User;
-}
+  input TableSort {
+    field: TableSortField!
+    order: SortOrder!
+  }
 
-export interface Mutation {
-  signup(
-    email: string,
-    password: string,
-    name: string,
-    role?: Role, // Assuming role is optional based on GraphQL syntax without '!'
-  ): AuthPayload;
-}
+  input OrderSort {
+    field: OrderSortField!
+    order: SortOrder!
+  }
+
+  type Query {
+    me: User!
+    items(filter: MenuItemFilter, sort: MenuItemSort, limit: Int, offset: Int): [MenuItem!]!
+    getItemById(id: ID!): MenuItem
+    tables(filter: TableFilter, sort: TableSort, limit: Int, offset: Int): [Table!]!
+    getTableById(id: ID!): Table
+    getTableByQrCode(qrCode: String!): Table
+    orders(filter: OrderFilter, sort: OrderSort, limit: Int, offset: Int): [Order!]!
+    getOrdersByTableId(tableId: ID!): [Order!]!
+    getOrdersByQrCode(qrCode: String!): [Order!]!
+    payments: [Payment!]!
+    getPaymentById(id: ID!): Payment
+  }
+
+  type Mutation {
+    signup(email: String!, password: String!, name: String, role: RoleEnum): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
+    createItem(title: String!, price: Float!): MenuItem!
+    deleteItem(id: ID!): MenuItem!
+    editItem(id: ID!, title: String, price: Float): MenuItem!
+    createOrder(tableId: ID!, itemId: ID!): Order!
+    createOrderByQrCode(qrCode: String!, items: [OrderItemInput!]!): Order!
+    deleteOrder(id: ID!): Order!
+    setOrderStatus(id: ID!, status: String!): Order!
+    cancelOrder(id: ID!): Order!
+    createPaymentForOrder(type: String!, orderId: ID!): Payment!
+    createPaymentForTable(type: String!, tableId: ID!): [Order!]!
+    deletePayment(id: ID!): Payment!
+    addTable: Table!
+    removeTable: Table!
+    generateQrCodeForTable(tableId: ID!): Table!
+  }
+
+  input OrderItemInput {
+    menuItemId: ID!
+    quantity: Int!
+  }
+
+  type Subscription {
+    orderUpdated: Order!
+    orderCreated: Order!
+    orderStatusChanged: Order!
+  }
+`;
 </file>
 
 <file path="backend/src/server.ts">
@@ -592,9 +3647,10 @@ import { createYoga, createSchema } from 'graphql-yoga';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 import { createContext } from './context';
+import { defaultQuery } from './defaultquery';
 import type { Context } from './auth';
 
-async function main() {
+async function main(): Promise<void> {
   const app = express();
   app.use(cors());
   app.use(express.json());
@@ -606,7 +3662,16 @@ async function main() {
   const yoga = createYoga<Context>({
     schema,
     context: createContext,
-    graphiql: true,
+    graphiql: {
+      defaultQuery: defaultQuery,
+      headers: JSON.stringify(
+        {
+          Authorization: 'Bearer TOKEN_DE_EJEMPLO', // Reemplaza con un token real si es necesario
+        },
+        null,
+        2,
+      ),
+    },
   });
 
   // Middleware puente para que Express reconozca Yoga en /graphql
@@ -621,6 +3686,233 @@ async function main() {
 }
 
 main().catch(console.error);
+</file>
+
+<file path="backend/tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}
+</file>
+
+<file path="backend/prisma/schema.prisma">
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum RoleEnum {
+  SUPERADMIN
+  MANAGER
+  STAFF
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      RoleEnum  @default(STAFF)
+  createdAt DateTime  @default(now())
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Table {
+  id        Int     @id @default(autoincrement())
+  number    Int     @unique
+  capacity  Int     @default(4)
+  qrCode    String? @unique
+  orders    Order[]
+
+  @@map("tables")
+}
+
+model MenuItem {
+  id          Int       @id @default(autoincrement())
+  sku         String    @unique
+  name        String
+  price       Decimal   @db.Money
+  isAvailable Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  status     String      @default("OPEN")
+  tableId    Int
+  userId     Int
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+  payment    Payment?
+
+  table Table @relation(fields: [tableId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  quantity   Int     @default(1)
+  price      Decimal  @db.Money
+
+  order    Order    @relation(fields: [orderId], references: [id])
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @unique
+  amount    Decimal  @db.Money
+  method    String
+  paidAt    DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
+</file>
+
+<file path="backend/prisma/seed.ts">
+// prisma/seed.ts
+import { PrismaClient, RoleEnum } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  // 1. Limpiar tablas dependientes (mantener idempotencia)
+  await prisma.$transaction([
+    prisma.payment.deleteMany({}),
+    prisma.orderItem.deleteMany({}),
+    prisma.order.deleteMany({}),
+    prisma.table.deleteMany({}),
+    prisma.menuItem.deleteMany({}),
+    prisma.user.deleteMany({}),
+  ]);
+
+  // 2. Usuarios y roles
+  const admin = await prisma.user.create({
+    data: {
+      email: 'admin@food360.local',
+      password: await bcrypt.hash('123456', 10), // Properly hash the password
+      role: RoleEnum.SUPERADMIN,
+    },
+  });
+
+  // Create additional users for testing
+  await prisma.user.createMany({
+    data: [
+      {
+        email: 'manager@food360.local',
+        password: await bcrypt.hash('manager', 10),
+        role: RoleEnum.MANAGER,
+      },
+      {
+        email: 'staff@food360.local',
+        password: await bcrypt.hash('staff', 10),
+        role: RoleEnum.STAFF,
+      },
+    ],
+  });
+
+  // 3. Mesas
+  await prisma.table.createMany({
+    data: [
+      { number: 1, capacity: 4, qrCode: `table-1-${Date.now()}` },
+      { number: 2, capacity: 4, qrCode: `table-2-${Date.now()}` },
+      { number: 3, capacity: 6, qrCode: `table-3-${Date.now()}` },
+      { number: 4, capacity: 2, qrCode: `table-4-${Date.now()}` },
+      { number: 5, capacity: 8, qrCode: `table-5-${Date.now()}` },
+      { number: 6, capacity: 4, qrCode: `table-6-${Date.now()}` },
+      { number: 7, capacity: 2, qrCode: `table-7-${Date.now()}` },
+      { number: 8, capacity: 6, qrCode: `table-8-${Date.now()}` },
+      { number: 9, capacity: 4, qrCode: `table-9-${Date.now()}` },
+      { number: 10, capacity: 8, qrCode: `table-10-${Date.now()}` },
+    ],
+  });
+
+  // 4. Menú - Add more variety
+  await prisma.menuItem.createMany({
+    data: [
+      { sku: 'QUESADILLA-CLAS', name: 'Quesadilla Clásica', price: 15000 },
+      { sku: 'BURGER-ANGUS', name: 'Hamburguesa Angus', price: 28000 },
+      { sku: 'LIMONADA-MNT', name: 'Limonada de Menta', price: 8000 },
+      { sku: 'TACOS-PASTOR', name: 'Tacos al Pastor', price: 18000 },
+      { sku: 'AREPA-QUESO', name: 'Arepa con Queso', price: 12000 },
+      { sku: 'CAFE-AMERICANO', name: 'Café Americano', price: 5000 },
+      { sku: 'CERVEZA-CLUB', name: 'Cerveza Club Colombia', price: 7000 },
+    ],
+  });
+
+  // 5. Pedido demo
+  const order = await prisma.order.create({
+    data: {
+      status: 'OPEN',
+      table: { connect: { number: 1 } },
+      user: { connect: { id: admin.id } },
+      orderItems: {
+        create: [
+          {
+            menuItem: { connect: { sku: 'BURGER-ANGUS' } },
+            quantity: 2,
+            price: 28000,
+          },
+          {
+            menuItem: { connect: { sku: 'LIMONADA-MNT' } },
+            quantity: 2,
+            price: 8000,
+          },
+        ],
+      },
+    },
+  });
+
+  // 6. Pago demo
+  await prisma.payment.create({
+    data: {
+      orderId: order.id,
+      amount: 2 * 28000 + 2 * 8000,
+      method: 'CASH',
+    },
+  });
+
+  console.log('✅ Seed completed successfully');
+  console.log('👤 Test users created:');
+  console.log('   - admin@food360.local (password: 123456)');
+  console.log('   - manager@food360.local (password: manager)');
+  console.log('   - staff@food360.local (password: staff)');
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
 </file>
 
 <file path="backend/package.json">
@@ -644,6 +3936,7 @@ main().catch(console.error);
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-yoga": "^3.9.1",
     "jsonwebtoken": "^9.0.2"
   },
@@ -652,7 +3945,7 @@ main().catch(console.error);
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.0",
+    "@types/node": "^22.15.29",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "eslint": "^9.25.1",
@@ -660,46 +3953,38 @@ main().catch(console.error);
     "eslint-plugin-prettier": "^5.2.6",
     "prettier": "^3.5.3",
     "prisma": "^5.0.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.8.3"
   }
-}
-</file>
-
-<file path="backend/tsconfig.json">
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*"]
 }
 </file>
 
 <file path="backend/src/auth.ts">
 // src/auth.ts
 import { verify, sign, JwtPayload } from 'jsonwebtoken';
-import { Role } from '@prisma/client';
+import { RoleEnum } from '@prisma/client';
+import prisma from './prisma';
 
 export const APP_SECRET = process.env.APP_SECRET!;
 
 export interface JwtData extends JwtPayload {
   userId: number;
-  role: Role;
+  role: RoleEnum;
 }
 
 export interface Context {
   userId: number | null;
-  role: Role | null;
+  role: RoleEnum | null;
+  user?: {
+    id: number;
+    email: string;
+    role: RoleEnum;
+  };
 }
 
 /** Firma el JWT con id y rol */
-export function signToken(user: { id: number; role: Role }): string {
+export function signToken(user: { id: number; role: RoleEnum }): string {
   return sign({ userId: user.id, role: user.role }, APP_SECRET, { expiresIn: '7d' });
 }
 
@@ -707,13 +3992,20 @@ export function getTokenPayload(token: string): JwtData {
   return verify(token, APP_SECRET) as JwtData;
 }
 
-export async function authenticate(req: any): Promise<Context> {
+export async function authenticate(req: { headers: { authorization?: string } }): Promise<Context> {
   const auth = req.headers.authorization || '';
   if (!auth.startsWith('Bearer ')) return { userId: null, role: null };
 
   try {
     const { userId, role } = getTokenPayload(auth.replace('Bearer ', ''));
-    return { userId, role };
+    // Buscar el usuario real en la base de datos
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return { userId: null, role: null };
+    return {
+      userId,
+      role,
+      user: { id: user.id, email: user.email, role: user.role },
+    };
   } catch {
     return { userId: null, role: null };
   }
@@ -725,7 +4017,7 @@ export function requireAuth(ctx: Context): void {
 }
 
 /** Autoriza sólo si el rol actual está incluido en la lista */
-export function requireRole(ctx: Context, allowed: Role[]): void {
+export function requireRole(ctx: Context, allowed: RoleEnum[]): void {
   requireAuth(ctx);
   if (!ctx.role || !allowed.includes(ctx.role)) {
     throw new Error('Permiso insuficiente');
@@ -735,33 +4027,457 @@ export function requireRole(ctx: Context, allowed: Role[]): void {
 
 <file path="backend/src/resolvers.ts">
 // src/resolvers.ts
-import { Role } from '@prisma/client';
+import { RoleEnum } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { PubSub } from 'graphql-subscriptions';
 import { signToken, requireRole, Context } from './auth';
 import prisma from './prisma';
+
+const pubsub = new PubSub();
+
+// Define interfaces for better type safety
+interface CreateOrderArgs {
+  tableId: string;
+  itemId: string;
+  paymentId?: string;
+}
+
+interface CreateOrderByQrCodeArgs {
+  qrCode: string;
+  items: { menuItemId: string; quantity: number }[];
+}
+
+interface QrCodeArgs {
+  qrCode: string;
+}
+
+interface GenerateQrCodeArgs {
+  tableId: string;
+}
+
+interface CreatePaymentArgs {
+  type: string;
+  orderId: string;
+}
+
+interface CreatePaymentForTableArgs {
+  type: string;
+  tableId: string;
+}
+
+interface CreateItemArgs {
+  title: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+}
+
+interface EditItemArgs {
+  id: string;
+  title?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+}
+
+interface SignupArgs {
+  email: string;
+  password: string;
+  name: string;
+  role?: RoleEnum;
+}
+
+interface LoginArgs {
+  email: string;
+  password: string;
+}
+
+interface IdArgs {
+  id: string;
+}
+
+interface TableIdArgs {
+  tableId: string;
+}
+
+interface StatusArgs {
+  id: string;
+  status: string;
+}
+
+// New interfaces for filters and sorting
+interface MenuItemFilter {
+  name?: string;
+  priceMin?: number;
+  priceMax?: number;
+  isAvailable?: boolean;
+}
+
+interface TableFilter {
+  number?: number;
+  capacityMin?: number;
+  capacityMax?: number;
+  hasQrCode?: boolean;
+}
+
+interface OrderFilter {
+  status?: string;
+  tableId?: number;
+  userId?: number;
+  createdAfter?: string;
+  createdBefore?: string;
+}
+
+interface MenuItemSort {
+  field: 'id' | 'name' | 'price' | 'createdAt' | 'isAvailable';
+  order: 'asc' | 'desc';
+}
+
+interface TableSort {
+  field: 'id' | 'number' | 'capacity' | 'orderCount';
+  order: 'asc' | 'desc';
+}
+
+interface OrderSort {
+  field: 'id' | 'status' | 'createdAt' | 'tableId' | 'orderNumber';
+  order: 'asc' | 'desc';
+}
+
+interface ItemsArgs {
+  filter?: MenuItemFilter;
+  sort?: MenuItemSort;
+  limit?: number;
+  offset?: number;
+}
+
+interface TablesArgs {
+  filter?: TableFilter;
+  sort?: TableSort;
+  limit?: number;
+  offset?: number;
+}
+
+interface OrdersArgs {
+  filter?: OrderFilter;
+  sort?: OrderSort;
+  limit?: number;
+  offset?: number;
+}
+
+// Prisma where and orderBy types
+interface MenuItemWhere {
+  name?: { contains: string; mode: 'insensitive' };
+  price?: { gte?: number; lte?: number };
+  isAvailable?: boolean;
+}
+
+interface TableWhere {
+  number?: number;
+  capacity?: { gte?: number; lte?: number };
+  qrCode?: { not: null } | null;
+}
+
+interface OrderWhere {
+  status?: string;
+  tableId?: number;
+  userId?: number;
+  createdAt?: { gte?: Date; lte?: Date };
+}
+
+interface MenuItemOrderBy {
+  id?: 'asc' | 'desc';
+  name?: 'asc' | 'desc';
+  price?: 'asc' | 'desc';
+  createdAt?: 'asc' | 'desc';
+  isAvailable?: 'asc' | 'desc';
+}
+
+interface TableOrderBy {
+  id?: 'asc' | 'desc';
+  number?: 'asc' | 'desc';
+  capacity?: 'asc' | 'desc';
+}
+
+interface OrderOrderBy {
+  id?: 'asc' | 'desc';
+  status?: 'asc' | 'desc';
+  createdAt?: 'asc' | 'desc';
+  tableId?: 'asc' | 'desc';
+}
+
+// Interfaces for GraphQL resolvers
+interface TableParent {
+  id: number;
+}
+
+interface OrderParent {
+  id: number;
+  tableId: number;
+  userId: number;
+}
+
+interface OrderItemParent {
+  menuItemId: number;
+}
+
+// Define context type for resolvers
+interface ResolverContext {
+  [key: string]: unknown;
+}
 
 export const resolvers = {
   /* ----------  Queries ---------- */
   Query: {
     // F-02: consultar menú dinámico
-    items: (_: unknown, __: unknown) => {
+    items: async (_: unknown, args: ItemsArgs) => {
       // público; sin restricciones
-      return prisma.item.findMany();
+      const { filter, sort, limit, offset } = args;
+      
+      // Build where clause for filtering
+      const where: MenuItemWhere = {};
+      
+      if (filter) {
+        if (filter.name) {
+          where.name = { contains: filter.name, mode: 'insensitive' };
+        }
+        if (filter.priceMin !== undefined || filter.priceMax !== undefined) {
+          where.price = {};
+          if (filter.priceMin !== undefined) {
+            where.price.gte = filter.priceMin;
+          }
+          if (filter.priceMax !== undefined) {
+            where.price.lte = filter.priceMax;
+          }
+        }
+        if (filter.isAvailable !== undefined) {
+          where.isAvailable = filter.isAvailable;
+        }
+      }
+      
+      // Build orderBy clause for sorting
+      const orderBy: MenuItemOrderBy = {};
+      if (sort) {
+        orderBy[sort.field] = sort.order;
+      }
+      
+      return prisma.menuItem.findMany({
+        where,
+        orderBy: Object.keys(orderBy).length > 0 ? orderBy : undefined,
+        take: limit,
+        skip: offset,
+      });
+    },
+
+    // New queries from schema
+    me: async (_: unknown, __: unknown, ctx: Context) => {
+      if (!ctx.user) throw new Error('No autorizado');
+
+      // Buscar el usuario completo en la base de datos para obtener todos los campos
+      const fullUser = await prisma.user.findUnique({
+        where: { id: ctx.user.id },
+      });
+
+      if (!fullUser) throw new Error('Usuario no encontrado');
+
+      return fullUser;
+    },
+
+    getItemById: (_: unknown, { id }: IdArgs) => {
+      return prisma.menuItem.findUnique({ where: { id: Number(id) } });
+    },
+
+    tables: async (_: unknown, args: TablesArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      
+      const { filter, sort, limit, offset } = args;
+      
+      // Build where clause for filtering
+      const where: TableWhere = {};
+      
+      if (filter) {
+        if (filter.number !== undefined) {
+          where.number = filter.number;
+        }
+        if (filter.capacityMin !== undefined || filter.capacityMax !== undefined) {
+          where.capacity = {};
+          if (filter.capacityMin !== undefined) {
+            where.capacity.gte = filter.capacityMin;
+          }
+          if (filter.capacityMax !== undefined) {
+            where.capacity.lte = filter.capacityMax;
+          }
+        }
+      }
+      
+      // Handle special ordering for orderCount
+      if (sort?.field === 'orderCount') {
+        // For orderCount, we need to use a custom query with aggregation
+        const tables = await prisma.table.findMany({
+          where,
+          take: limit,
+          skip: offset,
+          include: {
+            orders: {
+              where: { status: { not: 'PAID' } },
+              include: { orderItems: { include: { menuItem: true } } },
+            },
+            _count: {
+              select: { orders: { where: { status: { not: 'PAID' } } } }
+            }
+          },
+        });
+        
+        // Sort by order count in memory
+        const sortedTables = tables.sort((a, b) => {
+          const countA = a._count.orders;
+          const countB = b._count.orders;
+          return sort.order === 'asc' ? countA - countB : countB - countA;
+        });
+        
+        return sortedTables;
+      }
+      
+      // Build orderBy clause for regular sorting (exclude orderCount as it's handled above)
+      const orderBy: TableOrderBy = {};
+      if (sort && sort.field as string !== 'orderCount') {
+        // Type assertion to ensure we only use valid Prisma fields
+        const validField = sort.field as keyof TableOrderBy;
+        orderBy[validField] = sort.order;
+      }
+      
+      return prisma.table.findMany({
+        where,
+        orderBy: Object.keys(orderBy).length > 0 ? orderBy : undefined,
+        take: limit,
+        skip: offset,
+        include: {
+          orders: {
+            where: { status: { not: 'PAID' } },
+            include: { orderItems: { include: { menuItem: true } } },
+          },
+        },
+      });
+    },
+
+    getTableById: (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.table.findUnique({ where: { id: Number(id) } });
+    },
+
+    // QR Code queries - public access for customers
+    getTableByQrCode: (_: unknown, { qrCode }: QrCodeArgs) => {
+      // Public access - no authentication required for customers
+      return prisma.table.findUnique({ where: { qrCode } });
+    },
+
+    getOrdersByQrCode: async (_: unknown, { qrCode }: QrCodeArgs) => {
+      // Public access - customers can see orders for their table
+      const table = await prisma.table.findUnique({ where: { qrCode } });
+      if (!table) throw new Error('Mesa no encontrada');
+
+      return prisma.order.findMany({
+        where: { tableId: table.id },
+        include: { orderItems: { include: { menuItem: true } } },
+      });
+    },
+
+    orders: async (_: unknown, args: OrdersArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      
+      const { filter, sort, limit, offset } = args;
+      
+      // Build where clause for filtering
+      const where: OrderWhere = {};
+      
+      if (filter) {
+        if (filter.status) {
+          where.status = filter.status;
+        }
+        if (filter.tableId !== undefined) {
+          where.tableId = filter.tableId;
+        }
+        if (filter.userId !== undefined) {
+          where.userId = filter.userId;
+        }
+        if (filter.createdAfter || filter.createdBefore) {
+          where.createdAt = {};
+          if (filter.createdAfter) {
+            where.createdAt.gte = new Date(filter.createdAfter);
+          }
+          if (filter.createdBefore) {
+            where.createdAt.lte = new Date(filter.createdBefore);
+          }
+        }
+      }
+      
+      // Handle special ordering for orderNumber (which is the same as id)
+      if (sort?.field === 'orderNumber') {
+        const orders = await prisma.order.findMany({
+          where,
+          orderBy: { id: sort.order },
+          take: limit,
+          skip: offset,
+          include: {
+            orderItems: { include: { menuItem: true } },
+            table: true,
+            user: true,
+          },
+        });
+        return orders;
+      }
+      
+      // Build orderBy clause for regular sorting (exclude orderNumber as it's handled above)
+      const orderBy: OrderOrderBy = {};
+      if (sort && sort.field as string !== 'orderNumber') {
+        // Type assertion to ensure we only use valid Prisma fields
+        const validField = sort.field as keyof OrderOrderBy;
+        orderBy[validField] = sort.order;
+      }
+      
+      return prisma.order.findMany({
+        where,
+        orderBy: Object.keys(orderBy).length > 0 ? orderBy : undefined,
+        take: limit,
+        skip: offset,
+        include: {
+          orderItems: { include: { menuItem: true } },
+          table: true,
+          user: true,
+        },
+      });
+    },
+
+    getOrdersByTableId: (_: unknown, { tableId }: TableIdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.order.findMany({ where: { tableId: Number(tableId) } });
+    },
+
+    payments: (_: unknown, __: unknown, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.payment.findMany();
+    },
+
+    getPaymentById: (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.payment.findUnique({ where: { id: Number(id) } });
     },
   },
 
   /* ----------  Mutations ---------- */
   Mutation: {
     // F-01: registro / login
-    signup: async (_: any, { email, password, name, role = 'CLIENTE' }: any) => {
+    signup: async (
+      _: unknown,
+      { email, password, name: _name, role = RoleEnum.STAFF }: SignupArgs,
+    ) => {
       const hashed = await bcrypt.hash(password, 10);
       const user = await prisma.user.create({
-        data: { email, name, password: hashed, role },
+        data: { email, password: hashed, role },
       });
       return { token: signToken(user), user };
     },
 
-    login: async (_: any, { email, password }: any) => {
+    login: async (_: unknown, { email, password }: LoginArgs) => {
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) throw new Error('Usuario no existe');
       const valid = await bcrypt.compare(password, user.password);
@@ -769,65 +4485,328 @@ export const resolvers = {
       return { token: signToken(user), user };
     },
 
-    // F-03: crear pedido y asignar mesa (dummy)
-    createOrder: async (_: any, { tableId, itemId }: any, ctx: Context) => {
-      requireRole(ctx, [Role.MESERO, Role.CLIENTE, Role.ADMIN]);
+    // F-03: crear pedido y asignar mesa - Updated for new schema
+    createOrder: async (_: unknown, { tableId, itemId }: CreateOrderArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
 
-      return prisma.order.create({
-        data: { tableId, itemId: Number(itemId) },
-        include: {
-          table: true,
-          item: true,
-          payment: true,
+      if (!ctx.user) throw new Error('No autorizado');
+
+      const data: {
+        tableId: number;
+        status: string;
+        userId: number;
+      } = {
+        tableId: Number(tableId),
+        status: 'PENDING',
+        userId: ctx.user.id,
+      };
+
+      const order = await prisma.order.create({
+        data,
+        include: { orderItems: { include: { menuItem: true } }, table: true, user: true },
+      });
+
+      // Get the menu item price
+      const menuItem = await prisma.menuItem.findUnique({
+        where: { id: Number(itemId) },
+      });
+
+      if (!menuItem) throw new Error('Menu item not found');
+
+      // Create order items
+      await prisma.orderItem.create({
+        data: {
+          orderId: order.id,
+          menuItemId: Number(itemId),
+          quantity: 1,
+          price: menuItem.price,
         },
       });
+
+      // Publish order created event for real-time updates
+      pubsub.publish('ORDER_CREATED', { orderCreated: order });
+
+      return order;
     },
 
-    // F-04: procesar pago (dummy)
-    createPaymentForOrder: async (_: any, { type, orderId }: any, ctx: Context) => {
-      requireRole(ctx, [Role.CAJERO, Role.CLIENTE, Role.ADMIN]);
+    // New mutations from schema
+    deleteOrder: async (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.order.delete({ where: { id: Number(id) } });
+    },
 
-      // 1. Crea el pago
-      const payment = await prisma.payment.create({
-        data: { type },
+    setOrderStatus: async (_: unknown, { id, status }: StatusArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      const updatedOrder = await prisma.order.update({
+        where: { id: Number(id) },
+        data: { status },
+        include: { orderItems: { include: { menuItem: true } }, table: true, user: true },
       });
 
-      // 2. Actualiza la orden para asociarla
+      // Publish order status changed event for real-time updates
+      pubsub.publish('ORDER_STATUS_CHANGED', { orderStatusChanged: updatedOrder });
+      pubsub.publish('ORDER_UPDATED', { orderUpdated: updatedOrder });
+
+      return updatedOrder;
+    },
+
+    cancelOrder: async (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      const cancelledOrder = await prisma.order.update({
+        where: { id: Number(id) },
+        data: { status: 'CANCELLED' },
+        include: { orderItems: { include: { menuItem: true } }, table: true, user: true },
+      });
+
+      // Publish order status changed event for real-time updates
+      pubsub.publish('ORDER_STATUS_CHANGED', { orderStatusChanged: cancelledOrder });
+      pubsub.publish('ORDER_UPDATED', { orderUpdated: cancelledOrder });
+
+      return cancelledOrder;
+    },
+
+    // F-04: procesar pago - Updated for new schema
+    createPaymentForOrder: async (
+      _: unknown,
+      { type, orderId }: CreatePaymentArgs,
+      ctx: Context,
+    ) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+
+      // Get the order to calculate amount
+      const order = await prisma.order.findUnique({
+        where: { id: Number(orderId) },
+        include: { orderItems: true },
+      });
+
+      if (!order) throw new Error('Order not found');
+      if (!order.orderItems || order.orderItems.length === 0) throw new Error('No items in order');
+
+      const amount = order.orderItems.reduce(
+        (total, item) =>
+          total +
+          (typeof item.price === 'number' ? item.price : Number(item.price)) *
+            Number(item.quantity),
+        0,
+      );
+
+      const payment = await prisma.payment.create({
+        data: {
+          orderId: Number(orderId),
+          amount,
+          method: type,
+        },
+      });
+
+      // Update order status to PAID
       await prisma.order.update({
         where: { id: Number(orderId) },
-        data: { paymentId: payment.id, status: 'PAID' },
+        data: { status: 'PAID' },
       });
 
-      // 3. Devuelve el pago con la relación 'orders'
-      return prisma.payment.findUnique({
-        where: { id: payment.id },
-        include: {
-          orders: {
-            include: { table: true, item: true }, // opcional
-          },
+      return payment;
+    },
+
+    createPaymentForTable: async (
+      _: unknown,
+      { tableId }: CreatePaymentForTableArgs,
+      ctx: Context,
+    ) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+
+      // Get all unpaid orders for the table
+      const orders = await prisma.order.findMany({
+        where: {
+          tableId: Number(tableId),
+          status: { not: 'PAID' },
+        },
+        include: { orderItems: { include: { menuItem: true } } },
+      });
+
+      if (orders.length === 0) throw new Error('No unpaid orders found for this table');
+
+      // Update all orders to PAID
+      const updatedOrders = await Promise.all(
+        orders.map((order) =>
+          prisma.order.update({
+            where: { id: order.id },
+            data: { status: 'PAID' },
+          }),
+        ),
+      );
+
+      return updatedOrders;
+    },
+
+    deletePayment: async (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.payment.delete({ where: { id: Number(id) } });
+    },
+
+    // F-05: CRUD menú en panel admin - Updated for new schema
+    createItem: (_: unknown, { title, price }: CreateItemArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.menuItem.create({
+        data: {
+          sku: `${title.toUpperCase().replace(/\s+/g, '-')}-${Date.now()}`,
+          name: title,
+          price,
         },
       });
     },
 
-    // F-05: CRUD menú en panel admin (dummy)
-    createItem: (_: any, args: any, ctx: Context) => {
-      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
-      return prisma.item.create({ data: args });
-    },
-    editItem: (_: any, { id, ...patch }: any, ctx: Context) => {
-      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
-      return prisma.item.update({
+    editItem: (_: unknown, { id, title, price }: EditItemArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      const updateData: {
+        name?: string;
+        price?: number;
+      } = {};
+      if (title !== undefined) updateData.name = title;
+      if (price !== undefined) updateData.price = price;
+
+      return prisma.menuItem.update({
         where: { id: Number(id) },
-        data: patch,
+        data: updateData,
       });
     },
-    deleteItem: (_: any, { id }: any, ctx: Context) => {
-      requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
-      return prisma.item.delete({ where: { id: Number(id) } });
+
+    deleteItem: (_: unknown, { id }: IdArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return prisma.menuItem.delete({ where: { id: Number(id) } });
     },
-    addTable: async (_: any, __: any, ctx: Context) => {
-      requireRole(ctx, [Role.ADMIN, Role.MESERO, Role.SUPERADMIN]);
-      return prisma.table.create({ data: {} });
+
+    addTable: async (_: unknown, __: unknown, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.STAFF, RoleEnum.SUPERADMIN]);
+      // Find the highest table number and add 1
+      const lastTable = await prisma.table.findFirst({
+        orderBy: { number: 'desc' },
+      });
+      const nextNumber = lastTable ? lastTable.number + 1 : 1;
+
+      return prisma.table.create({
+        data: {
+          number: nextNumber,
+          capacity: 4, // default capacity
+        },
+      });
+    },
+
+    removeTable: async (_: unknown, __: unknown, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.STAFF, RoleEnum.SUPERADMIN]);
+      // Remove the table with the highest number
+      const lastTable = await prisma.table.findFirst({
+        orderBy: { number: 'desc' },
+      });
+
+      if (!lastTable) throw new Error('No tables to remove');
+
+      return prisma.table.delete({ where: { id: lastTable.id } });
+    },
+
+    // QR Code mutations - public access for customer orders
+    createOrderByQrCode: async (_: unknown, { qrCode, items }: CreateOrderByQrCodeArgs) => {
+      // Public access - customers can create orders using QR code
+      const table = await prisma.table.findUnique({ where: { qrCode } });
+      if (!table) throw new Error('Mesa no encontrada');
+
+      // Create a guest user for the order (or find existing guest user)
+      let guestUser = await prisma.user.findFirst({
+        where: { email: 'guest@restaurant.local' },
+      });
+
+      if (!guestUser) {
+        guestUser = await prisma.user.create({
+          data: {
+            email: 'guest@restaurant.local',
+            password: await bcrypt.hash('guest', 10),
+            role: RoleEnum.STAFF,
+          },
+        });
+      }
+
+      // Create the order
+      const order = await prisma.order.create({
+        data: {
+          tableId: table.id,
+          status: 'PENDING',
+          userId: guestUser.id,
+        },
+        include: { orderItems: { include: { menuItem: true } }, table: true, user: true },
+      });
+
+      // Create order items
+      for (const item of items) {
+        const menuItem = await prisma.menuItem.findUnique({
+          where: { id: Number(item.menuItemId) },
+        });
+
+        if (!menuItem) {
+          throw new Error(`Menu item with ID ${item.menuItemId} not found`);
+        }
+
+        await prisma.orderItem.create({
+          data: {
+            orderId: order.id,
+            menuItemId: Number(item.menuItemId),
+            quantity: item.quantity,
+            price: menuItem.price,
+          },
+        });
+      }
+
+      // Publish order created event for real-time updates
+      pubsub.publish('ORDER_CREATED', { orderCreated: order });
+
+      return order;
+    },
+
+    // Generate QR code for table (admin only)
+    generateQrCodeForTable: async (_: unknown, { tableId }: GenerateQrCodeArgs, ctx: Context) => {
+      requireRole(ctx, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      // Generate a unique QR code using table ID and timestamp
+      const qrCode = `table-${tableId}-${Date.now()}`;
+
+      return prisma.table.update({
+        where: { id: Number(tableId) },
+        data: { qrCode },
+      });
+    },
+  },
+
+  Table: {
+    orders: (parent: TableParent, _args: unknown, _ctx: ResolverContext) => {
+      return prisma.order.findMany({ where: { tableId: parent.id } });
+    },
+  },
+
+  Order: {
+    orderItems: (parent: OrderParent, _args: unknown, _ctx: ResolverContext) => {
+      return prisma.orderItem.findMany({ where: { orderId: parent.id } });
+    },
+    table: (parent: OrderParent, _args: unknown, _ctx: ResolverContext) => {
+      return prisma.table.findUnique({ where: { id: parent.tableId } });
+    },
+    user: (parent: OrderParent, _args: unknown, _ctx: ResolverContext) => {
+      return prisma.user.findUnique({ where: { id: parent.userId } });
+    },
+  },
+
+  OrderItem: {
+    menuItem: (parent: OrderItemParent, _args: unknown, _ctx: ResolverContext) => {
+      return prisma.menuItem.findUnique({ where: { id: parent.menuItemId } });
+    },
+  },
+
+  /* ----------  Subscriptions ---------- */
+  Subscription: {
+    orderCreated: {
+      subscribe: () => pubsub.asyncIterableIterator(['ORDER_CREATED']),
+    },
+    orderUpdated: {
+      subscribe: () => pubsub.asyncIterableIterator(['ORDER_UPDATED']),
+    },
+    orderStatusChanged: {
+      subscribe: () => pubsub.asyncIterableIterator(['ORDER_STATUS_CHANGED']),
     },
   },
 };
@@ -851,7 +4830,7 @@ The content is organized as follows:
 2. Repository information
 3. Directory structure
 4. Repository files (if enabled)
-4. Repository files, each consisting of:
+5. Multiple file entries, each consisting of:
   - File path as an attribute
   - Full contents of the file
 </file_format>
@@ -873,16 +4852,16 @@ The content is organized as follows:
 - Files are sorted by Git change count (files with more changes are at the bottom)
 </notes>
 
-<additional_info>
-
-</additional_info>
-
 </file_summary>
 
 <directory_structure>
 prisma/
   migrations/
     20250424205455_init/
+      migration.sql
+    20250424232338_init/
+      migration.sql
+    20250603202909_init/
       migration.sql
     migration_lock.toml
   .env.example
@@ -984,6 +4963,56 @@ ALTER TABLE "Order" ADD CONSTRAINT "Order_itemId_fkey" FOREIGN KEY ("itemId") RE
 ALTER TABLE "Order" ADD CONSTRAINT "Order_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 </file>
 
+<file path="prisma/migrations/20250424232338_init/migration.sql">
+/*
+  Warnings:
+
+  - The values [USER] on the enum `Role` will be removed. If these variants are still used in the database, this will fail.
+
+*/
+-- AlterEnum
+BEGIN;
+CREATE TYPE "Role_new" AS ENUM ('SUPERADMIN', 'ADMIN', 'CAJERO', 'MESERO', 'CLIENTE');
+ALTER TABLE "User" ALTER COLUMN "role" DROP DEFAULT;
+ALTER TABLE "User" ALTER COLUMN "role" TYPE "Role_new" USING ("role"::text::"Role_new");
+ALTER TYPE "Role" RENAME TO "Role_old";
+ALTER TYPE "Role_new" RENAME TO "Role";
+DROP TYPE "Role_old";
+ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'CLIENTE';
+COMMIT;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "role" SET DEFAULT 'CLIENTE';
+</file>
+
+<file path="prisma/migrations/20250603202909_init/migration.sql">
+/*
+  Warnings:
+
+  - You are about to alter the column `price` on the `Item` table. The data in that column could be lost. The data in that column will be cast from `DoublePrecision` to `Decimal(65,30)`.
+
+*/
+-- AlterTable
+ALTER TABLE "Item" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "price" SET DATA TYPE DECIMAL(65,30);
+
+-- AlterTable
+ALTER TABLE "Table" ADD COLUMN     "capacity" INTEGER DEFAULT 4,
+ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- CreateIndex
+CREATE INDEX "Order_tableId_idx" ON "Order"("tableId");
+
+-- CreateIndex
+CREATE INDEX "Order_itemId_idx" ON "Order"("itemId");
+
+-- CreateIndex
+CREATE INDEX "Order_paymentId_idx" ON "Order"("paymentId");
+</file>
+
 <file path="prisma/migrations/migration_lock.toml">
 # Please do not edit this file manually
 # It should be added in your version-control system (i.e. Git)
@@ -1005,184 +5034,203 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
+enum RoleEnum {
   SUPERADMIN
-  ADMIN
-  CAJERO
-  MESERO
-  CLIENTE  
-}
-
-
-enum OrderStatus {
-  PENDING
-  PREPARING
-  READY
-  DELIVERED
-  PAID
-  CANCELLED
-}
-
-enum PaymentType {
-  CASH
-  CARD
-  OTHER
+  MANAGER
+  STAFF
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  name     String
-  password String
-  role     Role   @default(USER)
-}
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  role      RoleEnum  @default(STAFF)
+  createdAt DateTime  @default(now())
+  orders    Order[]
 
-model Item {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  imageUrl    String
-  price       Float
-  orders      Order[]
+  @@map("users")
 }
 
 model Table {
-  id     String  @id @default(uuid())
-  number Int     @unique @default(autoincrement())
-  orders Order[]
+  id        Int     @id @default(autoincrement())
+  number    Int     @unique
+  capacity  Int     @default(4)
+  orders    Order[]
+
+  @@map("tables")
+}
+
+model MenuItem {
+  id          Int       @id @default(autoincrement())
+  sku         String    @unique
+  name        String
+  price       Decimal   @db.Money
+  isAvailable Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  tableId   String
-  itemId    Int
-  paymentId Int?
-  status    OrderStatus @default(PENDING)
-  table     Table       @relation(fields: [tableId], references: [id])
-  item      Item        @relation(fields: [itemId], references: [id])
-  payment   Payment?    @relation(fields: [paymentId], references: [id])
+  id         Int         @id @default(autoincrement())
+  status     String      @default("OPEN")
+  tableId    Int
+  userId     Int
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+  payment    Payment?
+
+  table Table @relation(fields: [tableId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId    Int
+  menuItemId Int
+  quantity   Int     @default(1)
+  price      Decimal  @db.Money
+
+  order    Order    @relation(fields: [orderId], references: [id])
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
 }
 
 model Payment {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  type      PaymentType
-  orders    Order[]
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @unique
+  amount    Decimal  @db.Money
+  method    String
+  paidAt    DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
 }
 </file>
 
 <file path="prisma/seed.ts">
 // prisma/seed.ts
-import { PrismaClient, Role } from '@prisma/client';
-import { hashSync } from 'bcryptjs';
+import { PrismaClient, RoleEnum } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.item.createMany({
-    data: [
-      {
-        title: 'Arepa de Queso',
-        description: 'Nuestra arepa rellena con queso costeño',
-        price: 9000,
-        imageUrl: 'https://ejemplo.com/arepa-queso.jpg'
-      },
-      {
-        title: 'Burrito Gigante',
-        description: 'Burrito de carne, frijoles y salsa casera',
-        price: 17000,
-        imageUrl: 'https://ejemplo.com/burrito.jpg'
-      },
-      {
-        title: 'Tacos al Pastor',
-        description: 'Tacos de cerdo marinados con piña y cebolla',
-        price: 14500,
-        imageUrl: 'https://ejemplo.com/tacos-pastor.jpg'
-      },
-      {
-        title: 'Quesadilla Mixta',
-        description: 'Quesadilla de pollo y queso mozarella',
-        price: 15800,
-        imageUrl: 'https://ejemplo.com/quesadilla.jpg'
-      },
-      {
-        title: 'Empanada Colombiana',
-        description: 'Empanada de maíz rellena de carne y papa',
-        price: 3500,
-        imageUrl: 'https://ejemplo.com/empanada.jpg'
-      },
-      {
-        title: 'Ceviche de Camarón',
-        description: 'Ceviche fresco con limón, cebolla y cilantro',
-        price: 19500,
-        imageUrl: 'https://ejemplo.com/ceviche.jpg'
-      },
-      {
-        title: 'Churros con Chocolate',
-        description: 'Churros calientes acompañados de chocolate espeso',
-        price: 8000,
-        imageUrl: 'https://ejemplo.com/churros.jpg'
-      },
-      {
-        title: 'Ensalada César',
-        description: 'Lechuga, crutones, pollo a la plancha y aderezo César',
-        price: 12000,
-        imageUrl: 'https://ejemplo.com/ensalada-cesar.jpg'
-      }
-    ]
+  // 1. Limpiar tablas dependientes (mantener idempotencia)
+  await prisma.$transaction([
+    prisma.payment.deleteMany({}),
+    prisma.orderItem.deleteMany({}),
+    prisma.order.deleteMany({}),
+    prisma.table.deleteMany({}),
+    prisma.menuItem.deleteMany({}),
+    prisma.user.deleteMany({}),
+  ]);
+
+  // 2. Usuarios y roles
+  const admin = await prisma.user.create({
+    data: {
+      email: 'admin@food360.local',
+      password: '123456hashed', // reemplazar por hash real
+      role: RoleEnum.SUPERADMIN,
+    },
   });
-await prisma.user.createMany({
-  data: [
-    { email: 'root@food360.io', name: 'Root', password: hashSync('root', 10), role: Role.SUPERADMIN },
-    { email: 'admin@food360.io', name: 'Admin', password: hashSync('admin', 10), role: Role.ADMIN },
-    { email: 'cashier@food360.io', name: 'Caja', password: hashSync('cash', 10), role: Role.CAJERO },
-    { email: 'waiter@food360.io', name: 'Mesero', password: hashSync('wait', 10), role: Role.MESERO }
-  ]
-});
+
+  // 3. Mesas
+  await prisma.table.createMany({
+    data: [
+      { number: 1, capacity: 4 },
+      { number: 2, capacity: 4 },
+      { number: 3, capacity: 6 },
+      { number: 4, capacity: 2 },
+    ],
+  });
+
+  // 4. Menú
+  await prisma.menuItem.createMany({
+    data: [
+      { sku: 'QUESADILLA-CLAS', name: 'Quesadilla Clásica', price: 15000 },
+      { sku: 'BURGER-ANGUS',   name: 'Hamburguesa Angus',   price: 28000 },
+      { sku: 'LIMONADA-MNT',   name: 'Limonada de Menta',   price: 8000  },
+    ],
+  });
+
+  // 5. Pedido demo
+  const order = await prisma.order.create({
+    data: {
+      status: 'OPEN',
+      table: { connect: { number: 1 } },
+      user:  { connect: { id: admin.id } },
+      orderItems: {
+        create: [
+          {
+            menuItem: { connect: { sku: 'BURGER-ANGUS' } },
+            quantity: 2,
+            price: 28000,
+          },
+          {
+            menuItem: { connect: { sku: 'LIMONADA-MNT' } },
+            quantity: 2,
+            price: 8000,
+          },
+        ],
+      },
+    },
+  });
+
+  // 6. Pago demo
+  await prisma.payment.create({
+    data: {
+      orderId: order.id,
+      amount: 2 * 28000 + 2 * 8000,
+      method: 'CASH',
+    },
+  });
+
+  console.log('✅  Seed completed (snake_case)');
 }
 
 main()
-  .catch(error => {
-    console.error(error);
+  .catch((e) => {
+    console.error(e);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
 </file>
 
 <file path="src/graphql/types.ts">
+import { Role } from '@prisma/client';
+
 // src/graphql/types.ts
 export interface GetOrdersByTableArgs {
   tableId: string;
 }
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+}
 
-export enum Role {
-    SUPERADMIN,
-    ADMIN,
-    CAJERO,
-    MESERO,
-    CLIENTE
-  }
-  
-  export interface User {
-    id: string;
-    name: string;
-    email: string;
-    role: Role;
-  }
-  
-  export interface AuthPayload {
-    token: string;
-    user: User;
-  }
-  
-  export interface Mutation {
-    signup(
-      email: string,
-      password: string,
-      name: string,
-      role?: Role, // Assuming role is optional based on GraphQL syntax without '!'
-    ): AuthPayload;
-  }
+export interface AuthPayload {
+  token: string;
+  user: User;
+}
+
+export interface Mutation {
+  signup(
+    email: string,
+    password: string,
+    name: string,
+    role?: Role, // Assuming role is optional based on GraphQL syntax without '!'
+  ): AuthPayload;
+}
 </file>
 
 <file path="src/auth.ts">
@@ -1256,15 +5304,15 @@ export default prisma;
 <file path="src/resolvers.ts">
 // src/resolvers.ts
 import { Role } from '@prisma/client';
-import { signToken, requireAuth, requireRole, Context } from './auth';
+import bcrypt from 'bcryptjs';
+import { signToken, requireRole, Context } from './auth';
 import prisma from './prisma';
-import bcrypt from 'bcryptjs/umd/types';
 
 export const resolvers = {
   /* ----------  Queries ---------- */
   Query: {
     // F-02: consultar menú dinámico
-    items: (_: any, __: any, ctx: Context) => {
+    items: (_: unknown, __: unknown) => {
       // público; sin restricciones
       return prisma.item.findMany();
     },
@@ -1291,21 +5339,42 @@ export const resolvers = {
 
     // F-03: crear pedido y asignar mesa (dummy)
     createOrder: async (_: any, { tableId, itemId }: any, ctx: Context) => {
-      requireRole(ctx, [Role.MESERO, Role.CLIENTE]);
+      requireRole(ctx, [Role.MESERO, Role.CLIENTE, Role.ADMIN]);
+
       return prisma.order.create({
         data: { tableId, itemId: Number(itemId) },
+        include: {
+          table: true,
+          item: true,
+          payment: true,
+        },
       });
     },
 
     // F-04: procesar pago (dummy)
     createPaymentForOrder: async (_: any, { type, orderId }: any, ctx: Context) => {
-      requireRole(ctx, [Role.CAJERO, Role.CLIENTE]);
-      const payment = await prisma.payment.create({ data: { type } });
+      requireRole(ctx, [Role.CAJERO, Role.CLIENTE, Role.ADMIN]);
+
+      // 1. Crea el pago
+      const payment = await prisma.payment.create({
+        data: { type },
+      });
+
+      // 2. Actualiza la orden para asociarla
       await prisma.order.update({
         where: { id: Number(orderId) },
         data: { paymentId: payment.id, status: 'PAID' },
       });
-      return payment;
+
+      // 3. Devuelve el pago con la relación 'orders'
+      return prisma.payment.findUnique({
+        where: { id: payment.id },
+        include: {
+          orders: {
+            include: { table: true, item: true }, // opcional
+          },
+        },
+      });
     },
 
     // F-05: CRUD menú en panel admin (dummy)
@@ -1323,6 +5392,10 @@ export const resolvers = {
     deleteItem: (_: any, { id }: any, ctx: Context) => {
       requireRole(ctx, [Role.ADMIN, Role.SUPERADMIN]);
       return prisma.item.delete({ where: { id: Number(id) } });
+    },
+    addTable: async (_: any, __: any, ctx: Context) => {
+      requireRole(ctx, [Role.ADMIN, Role.MESERO, Role.SUPERADMIN]);
+      return prisma.table.create({ data: {} });
     },
   },
 };
@@ -1564,7 +5637,7 @@ module.exports = [
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.15.0",
+    "@types/node": "^22.15.29",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "eslint": "^9.25.1",
@@ -1572,8 +5645,9 @@ module.exports = [
     "eslint-plugin-prettier": "^5.2.6",
     "prettier": "^3.5.3",
     "prisma": "^5.0.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.1.3"
+    "typescript": "^5.8.3"
   }
 }
 </file>
