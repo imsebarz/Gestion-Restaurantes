@@ -1,6 +1,5 @@
 import { GraphQLContext } from "../context";
 import { AuthenticateUser, CreateUser } from "../../../application/useCases/UserAuthentication";
-import bcrypt from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { RoleEnum } from "../../../domain/entities/User";
 

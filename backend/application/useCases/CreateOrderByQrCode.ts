@@ -3,6 +3,7 @@ import { IOrderRepository } from "../interfaces/IOrderRepository";
 import { ITableRepository } from "../interfaces/ITableRepository";
 import { IMenuItemRepository } from "../interfaces/IMenuItemRepository";
 import { IUserRepository } from "../interfaces/IUserRepository";
+import { pubsub, SUBSCRIPTION_EVENTS } from "../../interfaces/graphql/pubsub";
 
 export interface CreateOrderByQrCodeRequest {
   qrCode: string;
@@ -64,6 +65,13 @@ export class CreateOrderByQrCode {
       });
     }
 
-    return this.orderRepository.findById(order.id) as Promise<Order>;
+    // Get the complete order with all items for the response
+    const completeOrder = (await this.orderRepository.findById(order.id)) as Order;
+
+    // Publish real-time events for dashboard updates
+    pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_CREATED, { orderCreated: completeOrder });
+    pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: completeOrder });
+
+    return completeOrder;
   }
 }

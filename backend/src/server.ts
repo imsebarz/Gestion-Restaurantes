@@ -8,6 +8,8 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { createServer } from "http";
 import { createYoga, createSchema } from "graphql-yoga";
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/use/ws';
 import { createGraphQLContext } from "../interfaces/graphql/context";
 import { menuResolvers } from "../interfaces/graphql/resolvers/menuResolvers";
 import { orderResolvers } from "../interfaces/graphql/resolvers/orderResolvers";
@@ -337,7 +339,10 @@ const resolvers = {
 
 async function main(): Promise<void> {
   const app = express();
-  app.use(cors());
+  app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    credentials: true
+  }));
   app.use(express.json());
 
   // Build GraphQL schema
@@ -350,6 +355,11 @@ async function main(): Promise<void> {
       // Extract the request object from GraphQL Yoga context
       const req = params.request;
       return createGraphQLContext(req);
+    },
+    // Habilitar CORS para WebSockets
+    cors: {
+      origin: ['http://localhost:3000', 'http://localhost:3001'],
+      credentials: true
     },
     graphiql: {
       defaultQuery: `
@@ -394,6 +404,30 @@ async function main(): Promise<void> {
             }
           }
         }
+        
+        subscription OnOrderCreated {
+          orderCreated {
+            id
+            status
+            tableId
+            userId
+            createdAt
+            orderItems {
+              id
+              quantity
+              price
+              menuItem {
+                id
+                name
+                price
+              }
+            }
+            table {
+              id
+              number
+            }
+          }
+        }
       `,
       headers: JSON.stringify(
         {
@@ -405,20 +439,64 @@ async function main(): Promise<void> {
     },
   });
 
-  // Express middleware bridge for Yoga at /graphql
-  app.use("/graphql", (req: Request, res: Response, next: NextFunction) => {
-    yoga(req, res).catch(next);
-  });
-
   const port = process.env.PORT ?? 4000;
   const httpServer = createServer(app);
+
+  // Configurar WebSocket Server para suscripciones
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+
+  // Configurar el servidor de GraphQL-WS
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: async (ctx, msg, args) => {
+        // Extraer token de los parámetros de conexión
+        const authHeader = ctx.connectionParams?.authorization;
+        
+        // Crear un objeto request mock para el contexto
+        const mockRequest = {
+          headers: {
+            authorization: authHeader || '',
+            get: (name: string) => {
+              if (name.toLowerCase() === 'authorization') {
+                return authHeader || '';
+              }
+              return '';
+            }
+          }
+        };
+        
+        return createGraphQLContext(mockRequest);
+      },
+      onConnect: (ctx) => {
+        console.log('🔌 WebSocket client connected for subscriptions');
+        return true;
+      },
+      onDisconnect: () => {
+        console.log('🔌 WebSocket client disconnected');
+      },
+    },
+    wsServer
+  );
+
+  // Use Yoga as Express middleware
+  app.use("/graphql", yoga as any);
+  
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    serverCleanup.dispose();
+    httpServer.close(() => {
+      console.log('HTTP server closed');
+    });
+  });
   
   httpServer.listen(port, () => {
     console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
-    console.log(`📊 Clean Architecture + Screaming Architecture implemented`);
-    console.log(`🔄 DataLoader optimization enabled`);
-    console.log(`📄 Cursor-based pagination ready`);
-    console.log(`🔄 Real-time subscriptions enabled`);
+    console.log(`🔌 WebSocket server ready at ws://localhost:${port}/graphql`);
   });
 }
 

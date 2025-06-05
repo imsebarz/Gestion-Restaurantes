@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "outDir": "dist",
     "rootDir": ".",
     "strict": true,
@@ -11,7 +12,8 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "types": ["node", "bcryptjs"]
   },
   "include": [
     "src/**/*",

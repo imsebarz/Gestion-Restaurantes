@@ -155,31 +155,64 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const [createPayment] = useMutation(CREATE_PAYMENT_FOR_ORDER);
   const [generateQrCode] = useMutation(GENERATE_QR_CODE_FOR_TABLE);
 
-  // Subscriptions
-  const { data: orderCreatedData } = useSubscription(ORDER_CREATED_SUBSCRIPTION);
-  const { data: orderUpdatedData } = useSubscription(ORDER_UPDATED_SUBSCRIPTION);
-  const { data: orderStatusChangedData } = useSubscription(ORDER_STATUS_CHANGED_SUBSCRIPTION);
-
-  useEffect(() => {
-    if (orderCreatedData) {
-      refetchOrders();
-      refetchTables();
+  // Subscriptions with improved error handling and reconnection
+  const { data: orderCreatedData, error: orderCreatedError } = useSubscription(ORDER_CREATED_SUBSCRIPTION, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.orderCreated) {
+        console.log('🔔 New order created:', subscriptionData.data.orderCreated);
+        // Refetch both orders and tables to update counts
+        refetchOrders();
+        refetchTables();
+      }
+    },
+    onError: (error) => {
+      console.error('Order created subscription error:', error);
     }
-  }, [orderCreatedData, refetchOrders, refetchTables]);
+  });
 
-  useEffect(() => {
-    if (orderUpdatedData) {
-      refetchOrders();
-      refetchTables();
+  const { data: orderUpdatedData, error: orderUpdatedError } = useSubscription(ORDER_UPDATED_SUBSCRIPTION, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.orderUpdated) {
+        console.log('🔄 Order updated:', subscriptionData.data.orderUpdated);
+        // Refetch both orders and tables to update counts
+        refetchOrders();
+        refetchTables();
+      }
+    },
+    onError: (error) => {
+      console.error('Order updated subscription error:', error);
     }
-  }, [orderUpdatedData, refetchOrders, refetchTables]);
+  });
 
-  useEffect(() => {
-    if (orderStatusChangedData) {
-      refetchOrders();
-      refetchTables();
+  const { data: orderStatusChangedData, error: orderStatusChangedError } = useSubscription(ORDER_STATUS_CHANGED_SUBSCRIPTION, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      if (subscriptionData.data?.orderStatusChanged) {
+        console.log('📝 Order status changed:', subscriptionData.data.orderStatusChanged);
+        // Refetch both orders and tables to update counts
+        refetchOrders();
+        refetchTables();
+      }
+    },
+    onError: (error) => {
+      console.error('Order status changed subscription error:', error);
     }
-  }, [orderStatusChangedData, refetchOrders, refetchTables]);
+  });
+
+  // Show subscription status in development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      const hasSubscriptionErrors = orderCreatedError || orderUpdatedError || orderStatusChangedError;
+      if (hasSubscriptionErrors) {
+        console.warn('⚠️ Some subscriptions have errors:', {
+          orderCreatedError,
+          orderUpdatedError,
+          orderStatusChangedError
+        });
+      } else {
+        console.log('✅ All subscriptions are active');
+      }
+    }
+  }, [orderCreatedError, orderUpdatedError, orderStatusChangedError]);
 
   const handleCreateMenuItem = async (e: React.FormEvent) => {
     e.preventDefault();

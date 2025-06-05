@@ -11,6 +11,7 @@ const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
 });
 
+// WebSocket link para suscripciones
 const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
   url: 'ws://localhost:4000/graphql',
   connectionParams: () => {
@@ -18,6 +19,20 @@ const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
     return {
       authorization: token ? `Bearer ${token}` : "",
     };
+  },
+  // Mejorar reconexión automática
+  shouldRetry: () => true,
+  retryAttempts: 5,
+  retryWait: (retries) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, Math.min(1000 * Math.pow(2, retries), 30000));
+    });
+  },
+  // Manejo de errores mejorado
+  on: {
+    connected: () => console.log('✅ WebSocket connected for subscriptions'),
+    closed: () => console.log('❌ WebSocket connection closed'),
+    error: (error) => console.error('WebSocket error:', error),
   },
 })) : null;
 
@@ -71,7 +86,8 @@ export const apolloClient = new ApolloClient({
       Query: {
         fields: {
           orders: {
-            merge(_, incoming) {
+            // Mejorar cache para actualizaciones en tiempo real
+            merge(existing, incoming, { args }) {
               return incoming;
             },
           },
@@ -81,17 +97,30 @@ export const apolloClient = new ApolloClient({
             },
           },
           tables: {
-            merge(_, incoming) {
+            // Mejorar cache para actualizaciones de mesas
+            merge(existing, incoming, { args }) {
               return incoming;
             },
           },
         },
+      },
+      // Configuración específica para orders
+      Order: {
+        keyFields: ["id"],
+      },
+      Table: {
+        keyFields: ["id"],
+      },
+      MenuItem: {
+        keyFields: ["id"],
       },
     },
   }),
   defaultOptions: {
     watchQuery: {
       errorPolicy: 'all',
+      // Permitir actualizaciones en tiempo real
+      notifyOnNetworkStatusChange: true,
     },
     query: {
       errorPolicy: 'all',

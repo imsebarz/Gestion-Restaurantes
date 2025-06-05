@@ -1,6 +1,7 @@
 import { Order, OrderStatus } from "../../domain/entities/Order";
 import { User } from "../../domain/entities/User";
 import { IOrderRepository } from "../interfaces/IOrderRepository";
+import { pubsub, SUBSCRIPTION_EVENTS } from "../../interfaces/graphql/pubsub";
 
 export interface UpdateOrderStatusRequest {
   orderId: number;
@@ -22,9 +23,15 @@ export class UpdateOrderStatus {
     }
 
     const updatedOrder = order.changeStatus(request.newStatus);
-    return this.orderRepository.updateOrderStatus(
+    const result = await this.orderRepository.updateOrderStatus(
       request.orderId,
       request.newStatus,
     );
+
+    // Publish real-time events for dashboard updates
+    pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_STATUS_CHANGED, { orderStatusChanged: result });
+    pubsub.publish(SUBSCRIPTION_EVENTS.ORDER_UPDATED, { orderUpdated: result });
+
+    return result;
   }
 }
