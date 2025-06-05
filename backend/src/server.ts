@@ -288,10 +288,50 @@ const resolvers = {
     ...tableResolvers.Table,
   },
   DateTime: {
-    serialize: (value: Date | string) =>
-      value instanceof Date ? value.toISOString() : value,
-    parseValue: (value: string) => new Date(value),
-    parseLiteral: (ast: { value: string }) => new Date(ast.value),
+    serialize: (value: Date | string | number) => {
+      // Si el valor es nulo o undefined, devolver null
+      if (value == null) return null;
+      
+      // Si es un número (timestamp), convertir a Date
+      if (typeof value === 'number') {
+        const date = new Date(value);
+        return date.toISOString();
+      }
+      
+      // Si es una string, verificar si es una fecha válida
+      if (typeof value === 'string') {
+        const date = new Date(value);
+        if (isNaN(date.getTime())) {
+          throw new Error(`Invalid date string: ${value}`);
+        }
+        return date.toISOString();
+      }
+      
+      // Si es una instancia de Date
+      if (value instanceof Date) {
+        if (isNaN(value.getTime())) {
+          throw new Error(`Invalid Date object`);
+        }
+        return value.toISOString();
+      }
+      
+      // Si llegamos aquí, el tipo no es válido
+      throw new Error(`Value is not a valid date: ${value} (type: ${typeof value})`);
+    },
+    parseValue: (value: string) => {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        throw new Error(`Invalid date string: ${value}`);
+      }
+      return date;
+    },
+    parseLiteral: (ast: { value: string }) => {
+      const date = new Date(ast.value);
+      if (isNaN(date.getTime())) {
+        throw new Error(`Invalid date string: ${ast.value}`);
+      }
+      return date;
+    },
   },
 };
 
@@ -309,12 +349,6 @@ async function main(): Promise<void> {
     context: async (params) => {
       // Extract the request object from GraphQL Yoga context
       const req = params.request;
-      console.log('=== YOGA CONTEXT DEBUG ===');
-      console.log('Yoga params:', Object.keys(params));
-      console.log('Request object exists:', !!req);
-      console.log('Request headers:', req?.headers);
-      console.log('========================');
-      
       return createGraphQLContext(req);
     },
     graphiql: {
@@ -377,11 +411,14 @@ async function main(): Promise<void> {
   });
 
   const port = process.env.PORT ?? 4000;
-  createServer(app).listen(port, () => {
+  const httpServer = createServer(app);
+  
+  httpServer.listen(port, () => {
     console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
     console.log(`📊 Clean Architecture + Screaming Architecture implemented`);
     console.log(`🔄 DataLoader optimization enabled`);
     console.log(`📄 Cursor-based pagination ready`);
+    console.log(`🔄 Real-time subscriptions enabled`);
   });
 }
 

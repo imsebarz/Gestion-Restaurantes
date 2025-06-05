@@ -294,12 +294,30 @@ export class PrismaOrderRepository implements IOrderRepository {
         ),
     );
 
+    // Asegurar que createdAt es una fecha válida
+    let createdAt = new Date();
+    if (order.createdAt) {
+      if (order.createdAt instanceof Date) {
+        createdAt = order.createdAt;
+      } else {
+        createdAt = new Date(order.createdAt);
+      }
+
+      // Verificar que la fecha es válida
+      if (isNaN(createdAt.getTime())) {
+        console.warn(
+          `Invalid createdAt date for order ${order.id}: ${order.createdAt}`,
+        );
+        createdAt = new Date(); // Fallback a la fecha actual
+      }
+    }
+
     return new Order(
       order.id,
       order.status as OrderStatus,
       order.tableId,
       order.userId,
-      order.createdAt,
+      createdAt,
       orderItems,
     );
   }
