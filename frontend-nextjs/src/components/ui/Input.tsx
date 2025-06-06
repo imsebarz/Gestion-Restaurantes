@@ -33,7 +33,7 @@ export const Input: React.FC<InputProps> = (props) => {
   const { label, id, error, required, className = '' } = props;
   const inputId = id || label.toLowerCase().replace(/\s+/g, '-');
 
-  const baseInputClasses = `mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+  const baseInputClasses = `mt-1 block w-full px-3 py-2 bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
     error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''
   }`;
 

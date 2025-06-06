@@ -12,12 +12,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const getVariantClasses = (variant: ButtonVariant): string => {
   const variants = {
-    primary: 'bg-indigo-600 hover:bg-indigo-700 text-white',
-    secondary: 'bg-gray-600 hover:bg-gray-700 text-white',
-    success: 'bg-green-600 hover:bg-green-700 text-white',
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
-    warning: 'bg-yellow-600 hover:bg-yellow-700 text-white',
-    info: 'bg-blue-600 hover:bg-blue-700 text-white',
+    primary: 'bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-600 hover:border-indigo-700',
+    secondary: 'bg-gray-700 hover:bg-gray-800 text-white border border-gray-700 hover:border-gray-800',
+    success: 'bg-green-600 hover:bg-green-700 text-white border border-green-600 hover:border-green-700',
+    danger: 'bg-red-600 hover:bg-red-700 text-white border border-red-600 hover:border-red-700',
+    warning: 'bg-yellow-500 hover:bg-yellow-600 text-white border border-yellow-500 hover:border-yellow-600',
+    info: 'bg-blue-600 hover:bg-blue-700 text-white border border-blue-600 hover:border-blue-700',
   };
   return variants[variant];
 };

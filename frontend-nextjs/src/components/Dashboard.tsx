@@ -23,6 +23,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
   const dashboardUtils = useDashboardUtils(dashboardData.userData);
   const dashboardActions = useDashboardActions({
     createMenuItem: dashboardData.createMenuItem,
+    editMenuItem: dashboardData.editMenuItem,
     deleteMenuItem: dashboardData.deleteMenuItem,
     addTable: dashboardData.addTable,
     removeTable: dashboardData.removeTable,
@@ -290,7 +291,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   newItemPrice={dashboardActions.newItemPrice}
                   setNewItemPrice={dashboardActions.setNewItemPrice}
                   handleCreateMenuItem={dashboardActions.handleCreateMenuItem}
+                  handleEditMenuItem={dashboardActions.handleEditMenuItem}
                   handleDeleteMenuItem={dashboardActions.handleDeleteMenuItem}
+                  editingItem={dashboardActions.editingItem}
+                  setEditingItem={dashboardActions.setEditingItem}
+                  startEditing={dashboardActions.startEditing}
+                  cancelEditing={dashboardActions.cancelEditing}
                   formatPrice={dashboardUtils.formatPrice}
                   getErrorMessage={dashboardUtils.getErrorMessage}
                   canManageMenu={dashboardUtils.canManageMenu}

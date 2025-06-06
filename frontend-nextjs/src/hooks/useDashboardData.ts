@@ -5,6 +5,7 @@ import {
   GET_TABLES, 
   GET_ORDERS,
   CREATE_MENU_ITEM,
+  EDIT_MENU_ITEM,
   DELETE_MENU_ITEM,
   ADD_TABLE,
   REMOVE_TABLE,
@@ -118,6 +119,7 @@ export const useDashboardData = () => {
 
   // Mutations
   const [createMenuItem] = useMutation(CREATE_MENU_ITEM);
+  const [editMenuItem] = useMutation(EDIT_MENU_ITEM);
   const [deleteMenuItem] = useMutation(DELETE_MENU_ITEM);
   const [addTable, { loading: addTableLoading }] = useMutation(ADD_TABLE);
   const [removeTable, { loading: removeTableLoading }] = useMutation(REMOVE_TABLE);
@@ -210,6 +212,7 @@ export const useDashboardData = () => {
 
     // Mutations
     createMenuItem,
+    editMenuItem,
     deleteMenuItem,
     addTable,
     addTableLoading,

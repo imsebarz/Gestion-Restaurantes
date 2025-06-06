@@ -132,10 +132,10 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
       {/* Status Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { status: 'PENDING', label: 'Pendientes', color: 'from-gray-500 to-slate-600', bgColor: 'from-gray-50 to-slate-50', borderColor: 'border-gray-200' },
-          { status: 'PREPARING', label: 'Preparando', color: 'from-yellow-500 to-orange-500', bgColor: 'from-yellow-50 to-orange-50', borderColor: 'border-yellow-200' },
-          { status: 'READY', label: 'Listos', color: 'from-blue-500 to-indigo-500', bgColor: 'from-blue-50 to-indigo-50', borderColor: 'border-blue-200' },
-          { status: 'PAID', label: 'Pagados', color: 'from-green-500 to-emerald-500', bgColor: 'from-green-50 to-emerald-50', borderColor: 'border-green-200' }
+          { status: 'PENDING', label: 'Pendientes', color: 'from-gray-600 to-slate-700', bgColor: 'from-gray-100 to-slate-100', borderColor: 'border-gray-300' },
+          { status: 'PREPARING', label: 'Preparando', color: 'from-yellow-600 to-orange-600', bgColor: 'from-yellow-100 to-orange-100', borderColor: 'border-yellow-300' },
+          { status: 'READY', label: 'Listos', color: 'from-blue-600 to-indigo-600', bgColor: 'from-blue-100 to-indigo-100', borderColor: 'border-blue-300' },
+          { status: 'PAID', label: 'Pagados', color: 'from-green-600 to-emerald-600', bgColor: 'from-green-100 to-emerald-100', borderColor: 'border-green-300' }
         ].map(({ status, label, color, bgColor, borderColor }) => (
           <Card key={status} className={cn("bg-gradient-to-r", bgColor, "border", borderColor)}>
             <CardContent className="p-4">
@@ -145,7 +145,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">{label}</p>
-                  <p className="text-xs text-gray-600">{status}</p>
+                  <p className="text-xs text-gray-700">{status}</p>
                 </div>
               </div>
             </CardContent>
