@@ -238,7 +238,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <h3 className="text-lg font-semibold text-gray-900">Pedido #{order.orderNumber || order.id}</h3>
+                            <h3 className="text-lg font-semibold text-gray-900">Pedido #{order.id}</h3>
                             <Badge variant={getStatusBadgeVariant(order.status)}>
                               {order.status}
                             </Badge>
