@@ -50,6 +50,7 @@ const typeDefs = `
     sku: String!
     name: String!
     price: Float!
+    imageUrl: String
     isAvailable: Boolean!
     createdAt: DateTime!
   }
@@ -231,8 +232,8 @@ const typeDefs = `
     signup(email: String!, password: String!, name: String, role: RoleEnum): AuthPayload!
     
     # Menu management
-    createItem(title: String!, price: Float!): MenuItem!
-    editItem(id: ID!, title: String, price: Float): MenuItem!
+    createItem(title: String!, price: Float!, imageUrl: String): MenuItem!
+    editItem(id: ID!, title: String, price: Float, imageUrl: String): MenuItem!
     deleteItem(id: ID!): MenuItem!
     
     # Table management

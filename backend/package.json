@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix"
   },
   "prisma": {
-    "seed": "ts-node --transpile-only prisma/seed.ts"
+    "seed": "ts-node --transpile-only infrastructure/prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",

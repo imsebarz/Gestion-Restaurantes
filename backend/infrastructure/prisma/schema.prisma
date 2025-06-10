@@ -39,6 +39,7 @@ model MenuItem {
   sku         String    @unique
   name        String
   price       Decimal   @db.Money
+  imageUrl    String?   @default("https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop")
   isAvailable Boolean   @default(true)
   createdAt   DateTime  @default(now())
   orderItems  OrderItem[]

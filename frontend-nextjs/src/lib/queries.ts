@@ -35,6 +35,7 @@ export const GET_MENU_ITEMS = gql`
       sku
       name
       price
+      imageUrl
       isAvailable
       createdAt
     }
@@ -42,12 +43,13 @@ export const GET_MENU_ITEMS = gql`
 `;
 
 export const CREATE_MENU_ITEM = gql`
-  mutation CrearMenuItem($title: String!, $price: Float!) {
-    createItem(title: $title, price: $price) {
+  mutation CrearMenuItem($title: String!, $price: Float!, $imageUrl: String) {
+    createItem(title: $title, price: $price, imageUrl: $imageUrl) {
       id
       sku
       name
       price
+      imageUrl
       isAvailable
       createdAt
     }
@@ -55,12 +57,13 @@ export const CREATE_MENU_ITEM = gql`
 `;
 
 export const EDIT_MENU_ITEM = gql`
-  mutation EditarMenuItem($id: ID!, $title: String, $price: Float) {
-    editItem(id: $id, title: $title, price: $price) {
+  mutation EditarMenuItem($id: ID!, $title: String, $price: Float, $imageUrl: String) {
+    editItem(id: $id, title: $title, price: $price, imageUrl: $imageUrl) {
       id
       sku
       name
       price
+      imageUrl
       isAvailable
       createdAt
     }
@@ -98,6 +101,7 @@ export const GET_TABLES = gql`
             id
             name
             price
+            imageUrl
           }
         }
       }
@@ -144,6 +148,7 @@ export const GET_ORDERS = gql`
               id
               name
               price
+              imageUrl
             }
           }
           table {
@@ -183,6 +188,7 @@ export const CREATE_ORDER = gql`
           id
           name
           price
+          imageUrl
         }
       }
     }
@@ -266,6 +272,7 @@ export const GET_ORDERS_BY_QR_CODE = gql`
           id
           name
           price
+          imageUrl
         }
       }
     }
@@ -288,6 +295,7 @@ export const CREATE_ORDER_BY_QR_CODE = gql`
           id
           name
           price
+          imageUrl
         }
       }
     }
@@ -322,6 +330,7 @@ export const ORDER_CREATED_SUBSCRIPTION = gql`
           id
           name
           price
+          imageUrl
         }
       }
       table {
@@ -352,6 +361,7 @@ export const ORDER_UPDATED_SUBSCRIPTION = gql`
           id
           name
           price
+          imageUrl
         }
       }
       table {
@@ -382,6 +392,7 @@ export const ORDER_STATUS_CHANGED_SUBSCRIPTION = gql`
           id
           name
           price
+          imageUrl
         }
       }
       table {

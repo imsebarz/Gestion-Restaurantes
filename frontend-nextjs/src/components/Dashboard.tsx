@@ -290,6 +290,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   setNewItemName={dashboardActions.setNewItemName}
                   newItemPrice={dashboardActions.newItemPrice}
                   setNewItemPrice={dashboardActions.setNewItemPrice}
+                  newItemImageUrl={dashboardActions.newItemImageUrl}
+                  setNewItemImageUrl={dashboardActions.setNewItemImageUrl}
                   handleCreateMenuItem={dashboardActions.handleCreateMenuItem}
                   handleEditMenuItem={dashboardActions.handleEditMenuItem}
                   handleDeleteMenuItem={dashboardActions.handleDeleteMenuItem}

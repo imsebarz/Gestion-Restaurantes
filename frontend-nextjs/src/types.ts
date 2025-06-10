@@ -9,6 +9,7 @@ export interface MenuItem {
   sku: string;
   name: string;
   price: number;
+  imageUrl?: string;
   isAvailable: boolean;
   createdAt: string;
 }

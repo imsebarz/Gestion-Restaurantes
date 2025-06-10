@@ -96,7 +96,7 @@ export const menuResolvers = {
   Mutation: {
     createItem: async (
       _: unknown,
-      args: { title: string; price: number },
+      args: { title: string; price: number; imageUrl?: string },
       context: GraphQLContext
     ) => {
       requireRole(context, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
@@ -105,13 +105,14 @@ export const menuResolvers = {
         sku: `${args.title.toUpperCase().replace(/\s+/g, '-')}-${Date.now()}`,
         name: args.title,
         price: args.price,
+        imageUrl: args.imageUrl,
         isAvailable: true,
       });
     },
 
     editItem: async (
       _: unknown,
-      args: { id: string; title?: string; price?: number },
+      args: { id: string; title?: string; price?: number; imageUrl?: string },
       context: GraphQLContext
     ) => {
       requireRole(context, [RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
@@ -119,6 +120,7 @@ export const menuResolvers = {
       const updateData: any = {};
       if (args.title !== undefined) updateData.name = args.title;
       if (args.price !== undefined) updateData.price = args.price;
+      if (args.imageUrl !== undefined) updateData.imageUrl = args.imageUrl;
 
       return context.repositories.menuItemRepository.update(Number(args.id), updateData);
     },

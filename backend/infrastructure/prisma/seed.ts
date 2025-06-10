@@ -56,16 +56,81 @@ async function main() {
     ],
   });
 
-  // 4. Menú - Add more variety
+  // 4. Menú - Add more variety with stock images
   await prisma.menuItem.createMany({
     data: [
-      { sku: "QUESADILLA-CLAS", name: "Quesadilla Clásica", price: 15000 },
-      { sku: "BURGER-ANGUS", name: "Hamburguesa Angus", price: 28000 },
-      { sku: "LIMONADA-MNT", name: "Limonada de Menta", price: 8000 },
-      { sku: "TACOS-PASTOR", name: "Tacos al Pastor", price: 18000 },
-      { sku: "AREPA-QUESO", name: "Arepa con Queso", price: 12000 },
-      { sku: "CAFE-AMERICANO", name: "Café Americano", price: 5000 },
-      { sku: "CERVEZA-CLUB", name: "Cerveza Club Colombia", price: 7000 },
+      { 
+        sku: "QUESADILLA-CLAS", 
+        name: "Quesadilla Clásica", 
+        price: 15000,
+        imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "BURGER-ANGUS", 
+        name: "Hamburguesa Angus", 
+        price: 28000,
+        imageUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "LIMONADA-MNT", 
+        name: "Limonada de Menta", 
+        price: 8000,
+        imageUrl: "https://images.unsplash.com/photo-1556881286-fc6915169721?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "TACOS-PASTOR", 
+        name: "Tacos al Pastor", 
+        price: 18000,
+        imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "AREPA-QUESO", 
+        name: "Arepa con Queso", 
+        price: 12000,
+        imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "CAFE-AMERICANO", 
+        name: "Café Americano", 
+        price: 5000,
+        imageUrl: "https://images.unsplash.com/photo-1497636577773-f1231844b336?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "CERVEZA-CLUB", 
+        name: "Cerveza Club Colombia", 
+        price: 7000,
+        imageUrl: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "BANDEJA-PAISA", 
+        name: "Bandeja Paisa", 
+        price: 35000,
+        imageUrl: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "SALMON-GRILL", 
+        name: "Salmón a la Parrilla", 
+        price: 32000,
+        imageUrl: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "PIZZA-MARG", 
+        name: "Pizza Margherita", 
+        price: 25000,
+        imageUrl: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "ENSALADA-CAES", 
+        name: "Ensalada César", 
+        price: 18000,
+        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+      },
+      { 
+        sku: "PASTA-CARB", 
+        name: "Pasta Carbonara", 
+        price: 22000,
+        imageUrl: "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=400&h=300&fit=crop"
+      }
     ],
   });
 

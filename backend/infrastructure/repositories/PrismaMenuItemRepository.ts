@@ -25,6 +25,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
       menuItem.sku,
       menuItem.name,
       Number(menuItem.price),
+      menuItem.imageUrl || undefined,
       menuItem.isAvailable,
       menuItem.createdAt,
     );
@@ -42,6 +43,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
       menuItem.sku,
       menuItem.name,
       Number(menuItem.price),
+      menuItem.imageUrl || undefined,
       menuItem.isAvailable,
       menuItem.createdAt,
     );
@@ -100,6 +102,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
         item.sku,
         item.name,
         Number(item.price),
+        item.imageUrl || undefined,
         item.isAvailable,
         item.createdAt,
       ),
@@ -120,6 +123,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
     sku: string;
     name: string;
     price: number;
+    imageUrl?: string;
     isAvailable?: boolean;
   }): Promise<MenuItem> {
     const menuItem = await prisma.menuItem.create({
@@ -127,6 +131,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
         sku: menuItemData.sku,
         name: menuItemData.name,
         price: menuItemData.price,
+        imageUrl: menuItemData.imageUrl,
         isAvailable: menuItemData.isAvailable ?? true,
       },
     });
@@ -136,6 +141,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
       menuItem.sku,
       menuItem.name,
       Number(menuItem.price),
+      menuItem.imageUrl || undefined,
       menuItem.isAvailable,
       menuItem.createdAt,
     );
@@ -145,6 +151,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
     const updateData: any = {};
     if (menuItemData.name !== undefined) updateData.name = menuItemData.name;
     if (menuItemData.price !== undefined) updateData.price = menuItemData.price;
+    if (menuItemData.imageUrl !== undefined) updateData.imageUrl = menuItemData.imageUrl;
     if (menuItemData.isAvailable !== undefined)
       updateData.isAvailable = menuItemData.isAvailable;
 
@@ -158,6 +165,7 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
       menuItem.sku,
       menuItem.name,
       Number(menuItem.price),
+      menuItem.imageUrl || undefined,
       menuItem.isAvailable,
       menuItem.createdAt,
     );

@@ -34,29 +34,36 @@ export const useDashboardActions = ({
 }: UseDashboardActionsProps) => {
   const [newItemName, setNewItemName] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
-  const [editingItem, setEditingItem] = useState<{ id: string; name: string; price: string } | null>(null);
+  const [newItemImageUrl, setNewItemImageUrl] = useState('');
+  const [editingItem, setEditingItem] = useState<{ id: string; name: string; price: string; imageUrl?: string } | null>(null);
 
   const handleCreateMenuItem = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await createMenuItem({
-        variables: { title: newItemName, price: parseFloat(newItemPrice) }
+        variables: { 
+          title: newItemName, 
+          price: parseFloat(newItemPrice),
+          imageUrl: newItemImageUrl || undefined
+        }
       });
       setNewItemName('');
       setNewItemPrice('');
+      setNewItemImageUrl('');
       refetchMenu();
     } catch (error) {
       console.error('Error creating menu item:', error);
     }
   };
 
-  const handleEditMenuItem = async (id: string, name: string, price: string) => {
+  const handleEditMenuItem = async (id: string, name: string, price: string, imageUrl?: string) => {
     try {
       await editMenuItem({
         variables: { 
           id, 
           title: name, 
-          price: parseFloat(price) 
+          price: parseFloat(price),
+          imageUrl: imageUrl || undefined
         }
       });
       setEditingItem(null);
@@ -136,11 +143,12 @@ export const useDashboardActions = ({
     }
   };
 
-  const startEditing = (item: { id: string; name: string; price: number }) => {
+  const startEditing = (item: { id: string; name: string; price: number; imageUrl?: string }) => {
     setEditingItem({
       id: item.id,
       name: item.name,
-      price: item.price.toString()
+      price: item.price.toString(),
+      imageUrl: item.imageUrl
     });
   };
 
@@ -154,6 +162,8 @@ export const useDashboardActions = ({
     setNewItemName,
     newItemPrice,
     setNewItemPrice,
+    newItemImageUrl,
+    setNewItemImageUrl,
     editingItem,
     setEditingItem,
 
