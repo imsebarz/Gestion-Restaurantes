@@ -132,7 +132,6 @@ export const useDashboardData = () => {
   useSubscription(ORDER_CREATED_SUBSCRIPTION, {
     onSubscriptionData: ({ subscriptionData }) => {
       if (subscriptionData.data?.orderCreated) {
-        console.log('🔔 New order created:', subscriptionData.data.orderCreated);
         refetchOrders();
         refetchTables();
       }
@@ -145,7 +144,6 @@ export const useDashboardData = () => {
   useSubscription(ORDER_UPDATED_SUBSCRIPTION, {
     onSubscriptionData: ({ subscriptionData }) => {
       if (subscriptionData.data?.orderUpdated) {
-        console.log('🔄 Order updated:', subscriptionData.data.orderUpdated);
         refetchOrders();
         refetchTables();
       }
@@ -158,7 +156,6 @@ export const useDashboardData = () => {
   useSubscription(ORDER_STATUS_CHANGED_SUBSCRIPTION, {
     onSubscriptionData: ({ subscriptionData }) => {
       if (subscriptionData.data?.orderStatusChanged) {
-        console.log('📝 Order status changed:', subscriptionData.data.orderStatusChanged);
         refetchOrders();
         refetchTables();
       }

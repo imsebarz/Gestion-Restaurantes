@@ -12,13 +12,6 @@ function signToken(user: { id: number; role: RoleEnum }): string {
 export const userResolvers = {
   Query: {
     me: async (_: unknown, __: unknown, context: GraphQLContext) => {
-      console.log('=== ME RESOLVER DEBUG ===');
-      console.log('Context user:', context.user);
-      console.log('User exists:', !!context.user);
-      console.log('User ID:', context.user?.id);
-      console.log('User role:', context.user?.role);
-      console.log('========================');
-      
       if (!context.user) {
         throw new Error("No autorizado");
       }

@@ -54,10 +54,6 @@ export function requireRole(ctx: Context, allowedRoles: RoleEnum[]): void {
 }
 
 export async function createGraphQLContext(req: any): Promise<GraphQLContext> {
-  console.log('=== CONTEXT DEBUG ===');
-  console.log('Request type:', typeof req);
-  console.log('Request keys:', req ? Object.keys(req) : 'no request');
-  
   // Handle different request types (Express vs GraphQL Yoga)
   let authHeader: string | null = null;
   
@@ -65,15 +61,11 @@ export async function createGraphQLContext(req: any): Promise<GraphQLContext> {
     // Check if headers is a Headers-like object with .get() method
     if (typeof req.headers.get === 'function') {
       authHeader = req.headers.get('authorization');
-      console.log('Headers is Headers-like object, using .get() method');
     } else if (req.headers.authorization) {
       // Standard object headers
       authHeader = req.headers.authorization;
-      console.log('Headers is standard object');
     }
   }
-  
-  console.log('Authorization header extracted:', authHeader);
   
   // Initialize repositories
   const userRepository = new PrismaUserRepository();
@@ -127,11 +119,8 @@ export async function createGraphQLContext(req: any): Promise<GraphQLContext> {
   // Extract user from JWT token
   let user: User | undefined;
   
-  console.log('Auth header present:', !!authHeader);
-  
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.replace('Bearer ', '');
-    console.log('Token extracted:', token.substring(0, 20) + '...');
     
     try {
       const decoded = jwt.verify(
@@ -139,27 +128,17 @@ export async function createGraphQLContext(req: any): Promise<GraphQLContext> {
         process.env.JWT_SECRET || "your-secret-key",
       ) as any;
       
-      console.log('JWT decoded successfully:', decoded);
-      
       // Use the correct field name from the JWT payload
       const userId = decoded.id || decoded.userId;
-      console.log('User ID from token:', userId);
       
       if (userId) {
         const loadedUser = await userLoader.load(userId);
-        console.log('User loaded from DB:', loadedUser);
         user = loadedUser || undefined;
       }
     } catch (error) {
       // Invalid token, user remains undefined
-      console.log('JWT verification failed:', error instanceof Error ? error.message : 'Unknown error');
     }
-  } else {
-    console.log('No valid Bearer token found');
   }
-  
-  console.log('Final context user:', user);
-  console.log('==================');
 
   return {
     user,

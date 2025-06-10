@@ -30,8 +30,6 @@ const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
   },
   // Manejo de errores mejorado
   on: {
-    connected: () => console.log('✅ WebSocket connected for subscriptions'),
-    closed: () => console.log('❌ WebSocket connection closed'),
     error: (error) => console.error('WebSocket error:', error),
   },
 })) : null;
