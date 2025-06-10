@@ -79,6 +79,34 @@ export const DELETE_MENU_ITEM = gql`
   }
 `;
 
+// Count queries
+export const GET_MENU_ITEMS_COUNT = gql`
+  query ContarMenuItems($filter: MenuItemFilter) {
+    menuItemsCount(filter: $filter)
+  }
+`;
+
+export const GET_TABLES_COUNT = gql`
+  query ContarMesas($filter: TableFilter) {
+    tablesCount(filter: $filter)
+  }
+`;
+
+export const GET_ORDERS_COUNT = gql`
+  query ContarPedidos($filter: OrderFilter) {
+    ordersCount(filter: $filter)
+  }
+`;
+
+export const GET_ORDERS_COUNT_BY_STATUS = gql`
+  query ContarPedidosPorEstado {
+    ordersCountByStatus {
+      status
+      count
+    }
+  }
+`;
+
 // Tables queries and mutations
 export const GET_TABLES = gql`
   query VerMesas($filter: TableFilter, $sort: TableSort, $limit: Int, $offset: Int) {

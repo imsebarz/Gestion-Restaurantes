@@ -15,6 +15,10 @@ interface TablesTabProps {
   menuData?: { items: MenuItem[] };
   itemsPerPage: number;
   
+  // Count data
+  tablesCountData?: { tablesCount: number };
+  tablesCountLoading: boolean;
+  
   // Filters and sorting
   tableFilter: TableFilter;
   setTableFilter: (filter: TableFilter) => void;
@@ -47,6 +51,8 @@ export const TablesTab: React.FC<TablesTabProps> = ({
   refetchTables,
   menuData,
   itemsPerPage,
+  tablesCountData,
+  tablesCountLoading,
   tableFilter,
   setTableFilter,
   tableSort,
@@ -92,7 +98,7 @@ export const TablesTab: React.FC<TablesTabProps> = ({
           <div>
             <p className="text-sm font-medium text-blue-800">Total Mesas</p>
             <p className="text-lg font-bold text-blue-700">
-              {tablesData?.tables?.length || 0}
+              {tablesCountLoading ? '...' : (tablesCountData?.tablesCount || 0)}
             </p>
           </div>
         </div>

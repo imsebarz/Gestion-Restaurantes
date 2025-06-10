@@ -78,6 +78,54 @@ export const orderResolvers = {
       // Public access for customers
       return context.repositories.orderRepository.findByQrCode(args.qrCode);
     },
+
+    ordersCount: async (
+      _: unknown,
+      args: {
+        filter?: {
+          status?: OrderStatus;
+          tableId?: number;
+          userId?: number;
+          createdAfter?: string;
+          createdBefore?: string;
+        };
+      },
+      context: GraphQLContext,
+    ) => {
+      requireRole(context, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      
+      const filter = args.filter
+        ? {
+            ...args.filter,
+            createdAfter: args.filter.createdAfter
+              ? new Date(args.filter.createdAfter)
+              : undefined,
+            createdBefore: args.filter.createdBefore
+              ? new Date(args.filter.createdBefore)
+              : undefined,
+          }
+        : undefined;
+
+      return context.repositories.orderRepository.count(filter);
+    },
+
+    ordersCountByStatus: async (
+      _: unknown,
+      args: {},
+      context: GraphQLContext,
+    ) => {
+      requireRole(context, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      
+      const statuses = ['PENDING', 'PREPARING', 'READY', 'PAID', 'CANCELLED'];
+      const counts = await Promise.all(
+        statuses.map(async (status) => {
+          const count = await context.repositories.orderRepository.count({ status: status as OrderStatus });
+          return { status, count };
+        })
+      );
+      
+      return counts;
+    },
   },
 
   Mutation: {

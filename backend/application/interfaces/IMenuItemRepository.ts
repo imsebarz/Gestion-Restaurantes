@@ -30,4 +30,11 @@ export interface IMenuItemRepository {
   }): Promise<MenuItem>;
   update(id: number, menuItemData: Partial<MenuItem>): Promise<MenuItem>;
   delete(id: number): Promise<void>;
+  count(filter?: MenuItemFilter): Promise<number>;
+  findManyWithPagination(
+    filter?: MenuItemFilter,
+    sort?: MenuItemSort,
+    limit?: number,
+    offset?: number,
+  ): Promise<MenuItem[]>;
 }

@@ -321,4 +321,28 @@ export class PrismaTableRepository implements ITableRepository {
     });
     return lastTable ? lastTable.number + 1 : 1;
   }
+
+  async count(filter?: TableFilter): Promise<number> {
+    const where: any = {};
+
+    if (filter) {
+      if (filter.number !== undefined) {
+        where.number = filter.number;
+      }
+      if (filter.capacityMin !== undefined || filter.capacityMax !== undefined) {
+        where.capacity = {};
+        if (filter.capacityMin !== undefined) {
+          where.capacity.gte = filter.capacityMin;
+        }
+        if (filter.capacityMax !== undefined) {
+          where.capacity.lte = filter.capacityMax;
+        }
+      }
+      if (filter.hasQrCode !== undefined) {
+        where.qrCode = filter.hasQrCode ? { not: null } : null;
+      }
+    }
+
+    return await prisma.table.count({ where });
+  }
 }

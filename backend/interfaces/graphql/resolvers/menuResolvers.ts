@@ -91,6 +91,21 @@ export const menuResolvers = {
     menuItem: async (_: any, args: { id: number }, context: GraphQLContext) => {
       return context.dataloaders.menuItemLoader.load(args.id);
     },
+
+    menuItemsCount: async (
+      _: unknown,
+      args: {
+        filter?: {
+          name?: string;
+          priceMin?: number;
+          priceMax?: number;
+          isAvailable?: boolean;
+        };
+      },
+      context: GraphQLContext,
+    ) => {
+      return context.repositories.menuItemRepository.count(args.filter);
+    },
   },
 
   Mutation: {

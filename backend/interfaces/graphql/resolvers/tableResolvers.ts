@@ -46,6 +46,22 @@ export const tableResolvers = {
       // Public access - customers can access via QR code
       return context.repositories.tableRepository.findByQrCode(args.qrCode);
     },
+
+    tablesCount: async (
+      _: unknown,
+      args: {
+        filter?: {
+          number?: number;
+          capacityMin?: number;
+          capacityMax?: number;
+          hasQrCode?: boolean;
+        };
+      },
+      context: GraphQLContext
+    ) => {
+      requireRole(context, [RoleEnum.STAFF, RoleEnum.MANAGER, RoleEnum.SUPERADMIN]);
+      return context.repositories.tableRepository.count(args.filter);
+    },
   },
 
   Mutation: {

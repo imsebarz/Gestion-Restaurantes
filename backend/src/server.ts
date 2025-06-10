@@ -117,6 +117,11 @@ const typeDefs = `
     totalCount: Int!
   }
 
+  type OrderStatusCount {
+    status: String!
+    count: Int!
+  }
+
   input MenuItemFilter {
     name: String
     priceMin: Float
@@ -204,6 +209,7 @@ const typeDefs = `
     ): [MenuItem!]!
     
     menuItem(id: Int!): MenuItem
+    menuItemsCount(filter: MenuItemFilter): Int!
     
     # User queries
     me: User!
@@ -217,6 +223,7 @@ const typeDefs = `
     ): [Table!]!
     getTableById(id: Int!): Table
     getTableByQrCode(qrCode: String!): Table
+    tablesCount(filter: TableFilter): Int!
     
     # Order queries
     orders(
@@ -229,6 +236,8 @@ const typeDefs = `
     order(id: Int!): Order
     ordersByQrCode(qrCode: String!): [Order!]!
     getOrdersByQrCode(qrCode: String!): [Order!]!
+    ordersCount(filter: OrderFilter): Int!
+    ordersCountByStatus: [OrderStatusCount!]!
   }
 
   type Mutation {

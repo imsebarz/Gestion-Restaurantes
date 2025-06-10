@@ -33,6 +33,12 @@ interface OrdersTabProps {
   handleUpdateOrderStatus: (orderId: string, status: string) => void;
   handlePayOrder: (orderId: string) => void;
   
+  // Count data
+  ordersCountByStatusData?: {
+    ordersCountByStatus: Array<{ status: string; count: number }>;
+  };
+  ordersCountByStatusLoading: boolean;
+  
   // Utils
   formatPrice: (price: number) => string;
   getErrorMessage: (error: any) => string;
@@ -52,14 +58,18 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   setOrderSort,
   handleUpdateOrderStatus,
   handlePayOrder,
+  ordersCountByStatusData,
+  ordersCountByStatusLoading,
   formatPrice,
   getErrorMessage
 }) => {
   const orders = ordersData?.orders?.orders || [];
-  const statusCounts = orders.reduce((acc, order) => {
-    acc[order.status] = (acc[order.status] || 0) + 1;
+  
+  // Use real status counts from the backend instead of calculating from current page
+  const statusCounts = ordersCountByStatusData?.ordersCountByStatus?.reduce((acc, item) => {
+    acc[item.status] = item.count;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<string, number>) || {};
 
   const totalRevenue = orders
     .filter(order => order.status === 'PAID')

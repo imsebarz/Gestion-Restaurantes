@@ -55,7 +55,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
         </svg>
       ),
-      count: dashboardData.menuData?.items?.length || 0,
+      count: dashboardData.menuCountLoading ? '...' : (dashboardData.menuCountData?.menuItemsCount || 0),
       color: 'from-orange-500 to-red-500',
       description: 'Gestiona platos y bebidas'
     },
@@ -65,10 +65,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
       icon: '🪑',
       iconSvg: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
       ),
-      count: dashboardData.tablesData?.tables?.length || 0,
+      count: dashboardData.tablesCountLoading ? '...' : (dashboardData.tablesCountData?.tablesCount || 0),
       color: 'from-blue-500 to-indigo-500',
       description: 'Administra mesas y capacidad'
     },
@@ -81,7 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
       ),
-      count: dashboardData.ordersData?.orders?.length || 0,
+      count: dashboardData.ordersCountLoading ? '...' : (dashboardData.ordersCountData?.ordersCount || 0),
       color: 'from-green-500 to-teal-500',
       description: 'Maneja pedidos y pagos'
     }
@@ -119,15 +119,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
               <div className="hidden lg:flex items-center space-x-3 text-sm">
                 <div className="flex items-center space-x-2 px-3 py-1 bg-orange-50 border border-orange-200 rounded-lg">
                   <span className="text-orange-600">🍽️</span>
-                  <span className="font-medium text-orange-700">{dashboardData.menuData?.items?.length || 0}</span>
+                  <span className="font-medium text-orange-700">
+                    {dashboardData.menuCountLoading ? '...' : (dashboardData.menuCountData?.menuItemsCount || 0)}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
                   <span className="text-blue-600">🪑</span>
-                  <span className="font-medium text-blue-700">{dashboardData.tablesData?.tables?.length || 0}</span>
+                  <span className="font-medium text-blue-700">
+                    {dashboardData.tablesCountLoading ? '...' : (dashboardData.tablesCountData?.tablesCount || 0)}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2 px-3 py-1 bg-green-50 border border-green-200 rounded-lg">
                   <span className="text-green-600">📋</span>
-                  <span className="font-medium text-green-700">{dashboardData.ordersData?.orders?.length || 0}</span>
+                  <span className="font-medium text-green-700">
+                    {dashboardData.ordersCountLoading ? '...' : (dashboardData.ordersCountData?.ordersCount || 0)}
+                  </span>
                 </div>
               </div>
 
@@ -313,6 +319,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   refetchTables={dashboardData.refetchTables}
                   menuData={dashboardData.menuData}
                   itemsPerPage={dashboardData.itemsPerPage}
+                  tablesCountData={dashboardData.tablesCountData}
+                  tablesCountLoading={dashboardData.tablesCountLoading}
                   tableFilter={dashboardData.tableFilter}
                   setTableFilter={dashboardData.setTableFilter}
                   tableSort={dashboardData.tableSort}
@@ -356,6 +364,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   handlePayOrder={dashboardActions.handlePayOrder}
                   formatPrice={dashboardUtils.formatPrice}
                   getErrorMessage={dashboardUtils.getErrorMessage}
+                  ordersCountByStatusData={dashboardData.ordersCountByStatusData}
+                  ordersCountByStatusLoading={dashboardData.ordersCountByStatusLoading}
                 />
               )}
             </div>

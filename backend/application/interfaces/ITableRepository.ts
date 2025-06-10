@@ -40,4 +40,5 @@ export interface ITableRepository {
   update(id: number, tableData: Partial<Table>): Promise<Table>;
   delete(id: number): Promise<Table>; // Changed to return Table instead of void
   getNextTableNumber(): Promise<number>;
+  count(filter?: TableFilter): Promise<number>;
 }

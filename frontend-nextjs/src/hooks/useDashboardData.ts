@@ -4,6 +4,10 @@ import {
   GET_MENU_ITEMS, 
   GET_TABLES, 
   GET_ORDERS,
+  GET_MENU_ITEMS_COUNT,
+  GET_TABLES_COUNT,
+  GET_ORDERS_COUNT,
+  GET_ORDERS_COUNT_BY_STATUS,
   CREATE_MENU_ITEM,
   EDIT_MENU_ITEM,
   DELETE_MENU_ITEM,
@@ -104,6 +108,30 @@ export const useDashboardData = () => {
     },
   });
 
+  // Count queries for totals
+  const { data: menuCountData, loading: menuCountLoading } = useQuery<{ menuItemsCount: number }>(GET_MENU_ITEMS_COUNT, {
+    variables: {
+      filter: Object.keys(menuFilter).length > 0 ? menuFilter : undefined,
+    }
+  });
+
+  const { data: tablesCountData, loading: tablesCountLoading } = useQuery<{ tablesCount: number }>(GET_TABLES_COUNT, {
+    variables: {
+      filter: Object.keys(tableFilter).length > 0 ? tableFilter : undefined,
+    }
+  });
+
+  const { data: ordersCountData, loading: ordersCountLoading } = useQuery<{ ordersCount: number }>(GET_ORDERS_COUNT, {
+    variables: {
+      filter: Object.keys(orderFilter).length > 0 ? orderFilter : undefined,
+    }
+  });
+
+  // Order counts by status for accurate status cards
+  const { data: ordersCountByStatusData, loading: ordersCountByStatusLoading } = useQuery<{ 
+    ordersCountByStatus: Array<{ status: string; count: number }> 
+  }>(GET_ORDERS_COUNT_BY_STATUS);
+
   // Mutations
   const [createMenuItem] = useMutation(CREATE_MENU_ITEM);
   const [editMenuItem] = useMutation(EDIT_MENU_ITEM);
@@ -193,6 +221,16 @@ export const useDashboardData = () => {
     setOrderSort,
     orderPage,
     setOrderPage,
+
+    // Count data
+    menuCountData,
+    menuCountLoading,
+    tablesCountData,
+    tablesCountLoading,
+    ordersCountData,
+    ordersCountLoading,
+    ordersCountByStatusData,
+    ordersCountByStatusLoading,
 
     // Mutations
     createMenuItem,

@@ -176,4 +176,79 @@ export class PrismaMenuItemRepository implements IMenuItemRepository {
       where: { id },
     });
   }
+
+  async count(filter?: MenuItemFilter): Promise<number> {
+    const where: any = {};
+
+    if (filter) {
+      if (filter.name) {
+        where.name = { contains: filter.name, mode: "insensitive" };
+      }
+      if (filter.priceMin !== undefined || filter.priceMax !== undefined) {
+        where.price = {};
+        if (filter.priceMin !== undefined) {
+          where.price.gte = filter.priceMin;
+        }
+        if (filter.priceMax !== undefined) {
+          where.price.lte = filter.priceMax;
+        }
+      }
+      if (filter.isAvailable !== undefined) {
+        where.isAvailable = filter.isAvailable;
+      }
+    }
+
+    return await prisma.menuItem.count({ where });
+  }
+
+  async findManyWithPagination(
+    filter?: MenuItemFilter,
+    sort?: MenuItemSort,
+    limit: number = 12,
+    offset: number = 0,
+  ): Promise<MenuItem[]> {
+    const where: any = {};
+
+    if (filter) {
+      if (filter.name) {
+        where.name = { contains: filter.name, mode: "insensitive" };
+      }
+      if (filter.priceMin !== undefined || filter.priceMax !== undefined) {
+        where.price = {};
+        if (filter.priceMin !== undefined) {
+          where.price.gte = filter.priceMin;
+        }
+        if (filter.priceMax !== undefined) {
+          where.price.lte = filter.priceMax;
+        }
+      }
+      if (filter.isAvailable !== undefined) {
+        where.isAvailable = filter.isAvailable;
+      }
+    }
+
+    const orderBy: any = {};
+    if (sort) {
+      orderBy[sort.field] = sort.order;
+    } else {
+      orderBy.name = "asc";
+    }
+
+    const items = await prisma.menuItem.findMany({
+      where,
+      orderBy,
+      take: limit,
+      skip: offset,
+    });
+
+    return items.map((item) => new MenuItem(
+      item.id,
+      item.sku,
+      item.name,
+      Number(item.price),
+      item.imageUrl || undefined,
+      item.isAvailable,
+      item.createdAt,
+    ));
+  }
 }
