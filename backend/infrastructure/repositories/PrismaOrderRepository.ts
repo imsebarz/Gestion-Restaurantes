@@ -282,6 +282,82 @@ export class PrismaOrderRepository implements IOrderRepository {
     return this.mapOrdersFromPrisma(orders);
   }
 
+  async findManyWithPagination(
+    filter?: OrderFilter,
+    sort?: OrderSort,
+    limit: number = 12,
+    offset: number = 0,
+  ): Promise<Order[]> {
+    const where: any = {};
+
+    if (filter) {
+      if (filter.status) {
+        where.status = filter.status;
+      }
+      if (filter.tableId !== undefined) {
+        where.tableId = filter.tableId;
+      }
+      if (filter.userId !== undefined) {
+        where.userId = filter.userId;
+      }
+      if (filter.createdAfter || filter.createdBefore) {
+        where.createdAt = {};
+        if (filter.createdAfter) {
+          where.createdAt.gte = filter.createdAfter;
+        }
+        if (filter.createdBefore) {
+          where.createdAt.lte = filter.createdBefore;
+        }
+      }
+    }
+
+    const orderBy: any = {};
+    if (sort) {
+      orderBy[sort.field] = sort.order;
+    } else {
+      orderBy.createdAt = "desc";
+    }
+
+    const orders = await prisma.order.findMany({
+      where,
+      orderBy,
+      take: limit,
+      skip: offset,
+      include: {
+        orderItems: true,
+      },
+    });
+
+    return this.mapOrdersFromPrisma(orders);
+  }
+
+  async count(filter?: OrderFilter): Promise<number> {
+    const where: any = {};
+
+    if (filter) {
+      if (filter.status) {
+        where.status = filter.status;
+      }
+      if (filter.tableId !== undefined) {
+        where.tableId = filter.tableId;
+      }
+      if (filter.userId !== undefined) {
+        where.userId = filter.userId;
+      }
+      if (filter.createdAfter || filter.createdBefore) {
+        where.createdAt = {};
+        if (filter.createdAfter) {
+          where.createdAt.gte = filter.createdAfter;
+        }
+        if (filter.createdBefore) {
+          where.createdAt.lte = filter.createdBefore;
+        }
+      }
+    }
+
+    return await prisma.order.count({ where });
+  }
+
   private mapOrderFromPrisma(order: any): Order {
     const orderItems = order.orderItems.map(
       (item: any) =>

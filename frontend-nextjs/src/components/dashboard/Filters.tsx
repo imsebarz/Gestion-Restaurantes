@@ -266,10 +266,10 @@ interface OrderFiltersProps {
   setFilter: (filter: OrderFilter) => void;
   sort: OrderSort;
   setSort: (sort: OrderSort) => void;
-  setCursor: (cursor: string | undefined) => void;
+  setPage: (page: number) => void;
 }
 
-export const OrderFilters: React.FC<OrderFiltersProps> = ({ filter, setFilter, sort, setSort, setCursor }) => {
+export const OrderFilters: React.FC<OrderFiltersProps> = ({ filter, setFilter, sort, setSort, setPage }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasActiveFilters = Object.values(filter).some(value => value !== undefined && value !== '');
   const hasActiveSorting = sort.field !== 'createdAt' || sort.order !== 'desc';
@@ -317,7 +317,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({ filter, setFilter, s
             onClick={() => {
               setFilter({});
               setSort({ field: 'createdAt', order: 'desc' });
-              setCursor(undefined);
+              setPage(0);
             }}
             className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800"
           >

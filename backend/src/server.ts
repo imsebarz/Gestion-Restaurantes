@@ -112,6 +112,11 @@ const typeDefs = `
     pageInfo: PageInfo!
   }
 
+  type OrdersResult {
+    orders: [Order!]!
+    totalCount: Int!
+  }
+
   input MenuItemFilter {
     name: String
     priceMin: Float
@@ -217,9 +222,9 @@ const typeDefs = `
     orders(
       filter: OrderFilter
       sort: OrderSort
-      first: Int
-      after: String
-    ): OrderConnection!
+      limit: Int
+      offset: Int
+    ): OrdersResult!
     
     order(id: Int!): Order
     ordersByQrCode(qrCode: String!): [Order!]!

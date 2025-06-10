@@ -2,7 +2,6 @@ import { GraphQLContext } from "../context";
 import { CreateOrderByQrCode } from "../../../application/useCases/CreateOrderByQrCode";
 import { UpdateOrderStatus } from "../../../application/useCases/UpdateOrderStatus";
 import { OrderStatus } from "../../../domain/entities/Order";
-import { Cursor } from "../../../domain/valueObjects/Pagination";
 import { RoleEnum } from "@prisma/client";
 import { pubsub, SUBSCRIPTION_EVENTS } from "../pubsub";
 import { requireRole } from "../utils/auth";
@@ -23,8 +22,8 @@ export const orderResolvers = {
           field: "id" | "status" | "createdAt" | "tableId";
           order: "asc" | "desc";
         };
-        first?: number;
-        after?: string;
+        limit?: number;
+        offset?: number;
       },
       context: GraphQLContext,
     ) => {
@@ -42,24 +41,19 @@ export const orderResolvers = {
           }
         : undefined;
 
-      const result = await context.repositories.orderRepository.findMany(
+      // Use regular pagination instead of cursor pagination
+      const orders = await context.repositories.orderRepository.findManyWithPagination(
         filter,
         args.sort,
-        args.first,
-        args.after ? new Cursor(args.after) : undefined,
+        args.limit || 12,
+        args.offset || 0,
       );
 
+      const totalCount = await context.repositories.orderRepository.count(filter);
+
       return {
-        edges: result.edges.map((edge) => ({
-          node: edge.node,
-          cursor: edge.cursor.value,
-        })),
-        pageInfo: {
-          hasNextPage: result.pageInfo.hasNextPage,
-          hasPreviousPage: result.pageInfo.hasPreviousPage,
-          startCursor: result.pageInfo.startCursor?.value,
-          endCursor: result.pageInfo.endCursor?.value,
-        },
+        orders,
+        totalCount,
       };
     },
 

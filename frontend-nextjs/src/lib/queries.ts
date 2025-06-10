@@ -131,43 +131,35 @@ export const REMOVE_TABLE = gql`
 
 // Orders queries and mutations
 export const GET_ORDERS = gql`
-  query VerPedidos($filter: OrderFilter, $sort: OrderSort, $first: Int, $after: String) {
-    orders(filter: $filter, sort: $sort, first: $first, after: $after) {
-      edges {
-        node {
+  query VerPedidos($filter: OrderFilter, $sort: OrderSort, $limit: Int, $offset: Int) {
+    orders(filter: $filter, sort: $sort, limit: $limit, offset: $offset) {
+      orders {
+        id
+        status
+        tableId
+        userId
+        createdAt
+        orderItems {
           id
-          status
-          tableId
-          userId
-          createdAt
-          orderItems {
+          quantity
+          price
+          menuItem {
             id
-            quantity
+            name
             price
-            menuItem {
-              id
-              name
-              price
-              imageUrl
-            }
-          }
-          table {
-            id
-            number
-          }
-          user {
-            id
-            email
+            imageUrl
           }
         }
-        cursor
+        table {
+          id
+          number
+        }
+        user {
+          id
+          email
+        }
       }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
+      totalCount
     }
   }
 `;

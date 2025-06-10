@@ -71,7 +71,7 @@ export const useDashboardData = () => {
   // Pagination states
   const [menuPage, setMenuPage] = useState(0);
   const [tablePage, setTablePage] = useState(0);
-  const [orderCursor, setOrderCursor] = useState<string | undefined>(undefined);
+  const [orderPage, setOrderPage] = useState(0);
   const itemsPerPage = 12;
 
   // Queries with filters and sorting
@@ -95,26 +95,13 @@ export const useDashboardData = () => {
     }
   });
 
-  const { data: ordersData, loading: ordersLoading, error: ordersError, refetch: refetchOrders } = useQuery<{ 
-    orders: {
-      edges: Array<{
-        node: Order;
-        cursor: string;
-      }>;
-      pageInfo: {
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string;
-        endCursor?: string;
-      };
-    };
-  }>(GET_ORDERS, {
+  const { data: ordersData, loading: ordersLoading, error: ordersError, refetch: refetchOrders } = useQuery(GET_ORDERS, {
     variables: {
       filter: Object.keys(orderFilter).length > 0 ? orderFilter : undefined,
       sort: orderSort,
-      first: itemsPerPage,
-      after: orderCursor
-    }
+      limit: itemsPerPage,
+      offset: orderPage * itemsPerPage,
+    },
   });
 
   // Mutations
@@ -204,8 +191,8 @@ export const useDashboardData = () => {
     setOrderFilter,
     orderSort,
     setOrderSort,
-    orderCursor,
-    setOrderCursor,
+    orderPage,
+    setOrderPage,
 
     // Mutations
     createMenuItem,

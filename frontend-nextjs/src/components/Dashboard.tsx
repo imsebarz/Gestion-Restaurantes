@@ -81,7 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
       ),
-      count: dashboardData.ordersData?.orders?.edges?.length || 0,
+      count: dashboardData.ordersData?.orders?.length || 0,
       color: 'from-green-500 to-teal-500',
       description: 'Maneja pedidos y pagos'
     }
@@ -127,7 +127,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                 </div>
                 <div className="flex items-center space-x-2 px-3 py-1 bg-green-50 border border-green-200 rounded-lg">
                   <span className="text-green-600">📋</span>
-                  <span className="font-medium text-green-700">{dashboardData.ordersData?.orders?.edges?.length || 0}</span>
+                  <span className="font-medium text-green-700">{dashboardData.ordersData?.orders?.length || 0}</span>
                 </div>
               </div>
 
@@ -340,12 +340,18 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout }) => {
                   ordersLoading={dashboardData.ordersLoading}
                   ordersError={dashboardData.ordersError}
                   refetchOrders={dashboardData.refetchOrders}
+                  currentPage={dashboardData.orderPage}
+                  setPage={dashboardData.setOrderPage}
+                  hasMore={(() => {
+                    const totalCount = dashboardData.ordersData?.orders?.totalCount || 0;
+                    const currentPage = dashboardData.orderPage;
+                    const itemsPerPage = dashboardData.itemsPerPage;
+                    return (currentPage + 1) * itemsPerPage < totalCount;
+                  })()}
                   orderFilter={dashboardData.orderFilter}
                   setOrderFilter={dashboardData.setOrderFilter}
                   orderSort={dashboardData.orderSort}
                   setOrderSort={dashboardData.setOrderSort}
-                  orderCursor={dashboardData.orderCursor}
-                  setOrderCursor={dashboardData.setOrderCursor}
                   handleUpdateOrderStatus={dashboardActions.handleUpdateOrderStatus}
                   handlePayOrder={dashboardActions.handlePayOrder}
                   formatPrice={dashboardUtils.formatPrice}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, CardContent, Badge, getStatusBadgeVariant } from '../ui';
 import { GRID_LAYOUTS, SPACING, CONTAINER, FLEX, TEXT, cn } from '../../lib/styles';
 import { OrderFilters } from './Filters';
-import { CursorPagination } from './Pagination';
+import { Pagination } from './Pagination';
 import type { Order } from '../../types';
 import type { OrderFilter, OrderSort } from '../../hooks/useDashboardData';
 
@@ -10,29 +10,24 @@ interface OrdersTabProps {
   // Data
   ordersData?: {
     orders: {
-      edges: Array<{
-        node: Order;
-        cursor: string;
-      }>;
-      pageInfo: {
-        hasNextPage: boolean;
-        hasPreviousPage: boolean;
-        startCursor?: string;
-        endCursor?: string;
-      };
+      orders: Order[];
+      totalCount: number;
     };
   };
   ordersLoading: boolean;
   ordersError: any;
   refetchOrders: () => void;
   
+  // Pagination
+  currentPage: number;
+  setPage: (page: number) => void;
+  hasMore: boolean;
+  
   // Filters and sorting
   orderFilter: OrderFilter;
   setOrderFilter: (filter: OrderFilter) => void;
   orderSort: OrderSort;
   setOrderSort: (sort: OrderSort) => void;
-  orderCursor: string | undefined;
-  setOrderCursor: (cursor: string | undefined) => void;
   
   // Actions
   handleUpdateOrderStatus: (orderId: string, status: string) => void;
@@ -48,18 +43,19 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   ordersLoading,
   ordersError,
   refetchOrders,
+  currentPage,
+  setPage,
+  hasMore,
   orderFilter,
   setOrderFilter,
   orderSort,
   setOrderSort,
-  orderCursor,
-  setOrderCursor,
   handleUpdateOrderStatus,
   handlePayOrder,
   formatPrice,
   getErrorMessage
 }) => {
-  const orders = ordersData?.orders?.edges?.map(edge => edge.node) || [];
+  const orders = ordersData?.orders?.orders || [];
   const statusCounts = orders.reduce((acc, order) => {
     acc[order.status] = (acc[order.status] || 0) + 1;
     return acc;
@@ -159,7 +155,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
         setFilter={setOrderFilter}
         sort={orderSort}
         setSort={setOrderSort}
-        setCursor={setOrderCursor}
+        setPage={setPage}
       />
 
       {/* Enhanced Content Area */}
@@ -340,12 +336,12 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
           )}
 
           {/* Enhanced Pagination */}
-          {ordersData?.orders.pageInfo && (
+          {orders.length > 0 && (
             <div className="mt-8">
-              <CursorPagination 
-                pageInfo={ordersData.orders.pageInfo} 
-                onNext={() => ordersData?.orders.pageInfo.endCursor && setOrderCursor(ordersData.orders.pageInfo.endCursor)} 
-                onPrevious={() => ordersData?.orders.pageInfo.startCursor && setOrderCursor(ordersData.orders.pageInfo.startCursor)}
+              <Pagination 
+                currentPage={currentPage}
+                setPage={setPage}
+                hasMore={hasMore}
               />
             </div>
           )}

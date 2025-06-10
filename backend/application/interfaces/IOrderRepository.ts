@@ -24,6 +24,13 @@ export interface IOrderRepository {
     first?: number,
     after?: Cursor,
   ): Promise<Connection<Order>>;
+  findManyWithPagination(
+    filter?: OrderFilter,
+    sort?: OrderSort,
+    limit?: number,
+    offset?: number,
+  ): Promise<Order[]>;
+  count(filter?: OrderFilter): Promise<number>;
   create(orderData: {
     status: OrderStatus;
     tableId: number;
