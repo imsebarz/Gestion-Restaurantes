@@ -13,19 +13,20 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
     "sourceMap": true,
-    "types": ["node", "bcryptjs"]
+    "isolatedModules": true,
+    "types": ["node", "jest"],
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [
     "src/**/*",
     "domain/**/*",
     "application/**/*",
     "infrastructure/**/*",
-    "interfaces/**/*"
+    "interfaces/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "dist"
   ]
 }

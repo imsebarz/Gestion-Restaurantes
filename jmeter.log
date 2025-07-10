@@ -1,0 +1,946 @@
+2025-07-09 21:52:42,783 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2025-07-09 21:52:42,796 INFO o.a.j.JMeter: Loading user properties from: /opt/homebrew/Cellar/jmeter/5.6.3/libexec/bin/user.properties
+2025-07-09 21:52:42,796 INFO o.a.j.JMeter: Loading system properties from: /opt/homebrew/Cellar/jmeter/5.6.3/libexec/bin/system.properties
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: Copyright (c) 1998-2024 The Apache Software Foundation
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: Version 5.6.3
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: java.version=21.0.7
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: java.vm.name=OpenJDK 64-Bit Server VM
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: os.name=Mac OS X
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: os.arch=aarch64
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: os.version=15.5
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: file.encoding=UTF-8
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: java.awt.headless=null
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: Max memory     =1073741824
+2025-07-09 21:52:42,799 INFO o.a.j.JMeter: Available Processors =8
+2025-07-09 21:52:42,804 INFO o.a.j.JMeter: Default Locale=English (EN)
+2025-07-09 21:52:42,804 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2025-07-09 21:52:42,804 INFO o.a.j.JMeter: JMeterHome=/opt/homebrew/Cellar/jmeter/5.6.3/libexec
+2025-07-09 21:52:42,804 INFO o.a.j.JMeter: user.dir  =/Users/sebastian.ruiz/Dev/Gestion-Restaurantes
+2025-07-09 21:52:42,804 INFO o.a.j.JMeter: PWD       =/Users/sebastian.ruiz/Dev/Gestion-Restaurantes
+2025-07-09 21:52:42,806 INFO o.a.j.JMeter: IP: 192.168.1.27 Name: CO-IT029276 FullName: 192.168.1.27
+2025-07-09 21:52:42,812 INFO o.a.j.JMeter: Loaded icon properties from org/apache/jmeter/images/icon.properties
+2025-07-09 21:52:43,621 INFO o.a.j.JMeterGuiLauncher: Setting LAF to: com.github.weisj.darklaf.DarkLaf:com.github.weisj.darklaf.theme.DarculaTheme
+2025-07-09 21:52:44,612 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.9.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.action.Command], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-07-09 21:52:44,686 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.9.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.gui.plugin.MenuCreator], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-07-09 21:52:44,743 INFO o.j.r.JARSourceHTTP: Requesting https://jmeter-plugins.org/repo/?installID=mac_os_x-04a7c3d18396101547705a8f88036b09-gui
+2025-07-09 21:52:45,845 INFO o.j.r.PluginManager: Plugins Status: [jpgc-plugins-manager=1.9, jmeter-core=5.6.3, jmeter-ftp=5.6.3, jmeter-http=5.6.3, jmeter-jdbc=5.6.3, jmeter-jms=5.6.3, jmeter-junit=5.6.3, jmeter-java=5.6.3, jmeter-ldap=5.6.3, jmeter-mail=5.6.3, jmeter-mongodb=5.6.3, jmeter-native=5.6.3, jmeter-tcp=5.6.3, jmeter-components=5.6.3]
+2025-07-09 21:52:45,846 INFO o.j.r.PluginManagerMenuItem: Plugins Manager has upgrades: [jpgc-plugins-manager]
+2025-07-09 22:00:31,179 INFO o.a.j.s.FileServer: Default base='/Users/sebastian.ruiz/Dev/Gestion-Restaurantes'
+2025-07-09 22:00:31,181 INFO o.a.j.g.a.Load: Loading file: /Users/sebastian.ruiz/Downloads/food360_graphql_load_test_plan.jmx
+2025-07-09 22:00:31,181 INFO o.a.j.s.FileServer: Set new base='/Users/sebastian.ruiz/Downloads'
+2025-07-09 22:00:31,269 INFO o.a.j.s.SaveService: Testplan (JMX) version: 2.2. Testlog (JTL) version: 2.2
+2025-07-09 22:00:31,274 INFO o.a.j.s.SaveService: Using SaveService properties version 5.0
+2025-07-09 22:00:31,274 INFO o.a.j.s.SaveService: Using SaveService properties file encoding UTF-8
+2025-07-09 22:00:31,275 INFO o.a.j.s.SaveService: Loading file: /Users/sebastian.ruiz/Downloads/food360_graphql_load_test_plan.jmx
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/html is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xhtml+xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for application/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/xml is org.apache.jmeter.protocol.http.parser.LagartoBasedHtmlParser
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/vnd.wap.wml is org.apache.jmeter.protocol.http.parser.RegexpHTMLParser
+2025-07-09 22:00:31,326 INFO o.a.j.p.h.s.HTTPSamplerBase: Parser for text/css is org.apache.jmeter.protocol.http.parser.CssParser
+2025-07-09 22:00:31,452 INFO o.a.j.s.FileServer: Set new base='/Users/sebastian.ruiz/Downloads'
+2025-07-09 22:01:17,558 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:01:17,559 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:01:17,559 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:01:17,559 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must contain the string: '.functions.'
+2025-07-09 22:01:17,559 INFO o.a.j.e.u.CompoundVariable: Note: Function class names must not contain the string: '.gui.'
+2025-07-09 22:01:17,586 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.9.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.functions.Function], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-07-09 22:01:17,590 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:01:17,622 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:01:17,622 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:01:17,622 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:17,622 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:17,624 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:01:17,624 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:01:17,624 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:01:17,624 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:17,624 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:17,624 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:01:17,624 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:01:17,624 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:01:17,624 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:17,625 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:17,624 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:01:17,625 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:17,625 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:17,625 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:01:17,625 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:01:17,625 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:17,625 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:01:17,625 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:17,626 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:01:17,626 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:01:17,626 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:01:17,629 INFO o.a.j.p.h.s.HTTPHCAbstractImpl: Local host = CO-IT029276
+2025-07-09 22:01:17,633 INFO o.a.j.p.h.s.HTTPHC4Impl: HTTP request retry count = 0
+2025-07-09 22:01:17,633 INFO o.a.j.s.SampleResult: Note: Sample TimeStamps are START times
+2025-07-09 22:01:17,633 INFO o.a.j.s.SampleResult: sampleresult.default.encoding is set to UTF-8
+2025-07-09 22:01:17,633 INFO o.a.j.s.SampleResult: sampleresult.useNanoTime=true
+2025-07-09 22:01:17,634 INFO o.a.j.s.SampleResult: sampleresult.nanoThreadSleep=5000
+2025-07-09 22:01:17,677 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:01:17,677 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:01:17,677 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:01:17,677 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:01:17,682 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:01:17,683 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:01:17,784 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:01:17,784 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:01:17,792 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:01:17,792 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:01:17,792 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:01:17,792 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:01:35,071 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:01:35,072 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:01:35,072 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:01:35,094 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:01:35,094 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:35,095 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:35,095 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:35,095 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:35,095 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:01:35,095 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:01:35,095 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:01:35,096 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:35,095 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:01:35,096 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:35,096 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:01:35,096 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:01:35,096 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:01:35,096 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:35,096 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:35,096 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:01:35,097 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:01:35,097 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:01:35,097 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:01:35,097 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:35,097 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:35,097 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:01:35,097 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:01:35,097 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:01:35,097 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:01:35,101 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:01:35,101 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:01:35,101 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:01:35,101 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:01:35,103 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:01:35,103 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:01:35,104 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:01:35,104 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:01:35,106 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:01:35,106 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:01:35,106 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:01:35,106 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:01:47,955 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:01:47,955 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:01:47,956 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:01:47,980 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:01:47,980 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:01:47,980 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:47,980 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:47,980 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:01:47,980 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:01:47,981 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:01:47,981 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:47,981 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:47,981 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:01:47,981 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:01:47,981 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:01:47,981 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:01:47,981 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:01:47,981 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:47,981 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:47,982 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:47,982 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:47,982 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:01:47,982 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:01:47,982 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:47,982 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:01:47,982 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:47,983 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:01:47,983 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:01:47,983 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:01:47,985 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:01:47,985 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:01:47,986 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:01:47,986 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:01:47,987 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:01:47,987 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:01:47,988 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:01:47,989 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:01:47,990 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:01:47,990 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:01:47,990 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:01:47,990 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:01:57,434 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:01:57,435 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:01:57,435 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:01:57,457 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:57,458 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:57,458 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:57,458 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:57,458 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:01:57,458 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:01:57,458 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:57,458 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:01:57,459 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:57,459 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:57,459 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:01:57,459 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:57,459 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:01:57,459 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:01:57,459 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:01:57,459 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:01:57,460 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:01:57,460 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:01:57,460 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:01:57,463 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:01:57,463 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:01:57,464 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:01:57,464 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:01:57,466 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:01:57,466 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:01:57,466 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:01:57,466 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:01:57,467 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:01:57,467 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:01:57,468 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:01:57,468 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:17:43,222 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:17:43,224 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:17:43,225 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:17:43,265 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:17:43,265 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:17:43,265 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:43,265 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:43,265 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:17:43,265 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:17:43,266 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:17:43,266 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:43,266 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:43,266 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:17:43,266 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:17:43,266 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:17:43,266 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:17:43,266 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:17:43,266 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:43,266 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:43,266 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:43,267 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:43,267 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:17:43,267 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:17:43,267 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:43,267 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:43,267 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:17:43,268 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:17:43,268 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:17:43,268 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:17:43,281 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:17:43,282 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:17:43,282 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:17:43,283 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:17:43,287 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:17:43,287 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:17:43,360 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:17:43,360 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:17:43,361 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:17:43,361 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:17:43,361 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:17:43,361 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   36.8/s Avg:    45 Min:    13 Max:    92 Err:     0 (0.00%)
+2025-07-09 22:17:43,362 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:17:49,986 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:17:49,987 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:17:49,988 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:17:50,019 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:17:50,019 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:17:50,019 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:50,019 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:50,020 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:50,020 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:50,020 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:50,020 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:17:50,020 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:50,020 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:17:50,020 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:17:50,020 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:50,021 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:50,021 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:17:50,021 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:17:50,021 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:17:50,021 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:17:50,021 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:50,021 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:50,021 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:17:50,022 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:17:50,022 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:17:50,022 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:17:50,026 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:17:50,026 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:17:50,029 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:17:50,029 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:17:50,030 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:17:50,031 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:17:50,031 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:17:50,032 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:17:50,034 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:17:50,034 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:17:50,034 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:17:50,034 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =  108.7/s Avg:     8 Min:     4 Max:    11 Err:     0 (0.00%)
+2025-07-09 22:17:50,034 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:17:54,241 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:17:54,242 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:17:54,243 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:17:54,269 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:54,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:54,270 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:54,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:54,270 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:17:54,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:54,270 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:17:54,270 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:17:54,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:54,271 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:54,271 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:54,271 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:17:54,271 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:17:54,271 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:17:54,271 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:17:54,271 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:17:54,272 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:17:54,272 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:17:54,272 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:17:54,274 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:17:54,274 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:17:54,274 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:17:54,274 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:17:54,277 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:17:54,277 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:17:54,278 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:17:54,278 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:17:54,278 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:17:54,278 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:17:54,278 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:17:54,279 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =  138.9/s Avg:     4 Min:     2 Max:     6 Err:     0 (0.00%)
+2025-07-09 22:17:54,279 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:18:01,367 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:18:01,368 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:18:01,369 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:18:01,393 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:18:01,393 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:18:01,393 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:01,393 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:01,394 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:18:01,394 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:18:01,394 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:18:01,394 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:01,394 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:01,394 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:18:01,394 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:18:01,394 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:18:01,394 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:01,395 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:01,395 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:01,395 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:01,395 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:18:01,395 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:18:01,395 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:18:01,396 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:18:01,395 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:18:01,396 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:01,396 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:01,396 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:18:01,396 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:18:01,396 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:18:01,400 INFO o.a.j.r.Summariser: Generate Summary Results +      1 in 00:00:00 =   33.3/s Avg:     4 Min:     4 Max:     4 Err:     0 (0.00%) Active: 5 Started: 5 Finished: 0
+2025-07-09 22:18:01,400 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:18:01,400 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:18:01,401 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:18:01,401 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:18:01,401 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:18:01,401 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:18:01,403 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:18:01,403 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:18:01,404 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:18:01,404 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:18:01,404 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:18:01,404 INFO o.a.j.r.Summariser: Generate Summary Results +      4 in 00:00:00 =  800.0/s Avg:     6 Min:     5 Max:     7 Err:     0 (0.00%) Active: 0 Started: 5 Finished: 5
+2025-07-09 22:18:01,404 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =  142.9/s Avg:     5 Min:     4 Max:     7 Err:     0 (0.00%)
+2025-07-09 22:18:01,404 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:18:13,248 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:18:13,249 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:18:13,249 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:18:13,269 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:18:13,269 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:18:13,269 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:13,269 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:13,270 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:13,270 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:13,270 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:18:13,270 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:18:13,270 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:18:13,270 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:18:13,271 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:18:13,271 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:18:13,271 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:18:13,274 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:18:13,274 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:18:13,276 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:18:13,276 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:18:13,276 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:18:13,276 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:18:13,277 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:18:13,277 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:18:13,277 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:18:13,277 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:18:13,278 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:18:13,278 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =  172.4/s Avg:     5 Min:     4 Max:     7 Err:     0 (0.00%)
+2025-07-09 22:18:13,278 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:39,277 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:39,278 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:39,278 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:39,314 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:39,315 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:39,315 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:39,315 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:39,315 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:39,315 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:39,315 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:39,315 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:39,315 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:39,315 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:39,316 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:39,316 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:39,316 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:39,316 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:39,316 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:39,316 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:39,316 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:39,317 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:39,317 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:39,317 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:39,317 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:39,317 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:39,317 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:39,317 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:39,317 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:39,317 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:39,322 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:39,323 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:39,323 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:39,323 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:39,324 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:39,324 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:39,325 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:39,325 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:39,396 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:39,396 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:39,396 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:39,396 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   42.4/s Avg:    18 Min:     3 Max:    76 Err:     0 (0.00%)
+2025-07-09 22:22:39,396 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:46,060 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:46,060 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:46,061 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:46,090 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:46,090 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:46,090 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:46,090 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:46,091 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:46,091 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:46,091 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:46,091 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:46,091 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:46,091 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:46,091 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:46,091 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:46,091 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:46,091 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:46,092 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:46,092 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:46,091 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:46,093 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:46,093 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:46,093 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:46,093 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:46,093 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:46,093 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:46,093 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:46,093 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:46,094 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:46,095 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:46,095 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:46,096 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:46,096 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:46,098 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:46,098 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:46,169 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:46,170 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:46,242 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:46,243 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:46,243 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:46,243 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   27.3/s Avg:    46 Min:     2 Max:   149 Err:     0 (0.00%)
+2025-07-09 22:22:46,243 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:48,790 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:48,790 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:48,791 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:48,809 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:48,810 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:48,810 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:48,810 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:48,810 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:48,810 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:48,810 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:48,810 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:48,810 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:48,811 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:48,811 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:48,811 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:48,811 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:48,811 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:48,811 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:48,811 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:48,812 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:48,812 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:48,812 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:48,813 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:48,813 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:48,814 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:48,814 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:48,886 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:48,886 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:48,886 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:48,886 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:48,887 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:48,887 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:48,887 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:48,887 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   52.1/s Avg:    45 Min:     2 Max:    76 Err:     0 (0.00%)
+2025-07-09 22:22:48,888 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:50,805 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:50,806 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:50,806 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:50,824 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:50,824 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:50,824 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:50,824 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:50,824 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:50,825 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:50,825 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:50,825 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:50,825 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:50,825 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:50,825 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:50,825 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:50,826 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:50,826 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:50,826 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:50,826 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:50,826 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:50,826 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:50,826 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:50,826 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:50,826 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:50,827 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:50,827 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:50,828 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:50,828 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:50,830 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:50,830 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:50,901 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:50,902 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:50,902 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:50,902 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:50,902 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:50,902 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   52.1/s Avg:    32 Min:     2 Max:    77 Err:     0 (0.00%)
+2025-07-09 22:22:50,902 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:55,003 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:55,004 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:55,004 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:55,023 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:55,023 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:55,023 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:55,023 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:55,023 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:55,023 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:55,023 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:55,023 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:55,024 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:55,024 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:55,024 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:55,024 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:55,024 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:55,024 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:55,024 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:55,024 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:55,024 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:55,026 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:55,026 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:55,026 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:55,026 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:55,098 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:55,098 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:55,098 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:55,098 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:55,099 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:55,099 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:55,099 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:55,100 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   52.6/s Avg:    45 Min:     2 Max:    75 Err:     0 (0.00%)
+2025-07-09 22:22:55,100 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:58,347 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:58,348 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:58,348 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:58,373 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:58,373 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:58,373 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:58,373 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:58,373 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:58,374 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:58,374 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:58,374 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:58,374 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:58,374 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:58,374 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:58,377 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:58,377 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:58,377 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:58,377 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:58,447 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:58,447 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:58,447 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:58,447 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:58,449 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:58,449 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:58,450 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:58,450 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   49.0/s Avg:    45 Min:     2 Max:    75 Err:     0 (0.00%)
+2025-07-09 22:22:58,450 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:22:59,714 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:22:59,715 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:22:59,715 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:59,735 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:59,735 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:22:59,735 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:59,735 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:59,735 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:22:59,736 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:59,736 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:22:59,736 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:59,736 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:22:59,736 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:59,736 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:59,736 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:22:59,736 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:22:59,737 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:22:59,737 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:22:59,737 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:22:59,737 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:22:59,737 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:22:59,737 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:22:59,737 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:22:59,737 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:22:59,739 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:22:59,739 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:22:59,740 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:22:59,740 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:22:59,740 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:22:59,740 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:22:59,815 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:22:59,815 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:22:59,815 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:22:59,815 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:22:59,816 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:22:59,816 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   49.5/s Avg:    33 Min:     2 Max:    79 Err:     0 (0.00%)
+2025-07-09 22:22:59,816 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:23:06,791 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:23:06,791 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:23:06,792 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:23:06,812 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:23:06,812 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:23:06,812 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:06,812 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:06,812 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:23:06,812 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:06,813 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:06,813 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:06,813 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:23:06,813 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:23:06,813 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:23:06,813 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:23:06,814 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:23:06,816 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:23:06,816 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:23:06,816 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:23:06,816 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:23:06,887 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:23:06,887 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:23:06,887 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:23:06,887 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:23:06,888 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:23:06,888 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:23:06,888 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:23:06,888 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   52.1/s Avg:    45 Min:     2 Max:    75 Err:     0 (0.00%)
+2025-07-09 22:23:06,888 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:23:13,734 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:23:13,735 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:23:13,736 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:23:13,758 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:23:13,758 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:23:13,758 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:13,758 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:13,759 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:13,759 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:13,759 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:23:13,759 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:23:13,759 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:13,759 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:13,759 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:23:13,759 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:13,760 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:13,760 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:23:13,760 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:23:13,760 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:23:13,760 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:23:13,760 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:23:13,761 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:23:13,761 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:23:13,761 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:23:13,762 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:23:13,762 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:23:13,764 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:23:13,764 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:23:13,838 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:23:13,838 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:23:13,838 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:23:13,838 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:23:13,839 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:23:13,839 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:23:13,839 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:23:13,839 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   48.5/s Avg:    47 Min:     2 Max:    79 Err:     0 (0.00%)
+2025-07-09 22:23:13,839 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
+2025-07-09 22:23:55,404 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.9.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.ResultRenderer], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-07-09 22:23:55,418 INFO o.a.j.r.ClassFinder: Will scan jar /opt/homebrew/Cellar/jmeter/5.6.3/libexec/lib/ext/jmeter-plugins-manager-1.9.jar with filter ExtendsClassFilter [parents=[interface org.apache.jmeter.visualizers.RequestView], inner=false, contains=null, notContains=null]. Consider exposing JMeter plugins via META-INF/services, and add JMeter-Skip-Class-Scanning=true manifest attribute so JMeter can skip classfile scanning
+2025-07-09 22:24:01,079 INFO o.a.j.e.StandardJMeterEngine: Running the test!
+2025-07-09 22:24:01,079 INFO o.a.j.s.SampleEvent: List of sample_variables: []
+2025-07-09 22:24:01,080 INFO o.a.j.g.u.JMeterMenuBar: setRunning(true, *local*)
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 1 : TG Login
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Login.
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:24:01,099 INFO o.a.j.t.ThreadGroup: Starting thread group... number=1 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:24:01,099 INFO o.a.j.t.ThreadGroup: Started thread group number 1
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 2 : TG Create Order
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Order.
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:24:01,099 INFO o.a.j.t.ThreadGroup: Starting thread group... number=2 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:24:01,099 INFO o.a.j.t.JMeterThread: Thread started: TG Login 1-1
+2025-07-09 22:24:01,099 INFO o.a.j.t.ThreadGroup: Started thread group number 2
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 3 : TG Create Payment
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Create Payment.
+2025-07-09 22:24:01,099 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:24:01,099 INFO o.a.j.t.ThreadGroup: Starting thread group... number=3 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:24:01,099 INFO o.a.j.t.JMeterThread: Thread started: TG Create Order 2-1
+2025-07-09 22:24:01,100 INFO o.a.j.t.ThreadGroup: Started thread group number 3
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 4 : TG Menu Items
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Menu Items.
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:24:01,100 INFO o.a.j.t.ThreadGroup: Starting thread group... number=4 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:24:01,100 INFO o.a.j.t.ThreadGroup: Started thread group number 4
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Starting ThreadGroup: 5 : TG Update Table
+2025-07-09 22:24:01,100 INFO o.a.j.t.JMeterThread: Thread started: TG Create Payment 3-1
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Starting 1 threads for group TG Update Table.
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: Thread will continue on error
+2025-07-09 22:24:01,100 INFO o.a.j.t.ThreadGroup: Starting thread group... number=5 threads=1 ramp-up=0 delayedStart=false
+2025-07-09 22:24:01,100 INFO o.a.j.t.JMeterThread: Thread started: TG Menu Items 4-1
+2025-07-09 22:24:01,100 INFO o.a.j.t.ThreadGroup: Started thread group number 5
+2025-07-09 22:24:01,100 INFO o.a.j.e.StandardJMeterEngine: All thread groups have been started
+2025-07-09 22:24:01,100 INFO o.a.j.t.JMeterThread: Thread started: TG Update Table 5-1
+2025-07-09 22:24:01,103 INFO o.a.j.r.Summariser: Generate Summary Results +      1 in 00:00:00 =   43.5/s Avg:     3 Min:     3 Max:     3 Err:     0 (0.00%) Active: 5 Started: 5 Finished: 0
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Order 2-1
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Order 2-1
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread is done: TG Create Payment 3-1
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread finished: TG Create Payment 3-1
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread is done: TG Update Table 5-1
+2025-07-09 22:24:01,104 INFO o.a.j.t.JMeterThread: Thread finished: TG Update Table 5-1
+2025-07-09 22:24:01,175 INFO o.a.j.t.JMeterThread: Thread is done: TG Login 1-1
+2025-07-09 22:24:01,175 INFO o.a.j.t.JMeterThread: Thread finished: TG Login 1-1
+2025-07-09 22:24:01,175 INFO o.a.j.t.JMeterThread: Thread is done: TG Menu Items 4-1
+2025-07-09 22:24:01,175 INFO o.a.j.t.JMeterThread: Thread finished: TG Menu Items 4-1
+2025-07-09 22:24:01,175 INFO o.a.j.e.StandardJMeterEngine: Notifying test listeners of end of test
+2025-07-09 22:24:01,175 INFO o.a.j.r.Summariser: Generate Summary Results +      4 in 00:00:00 =   55.6/s Avg:    39 Min:     4 Max:    75 Err:     0 (0.00%) Active: 0 Started: 5 Finished: 5
+2025-07-09 22:24:01,175 INFO o.a.j.r.Summariser: Generate Summary Results =      5 in 00:00:00 =   52.6/s Avg:    32 Min:     3 Max:    75 Err:     0 (0.00%)
+2025-07-09 22:24:01,176 INFO o.a.j.g.u.JMeterMenuBar: setRunning(false, *local*)
